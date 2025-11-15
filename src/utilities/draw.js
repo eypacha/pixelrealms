@@ -2,14 +2,12 @@
 import { createSeededRandom } from './randomWithSeed';
 import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
 
+const playerImage = new Image();
+playerImage.src = '/images/knight.png';
+
 export function drawPlayer(ctx, position) {
-  // Dibujar borde negro
-  ctx.strokeStyle = 'black';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(position.x - 1, position.y - 1, 8, 8);
-  // Dibujar cuadrado blanco
-  ctx.fillStyle = 'white';
-  ctx.fillRect(position.x, position.y, 6, 6);
+  // Dibujar la imagen del caballero en lugar del punto blanco
+  ctx.drawImage(playerImage, position.x - 7.5, position.y - 10, 15, 20);
 }
 
 export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, options = {}) {
@@ -52,8 +50,8 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, options
   // Erase old player if not redrawing terrain
   if (!redrawTerrain) {
     const { x, y } = playerStore.oldPosition;
-    for (let dy = -2; dy < 10; dy++) {
-      for (let dx = -2; dx < 10; dx++) {
+    for (let dy = -12; dy < 13; dy++) {
+      for (let dx = -10; dx < 10; dx++) {
         const px = x + dx;
         const py = y + dy;
         if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
