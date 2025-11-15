@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { PLAYER_SPEED } from '../constants/player.js';
 
 export const usePlayerStore = defineStore('player', () => {
   const position = ref({ x: 0, y: 0 });
@@ -19,7 +20,7 @@ export const usePlayerStore = defineStore('player', () => {
       // Mapear a la matriz de alturas
       const tx = Math.floor(x * (terrain.length - 1) / (width - 1));
       const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
-      if (terrain[ty]?.[tx] > 0) {
+      if (terrain[ty]?.[tx] > -0.05) {
         position.value = { x, y };
         return;
       }
@@ -33,53 +34,44 @@ export const usePlayerStore = defineStore('player', () => {
     if (x < 0 || y < 0 || x >= widthRef || y >= heightRef) return false;
     const tx = Math.floor(x * (terrainRef.length - 1) / (widthRef - 1));
     const ty = Math.floor(y * (terrainRef.length - 1) / (heightRef - 1));
-    return terrainRef[ty]?.[tx] > 0;
+    return terrainRef[ty]?.[tx] > -0.05;
   }
 
-  const SPEED = 3;
   function moveUp() {
     const { x, y } = position.value;
-    for (let i = 1; i <= SPEED; i++) {
-      if (canMoveTo(x, y - i)) {
-        position.value.y -= i;
-        console.log('Mover arriba:', position.value);
-        return;
-      }
+    if (canMoveTo(x, y - PLAYER_SPEED)) {
+      position.value.y -= PLAYER_SPEED;
+      console.log('Mover arriba:', position.value);
+    } else {
+      console.log('No puede mover arriba');
     }
-    console.log('No puede mover arriba');
   }
   function moveDown() {
     const { x, y } = position.value;
-    for (let i = 1; i <= SPEED; i++) {
-      if (canMoveTo(x, y + i)) {
-        position.value.y += i;
-        console.log('Mover abajo:', position.value);
-        return;
-      }
+    if (canMoveTo(x, y + PLAYER_SPEED)) {
+      position.value.y += PLAYER_SPEED;
+      console.log('Mover abajo:', position.value);
+    } else {
+      console.log('No puede mover abajo');
     }
-    console.log('No puede mover abajo');
   }
   function moveLeft() {
     const { x, y } = position.value;
-    for (let i = 1; i <= SPEED; i++) {
-      if (canMoveTo(x - i, y)) {
-        position.value.x -= i;
-        console.log('Mover izquierda:', position.value);
-        return;
-      }
+    if (canMoveTo(x - PLAYER_SPEED, y)) {
+      position.value.x -= PLAYER_SPEED;
+      console.log('Mover izquierda:', position.value);
+    } else {
+      console.log('No puede mover izquierda');
     }
-    console.log('No puede mover izquierda');
   }
   function moveRight() {
     const { x, y } = position.value;
-    for (let i = 1; i <= SPEED; i++) {
-      if (canMoveTo(x + i, y)) {
-        position.value.x += i;
-        console.log('Mover derecha:', position.value);
-        return;
-      }
+    if (canMoveTo(x + PLAYER_SPEED, y)) {
+      position.value.x += PLAYER_SPEED;
+      console.log('Mover derecha:', position.value);
+    } else {
+      console.log('No puede mover derecha');
     }
-    console.log('No puede mover derecha');
   }
 
   return { position, seed, initialize, moveUp, moveDown, moveLeft, moveRight };
