@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { PLAYER_SPEED } from '../constants/player.js';
+import { createSeededRandom } from '../utilities/randomWithSeed.js';
 
 export const usePlayerStore = defineStore('player', () => {
   const position = ref({ x: 0, y: 0 });
@@ -34,6 +35,13 @@ export const usePlayerStore = defineStore('player', () => {
     position.value = { x: 0, y: 0 };
   }
 
+  function checkEncounter(pos) {
+    const random = createSeededRandom(`${Math.floor(pos.x)}_${Math.floor(pos.y)}`);
+    if (random() < 0.2) {
+      console.log('combate iniciado');
+    }
+  }
+
   function canMoveTo(x, y) {
     if (x < 0 || y < 0 || x >= widthRef || y >= heightRef) return false;
     const tx = Math.floor(x * (terrainRef.length - 1) / (widthRef - 1));
@@ -46,6 +54,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (canMoveTo(x, y - PLAYER_SPEED)) {
       position.value.y -= PLAYER_SPEED;
       console.log('Mover arriba:', position.value);
+      checkEncounter(position.value);
     } else {
       console.log('No puede mover arriba');
     }
@@ -55,6 +64,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (canMoveTo(x, y + PLAYER_SPEED)) {
       position.value.y += PLAYER_SPEED;
       console.log('Mover abajo:', position.value);
+      checkEncounter(position.value);
     } else {
       console.log('No puede mover abajo');
     }
@@ -64,6 +74,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (canMoveTo(x - PLAYER_SPEED, y)) {
       position.value.x -= PLAYER_SPEED;
       console.log('Mover izquierda:', position.value);
+      checkEncounter(position.value);
     } else {
       console.log('No puede mover izquierda');
     }
@@ -73,6 +84,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (canMoveTo(x + PLAYER_SPEED, y)) {
       position.value.x += PLAYER_SPEED;
       console.log('Mover derecha:', position.value);
+      checkEncounter(position.value);
     } else {
       console.log('No puede mover derecha');
     }
