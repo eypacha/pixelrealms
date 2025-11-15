@@ -57,15 +57,26 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function playerAttack(damage) {
-    const actualDamage = Math.max(1, damage - enemyDefense.value);
-    enemyHealth.value -= actualDamage;
-    soundStore.playKling();
-    console.log(`Jugador ataca: ${actualDamage} daño. Salud enemigo: ${enemyHealth.value}`);
-    if (enemyHealth.value <= 0) {
-      combatActive.value = false;
-      coins.value += 5; // reward
-      console.log('Enemigo derrotado!');
+    const combatRandom = createSeededRandom(seed.value + 'combat' + Date.now());
+    const hitChance = 0.7; // 70% chance to hit
+    if (combatRandom() < hitChance) {
+      const actualDamage = Math.max(1, damage - enemyDefense.value);
+      enemyHealth.value -= actualDamage;
+      soundStore.playKling();
+      console.log(`Jugador ataca: ${actualDamage} daño. Salud enemigo: ${enemyHealth.value}`);
+      if (enemyHealth.value <= 0) {
+        combatActive.value = false;
+        coins.value += 5; // reward
+        console.log('Enemigo derrotado!');
+      } else {
+        playerTurn.value = false;
+        setTimeout(() => {
+          enemyAttack();
+        }, 1000);
+      }
     } else {
+      console.log('Jugador falla el ataque!');
+      soundStore.playWhosh();
       playerTurn.value = false;
       setTimeout(() => {
         enemyAttack();
@@ -74,14 +85,22 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function enemyAttack() {
-    const damage = Math.max(1, enemyStrength.value - defense.value);
-    health.value -= damage;
-    soundStore.playHammer();
-    console.log(`Enemigo ataca: ${damage} daño. Salud jugador: ${health.value}`);
-    if (health.value <= 0) {
-      combatActive.value = false;
-      console.log('Jugador derrotado!');
+    const combatRandom = createSeededRandom(seed.value + 'enemyCombat' + Date.now());
+    const hitChance = 0.6; // 60% chance to hit for enemy
+    if (combatRandom() < hitChance) {
+      const damage = Math.max(1, enemyStrength.value - defense.value);
+      health.value -= damage;
+      soundStore.playHammer();
+      console.log(`Enemigo ataca: ${damage} daño. Salud jugador: ${health.value}`);
+      if (health.value <= 0) {
+        combatActive.value = false;
+        console.log('Jugador derrotado!');
+      } else {
+        playerTurn.value = true;
+      }
     } else {
+      console.log('Enemigo falla el ataque!');
+      soundStore.playWhosh();
       playerTurn.value = true;
     }
   }
