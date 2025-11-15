@@ -1,14 +1,27 @@
 <template>
   <div class="absolute inset-0 bg-[#00000050] flex justify-center items-center z-50">
     <div class="bg-white p-5 text-center">
-      <h2>Combate</h2>
+      <h2>VS</h2>
       <div class="flex justify-center space-x-4 mb-4">
-        <canvas ref="knightCanvas" width="60" height="80"></canvas>
-        <canvas ref="enemyCanvas" width="60" height="80"></canvas>
+        <div class="flex gap-2">
+          <div>
+            <div>❤️ {{ playerStore.health }}</div>
+            <div>💪 {{ playerStore.strength }}</div>
+            <div>🛡️ {{ playerStore.defense }}</div>
+          </div>
+          <canvas ref="knightCanvas" width="60" height="80"></canvas>
+        </div>
+        <div class="flex enemy">
+          <canvas ref="enemyCanvas" width="60" height="80"></canvas>
+          <div>enemy stats</div>
+        </div>
       </div>
       <p>Aquí irá la lógica del combate.</p>
-      <button @click="flee" class="mt-4 px-4 py-2">Huir</button>
-      <!-- Por ahora, solo un placeholder -->
+      <div class="mt-4 flex space-x-2">
+        <button @click="swordAttack" class="px-4 py-2 cursor-pointer">Atacar</button>
+        <button @click="cover" class="px-4 py-2 cursor-pointer">Defender</button>
+        <button @click="flee" class="px-4 py-2 cursor-pointer">Huir</button>
+      </div>
     </div>
   </div>
 </template>
@@ -24,6 +37,16 @@ const enemyCanvas = ref(null);
 
 function flee() {
   playerStore.combatActive = false;
+}
+
+function swordAttack() {
+  // Lógica de ataque con espada
+  console.log('Ataque con espada');
+}
+
+function cover() {
+  // Lógica de cubrirse
+  console.log('Cubrirse');
 }
 
 onMounted(() => {
