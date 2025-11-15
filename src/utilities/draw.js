@@ -2,15 +2,13 @@
 import { createSeededRandom } from './randomWithSeed';
 import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
 
-const playerImage = new Image();
-playerImage.src = '/images/knight.png';
-
-export function drawPlayer(ctx, position) {
-  // Dibujar la imagen del caballero en lugar del punto blanco
-  ctx.drawImage(playerImage, position.x - 7.5, position.y - 10, 15, 20);
+export function drawPlayer(ctx, position, image) {
+  if (image && image.complete) {
+    ctx.drawImage(image, position.x - 7.5, position.y - 10, 15, 20);
+  }
 }
 
-export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, options = {}) {
+export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, options = {}) {
   const { initializePlayer = false, redrawTerrain = initializePlayer } = options;
   const canvas = terrainCanvas.value;
   if (!canvas) return;
@@ -69,7 +67,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, options
     }
   }
   // Dibujar jugador
-  drawPlayer(ctx, playerStore.position);
+  drawPlayer(ctx, playerStore.position, playerImage);
   // Dibujar puntos de interés
   poiStore.pois.forEach(poi => {
     ctx.fillStyle = 'gray';

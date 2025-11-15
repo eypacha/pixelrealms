@@ -24,7 +24,7 @@
 
 
 <script setup>
-import { onMounted, watch } from 'vue';
+import { onMounted, watch, ref } from 'vue';
 import { useTerrain } from '../composables/useTerrain';
 import { usePlayerStore } from '../stores/player';
 import { usePoiStore } from '../stores/poi';
@@ -34,9 +34,15 @@ import CombatPopup from '../components/CombatPopup.vue';
 const { terrainCanvas, seedInput, randomizeSeed, updateTerrain } = useTerrain();
 const playerStore = usePlayerStore();
 const poiStore = usePoiStore();
+const playerImage = ref(null);
 
-onMounted(() => {
-  drawAll(terrainCanvas, seedInput, playerStore, poiStore, { initializePlayer: true });
+onMounted(async () => {
+  playerImage.value = new Image();
+  playerImage.value.src = '/images/knight.png';
+  await new Promise(resolve => {
+    playerImage.value.onload = resolve;
+  });
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, { initializePlayer: true });
   window.addEventListener('keydown', (e) => {
     if (e.repeat) return;
     if (playerStore.combatActive) return;
@@ -57,7 +63,7 @@ onMounted(() => {
     if (moved) {
       requestAnimationFrame(() => {
         poiStore.checkDiscovery(playerStore.position, playerStore);
-        drawAll(terrainCanvas, seedInput, playerStore, poiStore, { redrawTerrain: false });
+        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, { redrawTerrain: false });
       });
     }
   });
@@ -65,6 +71,6 @@ onMounted(() => {
 
 watch(seedInput, () => {
   // Al cambiar la semilla, inicializa el jugador en tierra firme
-  drawAll(terrainCanvas, seedInput, playerStore, poiStore, { initializePlayer: true });
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, { initializePlayer: true });
 });
 </script>
