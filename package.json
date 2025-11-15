@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "howler": "^2.2.4",
     "perlin-noise": "^0.0.1",
     "pinia": "^3.0.4",
     "primevue": "^4.3.5",
