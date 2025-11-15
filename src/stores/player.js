@@ -14,11 +14,13 @@ export const usePlayerStore = defineStore('player', () => {
   let terrainRef = null;
   let widthRef = 0;
   let heightRef = 0;
+  let encounterRandom = null;
 
   function initialize(terrain, width, height, randomFn) {
     terrainRef = terrain;
     widthRef = width;
     heightRef = height;
+    encounterRandom = createSeededRandom(seed.value + 'encounter');
     let x, y, attempts = 0;
     while (attempts < 1000) {
       x = Math.floor(randomFn() * width);
@@ -37,8 +39,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function checkEncounter(pos) {
-    const random = createSeededRandom(`${Math.floor(pos.x)}_${Math.floor(pos.y)}`);
-    if (random() < 0.2) {
+    if (encounterRandom() < 0.2) {
       combatActive.value = true;
     }
   }
