@@ -8,7 +8,10 @@
       <input id="seed" v-model="seedInput" type="text" class="border px-2 py-1" @input="updateTerrain" />
       <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white">Aleatoria</button>
     </div>
-    <canvas ref="terrainCanvas" width="800" height="600" class="border border-black"></canvas>
+    <div class="relative">
+      <canvas ref="terrainCanvas" width="800" height="600" class="border border-black"></canvas>
+      <CombatPopup v-if="playerStore.combatActive" />
+    </div>
     <div class="mt-4 text-center">
         ❤️ {{ playerStore.health }} &nbsp;
         💪 {{ playerStore.strength }} &nbsp;
@@ -26,6 +29,7 @@ import { useTerrain } from '../composables/useTerrain';
 import { usePlayerStore } from '../stores/player';
 import { usePoiStore } from '../stores/poi';
 import { drawAll } from '../utilities/draw';
+import CombatPopup from '../CombatPopup.vue';
 
 const { terrainCanvas, seedInput, randomizeSeed, updateTerrain } = useTerrain();
 const playerStore = usePlayerStore();

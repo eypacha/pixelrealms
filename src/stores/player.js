@@ -10,6 +10,7 @@ export const usePlayerStore = defineStore('player', () => {
   const strength = ref(10);
   const defense = ref(10);
   const coins = ref(0);
+  const combatActive = ref(false);
   let terrainRef = null;
   let widthRef = 0;
   let heightRef = 0;
@@ -38,7 +39,7 @@ export const usePlayerStore = defineStore('player', () => {
   function checkEncounter(pos) {
     const random = createSeededRandom(`${Math.floor(pos.x)}_${Math.floor(pos.y)}`);
     if (random() < 0.2) {
-      console.log('combate iniciado');
+      combatActive.value = true;
     }
   }
 
@@ -90,5 +91,5 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  return { position, seed, health, strength, defense, coins, initialize, moveUp, moveDown, moveLeft, moveRight };
+  return { position, seed, health, strength, defense, coins, combatActive, initialize, moveUp, moveDown, moveLeft, moveRight };
 });
