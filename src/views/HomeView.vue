@@ -5,17 +5,16 @@
   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
     <div class="mb-4">
       <label for="seed" class="mr-2 font-bold">Semilla:</label>
-      <input id="seed" v-model="seedInput" type="text" class="border rounded px-2 py-1" @input="updateTerrain" />
-      <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white rounded">Aleatoria</button>
+      <input id="seed" v-model="seedInput" type="text" class="border px-2 py-1" @input="updateTerrain" />
+      <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white">Aleatoria</button>
     </div>
-    <canvas ref="terrainCanvas" width="800" height="600" class="border border-black rounded shadow-lg"></canvas>
+    <canvas ref="terrainCanvas" width="800" height="600" class="border border-black"></canvas>
     <div class="mt-4 text-center">
-      <span>
         ❤️ {{ playerStore.vida }} &nbsp;
         💪 {{ playerStore.fuerza }} &nbsp;
         🛡️ {{ playerStore.defensa }} &nbsp;
         🪙 {{ playerStore.monedas }}
-      </span>   </div>
+    </div>
   </div>
 </template>
 
@@ -51,7 +50,7 @@ onMounted(() => {
       moved = true;
     }
     if (moved) {
-      poiStore.checkDiscovery(playerStore.position);
+      poiStore.checkDiscovery(playerStore.position, playerStore);
       drawAll(terrainCanvas, seedInput, playerStore, poiStore);
     }
   });
