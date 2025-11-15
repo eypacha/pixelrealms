@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { usePlayerStore } from './stores/player';
+import { usePlayerStore } from '../stores/player';
 
 const playerStore = usePlayerStore();
 

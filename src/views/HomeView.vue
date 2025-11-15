@@ -29,7 +29,7 @@ import { useTerrain } from '../composables/useTerrain';
 import { usePlayerStore } from '../stores/player';
 import { usePoiStore } from '../stores/poi';
 import { drawAll } from '../utilities/draw';
-import CombatPopup from '../CombatPopup.vue';
+import CombatPopup from '../components/CombatPopup.vue';
 
 const { terrainCanvas, seedInput, randomizeSeed, updateTerrain } = useTerrain();
 const playerStore = usePlayerStore();
