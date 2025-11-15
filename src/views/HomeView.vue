@@ -39,6 +39,7 @@ onMounted(() => {
   drawAll(terrainCanvas, seedInput, playerStore, poiStore, { initializePlayer: true });
   window.addEventListener('keydown', (e) => {
     if (e.repeat) return;
+    if (playerStore.combatActive) return;
     let moved = false;
     if (e.key === 'ArrowUp') {
       playerStore.moveUp();
