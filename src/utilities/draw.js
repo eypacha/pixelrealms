@@ -13,7 +13,7 @@ export function drawPlayer(ctx, position) {
   ctx.fillRect(position.x, position.y, 6, 6);
 }
 
-export function drawAll(terrainCanvas, seedInput, playerStore, { initializePlayer = false } = {}) {
+export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, { initializePlayer = false } = {}) {
   const canvas = terrainCanvas.value;
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -28,6 +28,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, { initializePlaye
   if (initializePlayer) {
     playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
     console.log('Posición inicial jugador:', playerStore.position);
+    poiStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
   } else {
     // Actualizar referencias de terreno para movimiento
     playerStore.terrainRef = heights2D;
@@ -50,4 +51,9 @@ export function drawAll(terrainCanvas, seedInput, playerStore, { initializePlaye
   }
   // Dibujar jugador
   drawPlayer(ctx, playerStore.position);
+  // Dibujar puntos de interés
+  poiStore.pois.forEach(poi => {
+    ctx.fillStyle = 'gray';
+    ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
+  });
 }

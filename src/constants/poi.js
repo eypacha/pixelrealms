@@ -1,0 +1,1 @@
+export const CASTLE_COUNT = 10;

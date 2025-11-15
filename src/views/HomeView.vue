@@ -18,13 +18,15 @@
 import { onMounted, watch } from 'vue';
 import { useTerrain } from '../composables/useTerrain';
 import { usePlayerStore } from '../stores/player';
+import { usePoiStore } from '../stores/poi';
 import { drawAll } from '../utilities/draw';
 
 const { terrainCanvas, seedInput, randomizeSeed, updateTerrain } = useTerrain();
 const playerStore = usePlayerStore();
+const poiStore = usePoiStore();
 
 onMounted(() => {
-  drawAll(terrainCanvas, seedInput, playerStore, { initializePlayer: true });
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, { initializePlayer: true });
   window.addEventListener('keydown', (e) => {
     if (e.repeat) return;
     let moved = false;
@@ -42,13 +44,14 @@ onMounted(() => {
       moved = true;
     }
     if (moved) {
-      drawAll(terrainCanvas, seedInput, playerStore);
+      poiStore.checkDiscovery(playerStore.position);
+      drawAll(terrainCanvas, seedInput, playerStore, poiStore);
     }
   });
 });
 
 watch(seedInput, () => {
   // Al cambiar la semilla, inicializa el jugador en tierra firme
-  drawAll(terrainCanvas, seedInput, playerStore, { initializePlayer: true });
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, { initializePlayer: true });
 });
 </script>
