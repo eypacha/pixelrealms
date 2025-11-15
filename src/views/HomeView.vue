@@ -9,6 +9,13 @@
       <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white rounded">Aleatoria</button>
     </div>
     <canvas ref="terrainCanvas" width="800" height="600" class="border border-black rounded shadow-lg"></canvas>
+    <div class="mt-4 text-center">
+      <span>
+        ❤️ {{ playerStore.vida }} &nbsp;
+        💪 {{ playerStore.fuerza }} &nbsp;
+        🛡️ {{ playerStore.defensa }} &nbsp;
+        🪙 {{ playerStore.monedas }}
+      </span>   </div>
   </div>
 </template>
 
