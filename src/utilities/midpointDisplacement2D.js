@@ -1,14 +1,15 @@
 // Random Midpoint Displacement 2D para terreno procedural
 // Genera una matriz de alturas usando el algoritmo fractal
 
-export function generateMidpointDisplacement2D(size, roughness = 0.7) {
+
+export function generateMidpointDisplacement2D(size, roughness = 0.7, randomFn = Math.random) {
   // size debe ser potencia de 2 + 1 (ej: 513, 1025)
   const arr = Array.from({ length: size }, () => new Array(size).fill(0));
   // Inicializar esquinas
-  arr[0][0] = Math.random() * 0.4 - 0.2;
-  arr[0][size - 1] = Math.random() * 0.4 - 0.2;
-  arr[size - 1][0] = Math.random() * 0.4 - 0.2;
-  arr[size - 1][size - 1] = Math.random() * 0.4 - 0.2;
+  arr[0][0] = randomFn() * 0.4 - 0.2;
+  arr[0][size - 1] = randomFn() * 0.4 - 0.2;
+  arr[size - 1][0] = randomFn() * 0.4 - 0.2;
+  arr[size - 1][size - 1] = randomFn() * 0.4 - 0.2;
 
   let step = size - 1;
   let scale = roughness;
@@ -24,7 +25,7 @@ export function generateMidpointDisplacement2D(size, roughness = 0.7) {
           arr[y][x + step] +
           arr[y + step][x] +
           arr[y + step][x + step]
-        ) / 4 + (Math.random() * 0.4 - 0.2) * scale;
+        ) / 4 + (randomFn() * 0.4 - 0.2) * scale;
       }
     }
     // Square step
@@ -48,7 +49,7 @@ export function generateMidpointDisplacement2D(size, roughness = 0.7) {
           sum += arr[y][x + step / 2];
           count++;
         }
-        arr[y][x] = sum / count + (Math.random() * 0.4 - 0.2) * scale;
+        arr[y][x] = sum / count + (randomFn() * 0.4 - 0.2) * scale;
       }
     }
     step /= 2;
