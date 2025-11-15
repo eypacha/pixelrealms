@@ -5,6 +5,7 @@ import { createSeededRandom } from '../utilities/randomWithSeed.js';
 
 export const usePlayerStore = defineStore('player', () => {
   const position = ref({ x: 0, y: 0 });
+  const oldPosition = ref({ x: 0, y: 0 });
   const seed = ref(Date.now());
   const health = ref(5);
   const strength = ref(10);
@@ -30,12 +31,14 @@ export const usePlayerStore = defineStore('player', () => {
       const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
       if (terrain[ty]?.[tx] > -0.05) {
         position.value = { x, y };
+        oldPosition.value = { ...position.value };
         return;
       }
       attempts++;
     }
     // Si no encuentra tierra, dejar en (0,0)
     position.value = { x: 0, y: 0 };
+    oldPosition.value = { ...position.value };
   }
 
   function checkEncounter(pos) {
@@ -54,6 +57,7 @@ export const usePlayerStore = defineStore('player', () => {
   function moveUp() {
     const { x, y } = position.value;
     if (canMoveTo(x, y - PLAYER_SPEED)) {
+      oldPosition.value = { ...position.value };
       position.value.y -= PLAYER_SPEED;
       console.log('🚶 Mover arriba:', position.value);
       checkEncounter(position.value);
@@ -64,6 +68,7 @@ export const usePlayerStore = defineStore('player', () => {
   function moveDown() {
     const { x, y } = position.value;
     if (canMoveTo(x, y + PLAYER_SPEED)) {
+      oldPosition.value = { ...position.value };
       position.value.y += PLAYER_SPEED;
       console.log('🚶 Mover abajo:', position.value);
       checkEncounter(position.value);
@@ -74,6 +79,7 @@ export const usePlayerStore = defineStore('player', () => {
   function moveLeft() {
     const { x, y } = position.value;
     if (canMoveTo(x - PLAYER_SPEED, y)) {
+      oldPosition.value = { ...position.value };
       position.value.x -= PLAYER_SPEED;
       console.log('🚶 Mover izquierda:', position.value);
       checkEncounter(position.value);
@@ -84,6 +90,7 @@ export const usePlayerStore = defineStore('player', () => {
   function moveRight() {
     const { x, y } = position.value;
     if (canMoveTo(x + PLAYER_SPEED, y)) {
+      oldPosition.value = { ...position.value };
       position.value.x += PLAYER_SPEED;
       console.log('🚶 Mover derecha:', position.value);
       checkEncounter(position.value);
@@ -92,5 +99,5 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  return { position, seed, health, strength, defense, coins, combatActive, initialize, moveUp, moveDown, moveLeft, moveRight };
+  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, initialize, moveUp, moveDown, moveLeft, moveRight };
 });

@@ -55,8 +55,10 @@ onMounted(() => {
       moved = true;
     }
     if (moved) {
-      poiStore.checkDiscovery(playerStore.position, playerStore);
-      drawAll(terrainCanvas, seedInput, playerStore, poiStore);
+      requestAnimationFrame(() => {
+        poiStore.checkDiscovery(playerStore.position, playerStore);
+        drawAll(terrainCanvas, seedInput, playerStore, poiStore, { redrawTerrain: false });
+      });
     }
   });
 });

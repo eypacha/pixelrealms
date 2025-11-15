@@ -12,40 +12,62 @@ export function drawPlayer(ctx, position) {
   ctx.fillRect(position.x, position.y, 6, 6);
 }
 
-export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, { initializePlayer = false } = {}) {
+export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, options = {}) {
+  const { initializePlayer = false, redrawTerrain = initializePlayer } = options;
   const canvas = terrainCanvas.value;
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  // Redibujar terreno
   const terrainSize = 257;
   const roughness = 0.7;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // Generar terreno y matriz de alturas
-  const seededRandom = createSeededRandom(seedInput.value);
-  const heights2D = generateMidpointDisplacement2D(terrainSize, roughness, seededRandom);
-  // Inicializar jugador solo si se genera nuevo terreno
-  if (initializePlayer) {
-    playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
-    console.log('Posición inicial jugador:', playerStore.position);
-    poiStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
-  } else {
-    // Actualizar referencias de terreno para movimiento
+  const regenerateHeights = initializePlayer;
+  if (regenerateHeights) {
+    const seededRandom = createSeededRandom(seedInput.value);
+    const heights2D = generateMidpointDisplacement2D(terrainSize, roughness, seededRandom);
     playerStore.terrainRef = heights2D;
     playerStore.widthRef = canvas.width;
     playerStore.heightRef = canvas.height;
+    if (initializePlayer) {
+      playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
+      console.log('Posición inicial jugador:', playerStore.position);
+      poiStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
+    }
   }
-  // Pintar terreno
-  for (let y = 0; y < canvas.height; y++) {
-    for (let x = 0; x < canvas.width; x++) {
-      const tx = Math.floor(x * (terrainSize - 1) / (canvas.width - 1));
-      const ty = Math.floor(y * (terrainSize - 1) / (canvas.height - 1));
-      const h = heights2D[ty][tx];
-      let color = '#228B22';
-      if (h < -0.05) color = '#1e90ff';
-      else if (h < 0.05) color = '#deb887';
-      else if (h > 0.3) color = '#cccccc';
-      ctx.fillStyle = color;
-      ctx.fillRect(x, y, 1, 1);
+  if (redrawTerrain) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Pintar terreno
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        const tx = Math.floor(x * (terrainSize - 1) / (canvas.width - 1));
+        const ty = Math.floor(y * (terrainSize - 1) / (canvas.height - 1));
+        const h = playerStore.terrainRef[ty][tx];
+        let color = '#228B22';
+        if (h < -0.05) color = '#1e90ff';
+        else if (h < 0.05) color = '#deb887';
+        else if (h > 0.3) color = '#cccccc';
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+  // Erase old player if not redrawing terrain
+  if (!redrawTerrain) {
+    const { x, y } = playerStore.oldPosition;
+    for (let dy = -2; dy < 10; dy++) {
+      for (let dx = -2; dx < 10; dx++) {
+        const px = x + dx;
+        const py = y + dy;
+        if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
+          const tx = Math.floor(px * (terrainSize - 1) / (canvas.width - 1));
+          const ty = Math.floor(py * (terrainSize - 1) / (canvas.height - 1));
+          const h = playerStore.terrainRef[ty][tx];
+          let color = '#228B22';
+          if (h < -0.05) color = '#1e90ff';
+          else if (h < 0.05) color = '#deb887';
+          else if (h > 0.3) color = '#cccccc';
+          ctx.fillStyle = color;
+          ctx.fillRect(px, py, 1, 1);
+        }
+      }
     }
   }
   // Dibujar jugador
