@@ -30,12 +30,12 @@ function drawPlayer(ctx, position) {
   ctx.strokeStyle = 'black';
   ctx.lineWidth = 2;
   ctx.strokeRect(position.x - 1, position.y - 1, 8, 8);
-  // Dibujar cuadrado rojo
-  ctx.fillStyle = 'red';
+  // Dibujar cuadrado blanco
+  ctx.fillStyle = 'white';
   ctx.fillRect(position.x, position.y, 6, 6);
 }
 
-function drawAll() {
+function drawAll({ initializePlayer = false } = {}) {
   const canvas = terrainCanvas.value;
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -46,9 +46,16 @@ function drawAll() {
   // Generar terreno y matriz de alturas
   const seededRandom = createSeededRandom(seedInput.value);
   const heights2D = generateMidpointDisplacement2D(terrainSize, roughness, seededRandom);
-  // Inicializar SIEMPRE el jugador en tierra firme
-  playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
-  console.log('Posición inicial jugador:', playerStore.position);
+  // Inicializar jugador solo si se genera nuevo terreno
+  if (initializePlayer) {
+    playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
+    console.log('Posición inicial jugador:', playerStore.position);
+  } else {
+    // Actualizar referencias de terreno para movimiento
+    playerStore.terrainRef = heights2D;
+    playerStore.widthRef = canvas.width;
+    playerStore.heightRef = canvas.height;
+  }
   // Pintar terreno
   for (let y = 0; y < canvas.height; y++) {
     for (let x = 0; x < canvas.width; x++) {
@@ -67,12 +74,33 @@ function drawAll() {
   drawPlayer(ctx, playerStore.position);
 }
 
+
 onMounted(() => {
-  drawAll();
+  drawAll({ initializePlayer: true });
+  window.addEventListener('keydown', (e) => {
+    if (e.repeat) return;
+    let moved = false;
+    if (e.key === 'ArrowUp') {
+      playerStore.moveUp();
+      moved = true;
+    } else if (e.key === 'ArrowDown') {
+      playerStore.moveDown();
+      moved = true;
+    } else if (e.key === 'ArrowLeft') {
+      playerStore.moveLeft();
+      moved = true;
+    } else if (e.key === 'ArrowRight') {
+      playerStore.moveRight();
+      moved = true;
+    }
+    if (moved) {
+      drawAll();
+    }
+  });
 });
 
 watch(seedInput, () => {
   // Al cambiar la semilla, inicializa el jugador en tierra firme
-  drawAll();
+  drawAll({ initializePlayer: true });
 });
 </script>
