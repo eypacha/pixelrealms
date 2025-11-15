@@ -29,7 +29,7 @@ export const usePoiStore = defineStore('poi', () => {
     pois.value.forEach(poi => {
       if (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10) {
         poi.discovered = true;
-        playerStore.monedas += poi.loot;
+        playerStore.coins += poi.loot;
         console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
       }
     });

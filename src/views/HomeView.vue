@@ -10,10 +10,10 @@
     </div>
     <canvas ref="terrainCanvas" width="800" height="600" class="border border-black"></canvas>
     <div class="mt-4 text-center">
-        ❤️ {{ playerStore.vida }} &nbsp;
-        💪 {{ playerStore.fuerza }} &nbsp;
-        🛡️ {{ playerStore.defensa }} &nbsp;
-        🪙 {{ playerStore.monedas }}
+        ❤️ {{ playerStore.health }} &nbsp;
+        💪 {{ playerStore.strength }} &nbsp;
+        🛡️ {{ playerStore.defense }} &nbsp;
+        🪙 {{ playerStore.coins }}
     </div>
   </div>
 </template>

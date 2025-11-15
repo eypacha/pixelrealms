@@ -5,10 +5,10 @@ import { PLAYER_SPEED } from '../constants/player.js';
 export const usePlayerStore = defineStore('player', () => {
   const position = ref({ x: 0, y: 0 });
   const seed = ref(Date.now());
-  const vida = ref(5);
-  const fuerza = ref(10);
-  const defensa = ref(10);
-  const monedas = ref(0);
+  const health = ref(5);
+  const strength = ref(10);
+  const defense = ref(10);
+  const coins = ref(0);
   let terrainRef = null;
   let widthRef = 0;
   let heightRef = 0;
@@ -78,5 +78,5 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  return { position, seed, vida, fuerza, defensa, monedas, initialize, moveUp, moveDown, moveLeft, moveRight };
+  return { position, seed, health, strength, defense, coins, initialize, moveUp, moveDown, moveLeft, moveRight };
 });
