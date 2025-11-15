@@ -9,10 +9,14 @@
             <div>💪 {{ playerStore.strength }}</div>
             <div>🛡️ {{ playerStore.defense }}</div>
           </div>
-          <canvas ref="knightCanvas" width="60" height="80"></canvas>
+          <div class="relative">
+            <canvas ref="knightCanvas" width="60" height="80"></canvas>
+          </div>
         </div>
         <div class="flex gap-2">
-          <canvas ref="enemyCanvas" width="60" height="80"></canvas>
+          <div class="relative">
+            <canvas ref="enemyCanvas" width="60" height="80"></canvas>
+          </div>
           <div>
             <div>❤️ {{ playerStore.enemyHealth }}</div>
             <div>💪 {{ playerStore.enemyStrength }}</div>
@@ -31,10 +35,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { usePlayerStore } from '../stores/player';
+import { useCombatDrawing } from '../composables/useCombatDrawing';
 
 const playerStore = usePlayerStore();
+const { knightTint, enemyTint, drawKnight, drawEnemy, loadImages } = useCombatDrawing();
 
 const knightCanvas = ref(null);
 const enemyCanvas = ref(null);
@@ -66,22 +72,29 @@ function cover() {
 }
 
 onMounted(() => {
-  // Draw knight.png on knightCanvas
-  const knightImg = new Image();
-  knightImg.onload = () => {
-    const ctx = knightCanvas.value.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(knightImg, 0, 0, 60, 80);
-  };
-  knightImg.src = '/images/knight.png';
+  loadImages(knightCanvas, enemyCanvas);
+});
 
-  // Draw goblin.png on goblinCanvas
-  const goblinImg = new Image();
-  goblinImg.onload = () => {
-    const ctx = enemyCanvas.value.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(goblinImg, 0, 0, 60, 80);
-  };
-  goblinImg.src = '/images/goblin.png';
+// Watch for health changes to apply red tint
+watch(() => playerStore.health, (newVal, oldVal) => {
+  if (newVal < oldVal) {
+    knightTint.value = true;
+    drawKnight(knightCanvas);
+    setTimeout(() => {
+      knightTint.value = false;
+      drawKnight(knightCanvas);
+    }, 100);
+  }
+});
+
+watch(() => playerStore.enemyHealth, (newVal, oldVal) => {
+  if (newVal < oldVal) {
+    enemyTint.value = true;
+    drawEnemy(enemyCanvas);
+    setTimeout(() => {
+      enemyTint.value = false;
+      drawEnemy(enemyCanvas);
+    }, 100);
+  }
 });
 </script>
