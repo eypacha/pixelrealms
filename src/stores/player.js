@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { PLAYER_SPEED } from '../constants/player.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
+import { useSoundStore } from './sound.js';
 
 export const usePlayerStore = defineStore('player', () => {
   const position = ref({ x: 0, y: 0 });
@@ -12,7 +13,7 @@ export const usePlayerStore = defineStore('player', () => {
   const defense = ref(10);
   const coins = ref(0);
   const combatActive = ref(false);
-  const enemyHealth = ref(3);
+  const enemyHealth = ref(10);
   const enemyStrength = ref(8);
   const enemyDefense = ref(5);
   const playerTurn = ref(true);
@@ -20,6 +21,8 @@ export const usePlayerStore = defineStore('player', () => {
   let widthRef = 0;
   let heightRef = 0;
   let encounterRandom = null;
+
+  const soundStore = useSoundStore();
 
   function initialize(terrain, width, height, randomFn) {
     terrainRef = terrain;
@@ -56,6 +59,7 @@ export const usePlayerStore = defineStore('player', () => {
   function playerAttack(damage) {
     const actualDamage = Math.max(1, damage - enemyDefense.value);
     enemyHealth.value -= actualDamage;
+    soundStore.playKling();
     console.log(`Jugador ataca: ${actualDamage} daño. Salud enemigo: ${enemyHealth.value}`);
     if (enemyHealth.value <= 0) {
       combatActive.value = false;
@@ -72,6 +76,7 @@ export const usePlayerStore = defineStore('player', () => {
   function enemyAttack() {
     const damage = Math.max(1, enemyStrength.value - defense.value);
     health.value -= damage;
+    soundStore.playHammer();
     console.log(`Enemigo ataca: ${damage} daño. Salud jugador: ${health.value}`);
     if (health.value <= 0) {
       combatActive.value = false;
@@ -88,6 +93,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function fleeCombat() {
+    soundStore.playWhosh();
     combatActive.value = false;
     console.log('Huiste del combate');
   }
