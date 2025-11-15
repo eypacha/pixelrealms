@@ -54,7 +54,7 @@ export const usePlayerStore = defineStore('player', () => {
     const { x, y } = position.value;
     if (canMoveTo(x, y - PLAYER_SPEED)) {
       position.value.y -= PLAYER_SPEED;
-      console.log('Mover arriba:', position.value);
+      console.log('🚶 Mover arriba:', position.value);
       checkEncounter(position.value);
     } else {
       console.log('No puede mover arriba');
@@ -64,7 +64,7 @@ export const usePlayerStore = defineStore('player', () => {
     const { x, y } = position.value;
     if (canMoveTo(x, y + PLAYER_SPEED)) {
       position.value.y += PLAYER_SPEED;
-      console.log('Mover abajo:', position.value);
+      console.log('🚶 Mover abajo:', position.value);
       checkEncounter(position.value);
     } else {
       console.log('No puede mover abajo');
@@ -74,7 +74,7 @@ export const usePlayerStore = defineStore('player', () => {
     const { x, y } = position.value;
     if (canMoveTo(x - PLAYER_SPEED, y)) {
       position.value.x -= PLAYER_SPEED;
-      console.log('Mover izquierda:', position.value);
+      console.log('🚶 Mover izquierda:', position.value);
       checkEncounter(position.value);
     } else {
       console.log('No puede mover izquierda');
@@ -84,7 +84,7 @@ export const usePlayerStore = defineStore('player', () => {
     const { x, y } = position.value;
     if (canMoveTo(x + PLAYER_SPEED, y)) {
       position.value.x += PLAYER_SPEED;
-      console.log('Mover derecha:', position.value);
+      console.log('🚶 Mover derecha:', position.value);
       checkEncounter(position.value);
     } else {
       console.log('No puede mover derecha');

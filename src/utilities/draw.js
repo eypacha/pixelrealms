@@ -3,7 +3,6 @@ import { createSeededRandom } from './randomWithSeed';
 import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
 
 export function drawPlayer(ctx, position) {
-  console.log('Dibujando jugador en:', position);
   // Dibujar borde negro
   ctx.strokeStyle = 'black';
   ctx.lineWidth = 2;
