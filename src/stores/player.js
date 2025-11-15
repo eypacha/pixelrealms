@@ -7,11 +7,15 @@ export const usePlayerStore = defineStore('player', () => {
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
   const seed = ref(Date.now());
-  const health = ref(5);
+  const health = ref(10);
   const strength = ref(10);
   const defense = ref(10);
   const coins = ref(0);
   const combatActive = ref(false);
+  const enemyHealth = ref(3);
+  const enemyStrength = ref(8);
+  const enemyDefense = ref(5);
+  const playerTurn = ref(true);
   let terrainRef = null;
   let widthRef = 0;
   let heightRef = 0;
@@ -41,10 +45,51 @@ export const usePlayerStore = defineStore('player', () => {
     oldPosition.value = { ...position.value };
   }
 
+  function startCombat() {
+    enemyHealth.value = 20;
+    enemyStrength.value = 8;
+    enemyDefense.value = 5;
+    playerTurn.value = true;
+    combatActive.value = true;
+  }
+
+  function playerAttack(damage) {
+    const actualDamage = Math.max(1, damage - enemyDefense.value);
+    enemyHealth.value -= actualDamage;
+    console.log(`Jugador ataca: ${actualDamage} daño. Salud enemigo: ${enemyHealth.value}`);
+    if (enemyHealth.value <= 0) {
+      combatActive.value = false;
+      coins.value += 5; // reward
+      console.log('Enemigo derrotado!');
+    } else {
+      playerTurn.value = false;
+      setTimeout(() => {
+        enemyAttack();
+      }, 1000);
+    }
+  }
+
+  function enemyAttack() {
+    const damage = Math.max(1, enemyStrength.value - defense.value);
+    health.value -= damage;
+    console.log(`Enemigo ataca: ${damage} daño. Salud jugador: ${health.value}`);
+    if (health.value <= 0) {
+      combatActive.value = false;
+      console.log('Jugador derrotado!');
+    } else {
+      playerTurn.value = true;
+    }
+  }
+
   function checkEncounter(pos) {
     if (encounterRandom() < 0.2) {
-      combatActive.value = true;
+      startCombat();
     }
+  }
+
+  function fleeCombat() {
+    combatActive.value = false;
+    console.log('Huiste del combate');
   }
 
   function canMoveTo(x, y) {
@@ -99,5 +144,5 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, initialize, moveUp, moveDown, moveLeft, moveRight };
+  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, enemyHealth, enemyStrength, enemyDefense, playerTurn, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat };
 });

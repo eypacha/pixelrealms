@@ -11,15 +11,19 @@
           </div>
           <canvas ref="knightCanvas" width="60" height="80"></canvas>
         </div>
-        <div class="flex enemy">
+        <div class="flex gap-2">
           <canvas ref="enemyCanvas" width="60" height="80"></canvas>
-          <div>enemy stats</div>
+          <div>
+            <div>❤️ {{ playerStore.enemyHealth }}</div>
+            <div>💪 {{ playerStore.enemyStrength }}</div>
+            <div>🛡️ {{ playerStore.enemyDefense }}</div>
+          </div>
         </div>
       </div>
-      <p>Aquí irá la lógica del combate.</p>
+      <p>{{ playerStore.playerTurn ? 'Tu turno' : 'Turno del enemigo' }}</p>
       <div class="mt-4 flex space-x-2">
-        <button @click="swordAttack" class="px-4 py-2 cursor-pointer">Atacar</button>
-        <button @click="cover" class="px-4 py-2 cursor-pointer">Defender</button>
+        <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atacar</button>
+        <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Defender</button>
         <button @click="flee" class="px-4 py-2 cursor-pointer">Huir</button>
       </div>
     </div>
@@ -36,17 +40,29 @@ const knightCanvas = ref(null);
 const enemyCanvas = ref(null);
 
 function flee() {
-  playerStore.combatActive = false;
+  playerStore.fleeCombat();
 }
 
 function swordAttack() {
-  // Lógica de ataque con espada
-  console.log('Ataque con espada');
+  if (playerStore.playerTurn) {
+    playerStore.playerAttack(playerStore.strength);
+  }
 }
 
 function cover() {
-  // Lógica de cubrirse
-  console.log('Cubrirse');
+  if (playerStore.playerTurn) {
+    // Aumentar defensa temporalmente
+    playerStore.defense += 5;
+    console.log('Defensa aumentada');
+    playerStore.playerTurn = false;
+    setTimeout(() => {
+      playerStore.enemyAttack();
+    }, 1000);
+    // Restaurar defensa después
+    setTimeout(() => {
+      playerStore.defense -= 5;
+    }, 100);
+  }
 }
 
 onMounted(() => {
