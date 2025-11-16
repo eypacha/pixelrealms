@@ -11,6 +11,7 @@
     <div class="relative">
       <canvas ref="terrainCanvas" width="800" height="600" class="border border-black"></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
+      <GameOverPopup v-if="playerStore.gameOver" />
     </div>
     <div class="mt-4 text-center">
         ❤️ {{ playerStore.health }} &nbsp;
@@ -30,6 +31,7 @@ import { usePlayerStore } from '../stores/player';
 import { usePoiStore } from '../stores/poi';
 import { drawAll } from '../utilities/draw';
 import CombatPopup from '../components/CombatPopup.vue';
+import GameOverPopup from '../components/GameOverPopup.vue';
 
 const { terrainCanvas, seedInput, randomizeSeed, updateTerrain } = useTerrain();
 const playerStore = usePlayerStore();

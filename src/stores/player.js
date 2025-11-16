@@ -13,6 +13,7 @@ export const usePlayerStore = defineStore('player', () => {
   const defense = ref(10);
   const coins = ref(0);
   const combatActive = ref(false);
+  const gameOver = ref(false);
   const enemyHealth = ref(10);
   const enemyStrength = ref(8);
   const enemyDefense = ref(5);
@@ -112,6 +113,7 @@ export const usePlayerStore = defineStore('player', () => {
         console.log('Jugador derrotado!');
         setTimeout(() => {
           combatActive.value = false;
+          gameOver.value = true;
         }, 2000);
       } else {
         playerTurn.value = true;
@@ -201,5 +203,5 @@ export const usePlayerStore = defineStore('player', () => {
     return color;
   }
 
-  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat, getTerrainColor };
+  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat, getTerrainColor };
 });
