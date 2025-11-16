@@ -23,6 +23,8 @@ export const usePlayerStore = defineStore('player', () => {
   const playerTurn = ref(true);
   const combatMessage = ref('Combat start');
   const coverActive = ref(false);
+  const enemyDefeated = ref(false);
+  const lootCollected = ref(false);
   const lastDirection = ref('right');
   
   let terrainRef = null;
@@ -77,17 +79,11 @@ export const usePlayerStore = defineStore('player', () => {
       if (enemyHealth.value <= 0) {
         combatMessage.value = 'Enemy defeated!';
         console.log('Enemigo derrotado!');
-
-
-        setTimeout(() => {
-           soundStore.playCoin();
-        }, 500);
-        
-        setTimeout(() => {
-          combatActive.value = false;
-          coins.value += 5; // reward
-          
-        }, 2000);
+        // Mark enemy as defeated and wait for player to loot or continue
+        enemyDefeated.value = true;
+        // ensure player turn is false so UI doesn't show 'Your turn'
+        playerTurn.value = false;
+        lootCollected.value = false;
       } else {
         playerTurn.value = false;
         setTimeout(() => {
@@ -103,6 +99,26 @@ export const usePlayerStore = defineStore('player', () => {
         enemyAttack();
       }, 1000);
     }
+  }
+
+  function collectLoot() {
+    if (!enemyDefeated.value) return 0;
+    if (lootCollected.value) return 0;
+    const combatRandom = createSeededRandom(seed.value + 'loot' + Date.now());
+    // Random coins between 1 and 10
+    const reward = Math.floor(combatRandom() * 10) + 1;
+    coins.value += reward;
+    lootCollected.value = true;
+    // play coin sound
+    soundStore.playCoin();
+    return reward;
+  }
+
+  function endCombat() {
+    // Close combat and reset defeated flags
+    combatActive.value = false;
+    enemyDefeated.value = false;
+    lootCollected.value = false;
   }
 
   function activateCover() {
@@ -262,5 +278,5 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, coverActive, lastDirection, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, activateCover, fleeCombat, heal, usePotion, getTerrainColor };
+  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
 });

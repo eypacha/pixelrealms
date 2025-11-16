@@ -25,12 +25,18 @@
         </div>
       </div>
       <p>{{ playerStore.combatMessage }}</p>
-      <p class="font-bold">{{ playerStore.playerTurn ? 'Your turn' : 'Enemy turn' }}</p>
+      <p v-if="!playerStore.enemyDefeated" class="font-bold">{{ playerStore.playerTurn ? 'Your turn' : 'Enemy turn' }}</p>
       <div class="mt-4 flex space-x-2">
-        <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atack</button>
-        <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Cover</button>
-        <button @click="usePotion" :disabled="!playerStore.playerTurn || playerStore.inventory.potion <= 0" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.inventory.potion <= 0 }">Heal</button>
-        <button @click="flee" class="px-4 py-2 cursor-pointer">Run</button>
+        <template v-if="!playerStore.enemyDefeated">
+          <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atack</button>
+          <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Cover</button>
+          <button @click="usePotion" :disabled="!playerStore.playerTurn || playerStore.inventory.potion <= 0" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.inventory.potion <= 0 }">Heal</button>
+          <button @click="flee" class="px-4 py-2 cursor-pointer">Run</button>
+        </template>
+        <template v-else>
+          <button @click="loot" :disabled="playerStore.lootCollected" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': playerStore.lootCollected }">{{ playerStore.lootCollected ? 'Looted' : 'Loot' }}</button>
+          <button @click="continueCombat" class="px-4 py-2 cursor-pointer">Continue</button>
+        </template>
       </div>
     </div>
   </div>
@@ -66,8 +72,28 @@ function usePotion() {
   playerStore.usePotion();
 }
 
+function loot() {
+  // collect loot only when enemyDefeated
+  const reward = playerStore.collectLoot();
+  if (reward && reward > 0) {
+    playerStore.combatMessage = `Looted +${reward} coins`;
+  } else if (playerStore.lootCollected) {
+    playerStore.combatMessage = 'Already looted';
+  }
+}
+
+function continueCombat() {
+  // end combat and close popup
+  playerStore.endCombat();
+}
+
 onMounted(() => {
   loadImages(knightCanvas, enemyCanvas);
+  // debug: log enemyDefeated changes
+  // Helpful to verify the store flag updates when enemy dies
+  watch(() => playerStore.enemyDefeated, (v) => {
+    console.log('DEBUG: enemyDefeated ->', v);
+  });
 });
 
 // Watch for health changes to apply red tint
