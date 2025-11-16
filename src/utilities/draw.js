@@ -2,9 +2,22 @@
 import { createSeededRandom } from './randomWithSeed';
 import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
 
-export function drawPlayer(ctx, position, image) {
-  if (image && image.complete) {
-    ctx.drawImage(image, position.x - 7.5, position.y - 10, 15, 20);
+export function drawPlayer(ctx, position, image, facingLeft = false) {
+  if (!image || !image.complete) return;
+  const w = 15;
+  const h = 20;
+  const drawX = position.x - w / 2;
+  const drawY = position.y - 10;
+  if (facingLeft) {
+    ctx.save();
+    
+    ctx.translate(drawX + w / 2, 0);
+    ctx.scale(-1, 1);
+    ctx.translate(-(drawX + w / 2), 0);
+    ctx.drawImage(image, drawX, drawY, w, h);
+    ctx.restore();
+  } else {
+    ctx.drawImage(image, drawX, drawY, w, h);
   }
 }
 
@@ -82,8 +95,9 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
       }
     }
   }
-  // Dibujar jugador
-  drawPlayer(ctx, playerStore.position, playerImage);
+  // Dibujar jugador (respetando la última dirección izquierda/derecha)
+  const facingLeft = playerStore.lastDirection === 'left';
+  drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
   // Dibujar puntos de interés
   poiStore.pois.forEach(poi => {
     ctx.fillStyle = poi.discovered ? 'gray' : 'white';

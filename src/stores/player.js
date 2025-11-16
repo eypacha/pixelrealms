@@ -21,6 +21,7 @@ export const usePlayerStore = defineStore('player', () => {
   const playerTurn = ref(true);
   const combatMessage = ref('Combat start');
   const coverActive = ref(false);
+  const lastDirection = ref('right');
   
   let terrainRef = null;
   let widthRef = 0;
@@ -201,6 +202,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (canMoveTo(x - PLAYER_SPEED, y)) {
       oldPosition.value = { ...position.value };
       position.value.x -= PLAYER_SPEED;
+      lastDirection.value = 'left';
       console.log('🚶 Mover izquierda:', position.value);
       checkEncounter(position.value);
       return true;
@@ -214,6 +216,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (canMoveTo(x + PLAYER_SPEED, y)) {
       oldPosition.value = { ...position.value };
       position.value.x += PLAYER_SPEED;
+      lastDirection.value = 'right';
       console.log('🚶 Mover derecha:', position.value);
       checkEncounter(position.value);
       return true;
@@ -232,5 +235,5 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, coverActive, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, activateCover, fleeCombat, getTerrainColor };
+  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, coverActive, lastDirection, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, activateCover, fleeCombat, getTerrainColor };
 });
