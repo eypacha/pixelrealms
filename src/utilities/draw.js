@@ -70,7 +70,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   drawPlayer(ctx, playerStore.position, playerImage);
   // Dibujar puntos de interés
   poiStore.pois.forEach(poi => {
-    ctx.fillStyle = 'gray';
+    ctx.fillStyle = poi.discovered ? 'gray' : 'white';
     ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
   });
 }
