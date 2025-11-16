@@ -7,7 +7,7 @@
           <div class="flex gap-2">
             <div>
               <div>❤️ {{ playerStore.health }}</div>
-              <div>💪 {{ playerStore.strength }}</div>
+              <div>🗡️ {{ playerStore.strength }}</div>
               <div>🛡️ {{ playerStore.defense }}</div>
             </div>
             <div class="relative">
@@ -20,7 +20,7 @@
             </div>
             <div>
               <div>❤️ {{ playerStore.enemyHealth }}</div>
-              <div>💪 {{ playerStore.enemyStrength }}</div>
+              <div>🗡️ {{ playerStore.enemyStrength }}</div>
               <div>🛡️ {{ playerStore.enemyDefense }}</div>
             </div>
           </div>

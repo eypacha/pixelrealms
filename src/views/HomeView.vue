@@ -15,7 +15,7 @@
     </div>
     <div class="mt-4 text-center">
         ❤️ {{ playerStore.health }} &nbsp;
-        💪 {{ playerStore.strength }} &nbsp;
+        🗡️ {{ playerStore.strength }} &nbsp;
         🛡️ {{ playerStore.defense }} &nbsp;
         🪙 {{ playerStore.coins }} &nbsp;
         🧪 {{ playerStore.inventory.potion }}
