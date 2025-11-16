@@ -3,31 +3,27 @@ import { Howl } from 'howler';
 
 export const useSoundStore = defineStore('sound', () => {
   // Sounds
-  const hammerSound = new Howl({ src: ['/sounds/hammer.wav'] });
-  const klingSound = new Howl({ src: ['/sounds/kling.wav'] });
-  const whoshSound = new Howl({ src: ['/sounds/whosh.wav'] });
-  const coinSound = new Howl({ src: ['/sounds/coin.mp3'] });
+  const sounds = {
+    hammer: new Howl({ src: ['/sounds/hammer.wav'] }),
+    kling: new Howl({ src: ['/sounds/kling.wav'] }),
+    whosh: new Howl({ src: ['/sounds/whosh.wav'] }),
+    coin: new Howl({ src: ['/sounds/coin.mp3'] }),
+  };
 
-  function playHammer() {
-    hammerSound.play();
-  }
-
-  function playKling() {
-    klingSound.play();
-  }
-
-  function playWhosh() {
-    whoshSound.play();
-  }
-
-  function playCoin() {
-    coinSound.play();
+  function playSound(name) {
+    const s = sounds[name];
+    if (!s) {
+      console.warn(`Sound not found: ${name}`);
+      return;
+    }
+    try {
+      s.play();
+    } catch (e) {
+      console.error('Failed to play sound', name, e);
+    }
   }
 
   return {
-    playHammer,
-    playKling,
-    playWhosh,
-    playCoin,
+    playSound,
   };
 });

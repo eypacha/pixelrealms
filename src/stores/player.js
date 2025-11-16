@@ -74,7 +74,7 @@ export const usePlayerStore = defineStore('player', () => {
       const actualDamage = Math.max(1, damage - enemyDefense.value);
       combatMessage.value = `Hit -${actualDamage}`;
       enemyHealth.value -= actualDamage;
-      soundStore.playKling();
+      soundStore.playSound('kling');
       console.log(`Jugador ataca: ${actualDamage} daño. Salud enemigo: ${enemyHealth.value}`);
       if (enemyHealth.value <= 0) {
         combatMessage.value = 'Enemy defeated!';
@@ -92,7 +92,7 @@ export const usePlayerStore = defineStore('player', () => {
       }
     } else {
       console.log('Jugador falla el ataque!');
-      soundStore.playWhosh();
+      soundStore.playSound('whosh');
       combatMessage.value = 'Miss';
       playerTurn.value = false;
       setTimeout(() => {
@@ -118,7 +118,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
     lootCollected.value = true;
     // play coin sound
-    soundStore.playCoin();
+    soundStore.playSound('coin');
     return { coins: reward, potion: potionGiven };
   }
 
@@ -148,7 +148,7 @@ export const usePlayerStore = defineStore('player', () => {
       const damage = Math.max(1, enemyStrength.value - defense.value);
       combatMessage.value = `Hit -${damage}`;
       health.value -= damage;
-      soundStore.playHammer();
+      soundStore.playSound('hammer');
       console.log(`Enemigo ataca: ${damage} daño. Salud jugador: ${health.value}`);
       if (health.value <= 0) {
         combatMessage.value = 'Player defeated!';
@@ -167,7 +167,7 @@ export const usePlayerStore = defineStore('player', () => {
       }
     } else {
       console.log('Enemigo falla el ataque!');
-      soundStore.playWhosh();
+      soundStore.playSound('whosh');
       combatMessage.value = 'Miss';
       // clear cover even if enemy misses
       if (coverActive.value) {
@@ -210,7 +210,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function fleeCombat() {
-    soundStore.playWhosh();
+    soundStore.playSound('whosh');
     combatActive.value = false;
     console.log('Huiste del combate');
   }
