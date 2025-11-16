@@ -43,9 +43,23 @@ export const usePoiStore = defineStore('poi', () => {
     pois.value.forEach(poi => {
       if (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10) {
         poi.discovered = true;
-            playerStore.coins += poi.loot;
-            soundStore.playSound('coin');
-        console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
+        // If it's a castle, trigger a special encounter with the Dark Knight
+        if (poi.type === 'castle') {
+          console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
+          // start a harder fight; startCombatWith is defined in player store
+          if (typeof playerStore.startCombatWith === 'function') {
+            playerStore.startCombatWith({ type: 'darkknight' });
+            soundStore.playSound('drum');
+          } else {
+            // fallback to normal combat
+            playerStore.startCombat();
+          }
+        } else {
+          // default behavior: award loot and play coin sound
+          playerStore.coins += poi.loot;
+          soundStore.playSound('coin');
+          console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
+        }
       }
     });
   }

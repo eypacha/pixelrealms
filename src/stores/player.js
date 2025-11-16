@@ -20,6 +20,7 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyHealth = ref(10);
   const enemyStrength = ref(8);
   const enemyDefense = ref(5);
+  const enemyType = ref('goblin');
   const playerTurn = ref(true);
   const combatMessage = ref('Combat start');
   const coverActive = ref(false);
@@ -59,9 +60,30 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function startCombat() {
+    // default enemy (goblin)
+    enemyType.value = 'goblin';
     enemyHealth.value = 20;
     enemyStrength.value = 8;
     enemyDefense.value = 5;
+    playerTurn.value = true;
+    combatActive.value = true;
+    combatMessage.value = 'Combat start';
+  }
+
+  // Start combat with specific enemy type (e.g., { type: 'darkknight' })
+  function startCombatWith(options = {}) {
+    const type = options.type || 'goblin';
+    enemyType.value = type;
+    if (type === 'darkknight') {
+      enemyHealth.value = 50;
+      enemyStrength.value = 18;
+      enemyDefense.value = 12;
+    } else {
+      // fallback to goblin-like stats
+      enemyHealth.value = 20;
+      enemyStrength.value = 8;
+      enemyDefense.value = 5;
+    }
     playerTurn.value = true;
     combatActive.value = true;
     combatMessage.value = 'Combat start';
@@ -288,5 +310,5 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
+  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
 });

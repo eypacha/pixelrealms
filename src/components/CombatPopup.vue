@@ -50,7 +50,7 @@ import { usePlayerStore } from '../stores/player';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
 
 const playerStore = usePlayerStore();
-const { knightTint, enemyTint, drawKnight, drawEnemy, loadImages } = useCombatDrawing();
+const { knightTint, enemyTint, drawKnight, drawEnemy, loadImages, setEnemyType } = useCombatDrawing();
 
 const knightCanvas = ref(null);
 const enemyCanvas = ref(null);
@@ -93,11 +93,20 @@ function continueCombat() {
 
 onMounted(() => {
   loadImages(knightCanvas, enemyCanvas);
+  // set initial enemy image according to store (in case combat already started)
+  if (playerStore.enemyType) {
+    setEnemyType(playerStore.enemyType, enemyCanvas);
+  }
   // debug: log enemyDefeated changes
   // Helpful to verify the store flag updates when enemy dies
   watch(() => playerStore.enemyDefeated, (v) => {
     console.log('DEBUG: enemyDefeated ->', v);
   });
+});
+
+// Watch for enemy type changes to switch sprite
+watch(() => playerStore.enemyType, (type) => {
+  if (type) setEnemyType(type, enemyCanvas);
 });
 
 // Watch for health changes to apply red tint
