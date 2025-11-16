@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { PLAYER_SPEED, ENCOUNTER_RATE, INITIAL_HEALTH, INITIAL_STRENGTH, INITIAL_DEFENSE, COVER_AMOUNT, INITIAL_COINS } from '../constants/player.js';
+import { PLAYER_SPEED, ENCOUNTER_RATE, INITIAL_HEALTH, INITIAL_STRENGTH, INITIAL_DEFENSE, COVER_AMOUNT, INITIAL_COINS, INITIAL_POTIONS } from '../constants/player.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { getColorForHeight } from '../utilities/draw.js';
 import { useSoundStore } from './sound.js';
@@ -10,9 +10,11 @@ export const usePlayerStore = defineStore('player', () => {
   const oldPosition = ref({ x: 0, y: 0 });
   const seed = ref(Date.now());
   const health = ref(INITIAL_HEALTH);
+  const maxHealth = ref(INITIAL_HEALTH);
   const strength = ref(INITIAL_STRENGTH);
   const defense = ref(INITIAL_DEFENSE);
   const coins = ref(INITIAL_COINS);
+  const inventory = ref({ potion: INITIAL_POTIONS });
   const combatActive = ref(false);
   const gameOver = ref(false);
   const enemyHealth = ref(10);
@@ -152,6 +154,31 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
+  // Heal the player by amount (not exceeding maxHealth)
+  function heal(amount) {
+    const before = health.value;
+    health.value = Math.min(maxHealth.value, health.value + amount);
+    const healed = health.value - before;
+    if (healed > 0) {
+      combatMessage.value = `Healed +${healed}`;
+    }
+  }
+
+  // Use a potion in combat: consumes player's turn and triggers enemy attack
+  function usePotion() {
+    if (!combatActive.value) return;
+    if (!playerTurn.value) return;
+    if (!inventory.value.potion || inventory.value.potion <= 0) return;
+    inventory.value.potion -= 1;
+    // heal 5 HP (tunable)
+    heal(5);
+    // after using potion, enemy takes its turn
+    playerTurn.value = false;
+    setTimeout(() => {
+      enemyAttack();
+    }, 1000);
+  }
+
   function checkEncounter(pos) {
     if (encounterRandom() < ENCOUNTER_RATE) {
       startCombat();
@@ -235,5 +262,5 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, coverActive, lastDirection, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, activateCover, fleeCombat, getTerrainColor };
+  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, coverActive, lastDirection, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, activateCover, fleeCombat, heal, usePotion, getTerrainColor };
 });

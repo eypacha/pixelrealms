@@ -29,6 +29,7 @@
       <div class="mt-4 flex space-x-2">
         <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atack</button>
         <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Cover</button>
+        <button @click="usePotion" :disabled="!playerStore.playerTurn || playerStore.inventory.potion <= 0" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.inventory.potion <= 0 }">Heal</button>
         <button @click="flee" class="px-4 py-2 cursor-pointer">Run</button>
       </div>
     </div>
@@ -59,6 +60,10 @@ function swordAttack() {
 function cover() {
   // Delegar la lógica al store para que el boost persista hasta el ataque enemigo
   playerStore.activateCover();
+}
+
+function usePotion() {
+  playerStore.usePotion();
 }
 
 onMounted(() => {

@@ -17,7 +17,10 @@
         ❤️ {{ playerStore.health }} &nbsp;
         💪 {{ playerStore.strength }} &nbsp;
         🛡️ {{ playerStore.defense }} &nbsp;
-        🪙 {{ playerStore.coins }}
+        🪙 {{ playerStore.coins }} &nbsp;
+        🧪 {{ playerStore.inventory.potion }}
+    </div>
+    <div class="text-center">
     </div>
   </div>
 </template>
