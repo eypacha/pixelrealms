@@ -31,10 +31,16 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     playerStore.terrainRef = heights2D;
     playerStore.widthRef = canvas.width;
     playerStore.heightRef = canvas.height;
+    // mantener seededRandom para inicializar posiciones
     if (initializePlayer) {
-      // mantener seededRandom para inicializar posiciones y POIs
       playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
       console.log('Posición inicial jugador:', playerStore.position);
+    }
+    // generar o asegurar POIs para el tile actual (usa seed + offset internamente)
+    if (typeof poiStore.ensureForTile === 'function') {
+      poiStore.ensureForTile(worldOffset.x || 0, worldOffset.y || 0, heights2D, canvas.width, canvas.height, seedInput.value);
+    } else if (typeof poiStore.initialize === 'function') {
+      // fallback al comportamiento antiguo
       poiStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
     }
   }
