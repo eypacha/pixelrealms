@@ -188,5 +188,18 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat };
+  function getTerrainColor() {
+    if (!terrainRef) return '#cccccc'; // default
+    const { x, y } = position.value;
+    const tx = Math.floor(x * (terrainRef.length - 1) / (widthRef - 1));
+    const ty = Math.floor(y * (terrainRef.length - 1) / (heightRef - 1));
+    const h = terrainRef[ty]?.[tx] || 0;
+    let color = '#228B22';
+    if (h < -0.05) color = '#1e90ff';
+    else if (h < 0.05) color = '#deb887';
+    else if (h > 0.3) color = '#cccccc';
+    return color;
+  }
+
+  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat, getTerrainColor };
 });

@@ -1,8 +1,8 @@
 <template>
-  <div class="absolute inset-0 bg-[#00000050] flex justify-center items-center z-50">
+  <div class="absolute inset-0 bg-[#00000020] flex justify-center items-center z-50">
     <div class="bg-white p-5 text-center">
       <h2>VS</h2>
-      <div class="flex justify-center space-x-4 mb-4">
+      <div class="flex justify-center space-x-4 mb-4 border-b-4" :style="{ borderBottomColor: playerStore.getTerrainColor() }">
         <div class="flex gap-2">
           <div>
             <div>❤️ {{ playerStore.health }}</div>
@@ -24,11 +24,12 @@
           </div>
         </div>
       </div>
-      <p>{{ playerStore.playerTurn ? 'Tu turno' : 'Turno del enemigo' }}</p>
+      <p>{{ playerStore.combatMessage }}</p>
+      <p class="font-bold">{{ playerStore.playerTurn ? 'Your turn' : 'Enemy turn' }}</p>
       <div class="mt-4 flex space-x-2">
-        <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atacar</button>
-        <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Defender</button>
-        <button @click="flee" class="px-4 py-2 cursor-pointer">Huir</button>
+        <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atack</button>
+        <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Cover</button>
+        <button @click="flee" class="px-4 py-2 cursor-pointer">Run</button>
       </div>
     </div>
   </div>
