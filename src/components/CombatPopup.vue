@@ -57,19 +57,8 @@ function swordAttack() {
 }
 
 function cover() {
-  if (playerStore.playerTurn) {
-    // Aumentar defensa temporalmente
-    playerStore.defense += 5;
-    console.log('Defensa aumentada');
-    playerStore.playerTurn = false;
-    setTimeout(() => {
-      playerStore.enemyAttack();
-    }, 1000);
-    // Restaurar defensa después
-    setTimeout(() => {
-      playerStore.defense -= 5;
-    }, 100);
-  }
+  // Delegar la lógica al store para que el boost persista hasta el ataque enemigo
+  playerStore.activateCover();
 }
 
 onMounted(() => {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { PLAYER_SPEED, ENCOUNTER_RATE, INITIAL_HEALTH, INITIAL_STRENGTH, INITIAL_DEFENSE, INITIAL_COINS } from '../constants/player.js';
+import { PLAYER_SPEED, ENCOUNTER_RATE, INITIAL_HEALTH, INITIAL_STRENGTH, INITIAL_DEFENSE, COVER_AMOUNT, INITIAL_COINS } from '../constants/player.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { getColorForHeight } from '../utilities/draw.js';
 import { useSoundStore } from './sound.js';
@@ -20,6 +20,8 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyDefense = ref(5);
   const playerTurn = ref(true);
   const combatMessage = ref('Combat start');
+  const coverActive = ref(false);
+  
   let terrainRef = null;
   let widthRef = 0;
   let heightRef = 0;
@@ -100,6 +102,18 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
+  function activateCover() {
+    if (!playerTurn.value) return;
+    // Increase defense and mark cover active until enemy finishes its attack
+    defense.value += COVER_AMOUNT;
+    coverActive.value = true;
+    combatMessage.value = 'Cover';
+    playerTurn.value = false;
+    setTimeout(() => {
+      enemyAttack();
+    }, 1000);
+  }
+
   function enemyAttack() {
     const combatRandom = createSeededRandom(seed.value + 'enemyCombat' + Date.now());
     const hitChance = 0.6; // 60% chance to hit for enemy
@@ -117,12 +131,22 @@ export const usePlayerStore = defineStore('player', () => {
           gameOver.value = true;
         }, 2000);
       } else {
+        // clear cover after enemy finished its attack
+        if (coverActive.value) {
+          defense.value -= COVER_AMOUNT;
+          coverActive.value = false;
+        }
         playerTurn.value = true;
       }
     } else {
       console.log('Enemigo falla el ataque!');
       soundStore.playWhosh();
       combatMessage.value = 'Miss';
+      // clear cover even if enemy misses
+      if (coverActive.value) {
+        defense.value -= COVER_AMOUNT;
+        coverActive.value = false;
+      }
       playerTurn.value = true;
     }
   }
@@ -208,5 +232,5 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat, getTerrainColor };
+  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, coverActive, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, activateCover, fleeCombat, getTerrainColor };
 });
