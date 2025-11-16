@@ -8,6 +8,7 @@ export const useSoundStore = defineStore('sound', () => {
     kling: new Howl({ src: ['/sounds/kling.wav'] }),
     whosh: new Howl({ src: ['/sounds/whosh.wav'] }),
     coin: new Howl({ src: ['/sounds/coin.mp3'] }),
+    gulp: new Howl({ src: ['/sounds/gulp.wav'] }),
   };
 
   function playSound(name) {

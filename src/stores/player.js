@@ -196,6 +196,8 @@ export const usePlayerStore = defineStore('player', () => {
     inventory.value.potion -= 1;
     // heal 5 HP (tunable)
     heal(5);
+    // play gulp sound when potion is consumed
+    soundStore.playSound('gulp');
     // after using potion, enemy takes its turn
     playerTurn.value = false;
     setTimeout(() => {
