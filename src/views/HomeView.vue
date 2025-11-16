@@ -14,10 +14,10 @@
       <GameOverPopup v-if="playerStore.gameOver" />
     </div>
     <div class="mt-4 text-center">
-        ❤️ {{ playerStore.health }} &nbsp;
-        🗡️ {{ playerStore.strength }} &nbsp;
-        🛡️ {{ playerStore.defense }} &nbsp;
-        🪙 {{ playerStore.coins }} &nbsp;
+        ❤️ {{ playerStore.health }}
+        🗡️ {{ playerStore.strength }}
+        🛡️ {{ playerStore.defense }}
+        🪙 {{ playerStore.coins }}
         🧪 {{ playerStore.inventory.potion }}
     </div>
     <div class="text-center">
