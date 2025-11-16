@@ -1,6 +1,6 @@
-# Pixelworld — Game Mechanics
+# Pixelrealms — Game Mechanics
 
-**Pixelworld** is a prototype for exploration and turn-based encounters built on a procedurally generated terrain. The world is created using a midpoint displacement heightmap and explored screen-by-screen using a deterministic seed. This document explains the game's mechanics and points to the key files in the codebase. It intentionally omits installation and run instructions.
+**Pixelrealms** is a prototype for exploration and turn-based encounters built on a procedurally generated terrain. The world is created using a midpoint displacement heightmap and explored screen-by-screen using a deterministic seed. This document explains the game's mechanics and points to the key files in the codebase. It intentionally omits installation and run instructions.
 
 Summary
 - Genre: Tile-based exploration with simple turn-based encounters.

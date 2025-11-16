@@ -1,5 +1,5 @@
 {
-  "name": "eypacha",
+  "name": "pixelrealms",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -26,5 +26,10 @@
     "vite-plugin-imagemin": "^0.6.1",
     "vite-plugin-qrcode": "^0.2.4",
     "vite-plugin-vue-devtools": "^7.7.6"
+  }
+  ,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eypacha/pixelrealms.git"
   }
 }
