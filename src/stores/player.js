@@ -62,7 +62,7 @@ export const usePlayerStore = defineStore('player', () => {
   function startCombat() {
     // default enemy (goblin)
     enemyType.value = 'goblin';
-    enemyHealth.value = 20;
+    enemyHealth.value = 10;
     enemyStrength.value = 8;
     enemyDefense.value = 5;
     playerTurn.value = true;
@@ -75,12 +75,12 @@ export const usePlayerStore = defineStore('player', () => {
     const type = options.type || 'goblin';
     enemyType.value = type;
     if (type === 'darkknight') {
-      enemyHealth.value = 20;
+      enemyHealth.value = 15;
       enemyStrength.value = 12;
       enemyDefense.value = 10;
     } else {
       // fallback to goblin-like stats
-      enemyHealth.value = 20;
+      enemyHealth.value = 10;
       enemyStrength.value = 8;
       enemyDefense.value = 5;
     }
