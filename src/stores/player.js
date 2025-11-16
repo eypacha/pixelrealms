@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { PLAYER_SPEED, ENCOUNTER_RATE, INITIAL_HEALTH, INITIAL_STRENGTH, INITIAL_DEFENSE, INITIAL_COINS } from '../constants/player.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
+import { getColorForHeight } from '../utilities/draw.js';
 import { useSoundStore } from './sound.js';
 
 export const usePlayerStore = defineStore('player', () => {
@@ -204,11 +205,7 @@ export const usePlayerStore = defineStore('player', () => {
     const tx = Math.floor(x * (terrainRef.length - 1) / (widthRef - 1));
     const ty = Math.floor(y * (terrainRef.length - 1) / (heightRef - 1));
     const h = terrainRef[ty]?.[tx] || 0;
-    let color = '#228B22';
-    if (h < -0.05) color = '#1e90ff';
-    else if (h < 0.05) color = '#deb887';
-    else if (h > 0.3) color = '#cccccc';
-    return color;
+    return getColorForHeight(h);
   }
 
   return { position, oldPosition, seed, health, strength, defense, coins, combatActive, gameOver, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat, getTerrainColor };

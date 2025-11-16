@@ -8,6 +8,22 @@ export function drawPlayer(ctx, position, image) {
   }
 }
 
+export function getColorForHeight(h) {
+  if (h === undefined || h === null) return '#cccccc';
+  if (h < -0.05) return '#1e90ff';
+  if (h < 0.05) return '#deb887';
+  return '#228B22';
+}
+
+function drawCell(ctx, playerStore, px, py, canvasWidth, canvasHeight, terrainSize) {
+  if (!playerStore || !playerStore.terrainRef) return;
+  const tx = Math.floor(px * (terrainSize - 1) / (canvasWidth - 1));
+  const ty = Math.floor(py * (terrainSize - 1) / (canvasHeight - 1));
+  const h = playerStore.terrainRef[ty]?.[tx];
+  ctx.fillStyle = getColorForHeight(h);
+  ctx.fillRect(px, py, 1, 1);
+}
+
 export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset = { x: 0, y: 0 }, options = {}) {
   const { initializePlayer = false, redrawTerrain = initializePlayer } = options;
   // Regenerar alturas si inicializamos el jugador o si explicitamente pedimos redrawTerrain
@@ -49,15 +65,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     // Pintar terreno
     for (let y = 0; y < canvas.height; y++) {
       for (let x = 0; x < canvas.width; x++) {
-        const tx = Math.floor(x * (terrainSize - 1) / (canvas.width - 1));
-        const ty = Math.floor(y * (terrainSize - 1) / (canvas.height - 1));
-        const h = playerStore.terrainRef[ty][tx];
-        let color = '#228B22';
-        if (h < -0.05) color = '#1e90ff';
-        else if (h < 0.05) color = '#deb887';
-        else if (h > 0.3) color = '#cccccc';
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, 1, 1);
+        drawCell(ctx, playerStore, x, y, canvas.width, canvas.height, terrainSize);
       }
     }
   }
@@ -69,15 +77,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         const px = x + dx;
         const py = y + dy;
         if (px >= 0 && px < canvas.width && py >= 0 && py < canvas.height) {
-          const tx = Math.floor(px * (terrainSize - 1) / (canvas.width - 1));
-          const ty = Math.floor(py * (terrainSize - 1) / (canvas.height - 1));
-          const h = playerStore.terrainRef[ty][tx];
-          let color = '#228B22';
-          if (h < -0.05) color = '#1e90ff';
-          else if (h < 0.05) color = '#deb887';
-          else if (h > 0.3) color = '#cccccc';
-          ctx.fillStyle = color;
-          ctx.fillRect(px, py, 1, 1);
+          drawCell(ctx, playerStore, px, py, canvas.width, canvas.height, terrainSize);
         }
       }
     }
