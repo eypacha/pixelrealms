@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { PLAYER_SPEED, ENCOUNTER_RATE } from '../constants/player.js';
+import { PLAYER_SPEED, ENCOUNTER_RATE, INITIAL_HEALTH, INITIAL_STRENGTH, INITIAL_DEFENSE, INITIAL_COINS } from '../constants/player.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { useSoundStore } from './sound.js';
 
@@ -8,10 +8,10 @@ export const usePlayerStore = defineStore('player', () => {
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
   const seed = ref(Date.now());
-  const health = ref(10);
-  const strength = ref(10);
-  const defense = ref(10);
-  const coins = ref(0);
+  const health = ref(INITIAL_HEALTH);
+  const strength = ref(INITIAL_STRENGTH);
+  const defense = ref(INITIAL_DEFENSE);
+  const coins = ref(INITIAL_COINS);
   const combatActive = ref(false);
   const gameOver = ref(false);
   const enemyHealth = ref(10);
