@@ -77,7 +77,7 @@ export function useCombatDrawing() {
     enemyTint,
     drawKnight,
     drawEnemy,
-    loadImages
-    , setEnemyType
+    loadImages,
+    setEnemyType
   };
 }

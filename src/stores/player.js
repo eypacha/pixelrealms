@@ -75,8 +75,8 @@ export const usePlayerStore = defineStore('player', () => {
     const type = options.type || 'goblin';
     enemyType.value = type;
     if (type === 'darkknight') {
-      enemyHealth.value = 50;
-      enemyStrength.value = 18;
+      enemyHealth.value = 40;
+      enemyStrength.value = 15;
       enemyDefense.value = 12;
     } else {
       // fallback to goblin-like stats
