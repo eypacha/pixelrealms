@@ -1,31 +1,33 @@
 <template>
   <div class="absolute inset-0 bg-[#00000020] flex justify-center items-center z-50">
-    <div class="bg-white p-5 text-center">
-      <h2>VS</h2>
-      <div class="flex justify-center space-x-4 mb-4 border-b-4" :style="{ borderBottomColor: playerStore.getTerrainColor() }">
-        <div class="flex gap-2">
-          <div>
-            <div>❤️ {{ playerStore.health }}</div>
-            <div>💪 {{ playerStore.strength }}</div>
-            <div>🛡️ {{ playerStore.defense }}</div>
+    <div class="flex flex-col bg-white w-100 h-70 p-5 text-center">
+      <div class="flex-1">
+        <h2>VS</h2>
+        <div class="flex justify-center space-x-4 mb-4 border-b-4" :style="{ borderBottomColor: playerStore.getTerrainColor() }">
+          <div class="flex gap-2">
+            <div>
+              <div>❤️ {{ playerStore.health }}</div>
+              <div>💪 {{ playerStore.strength }}</div>
+              <div>🛡️ {{ playerStore.defense }}</div>
+            </div>
+            <div class="relative">
+              <canvas ref="knightCanvas" width="60" height="80"></canvas>
+            </div>
           </div>
-          <div class="relative">
-            <canvas ref="knightCanvas" width="60" height="80"></canvas>
+          <div class="flex gap-2">
+            <div class="relative">
+              <canvas ref="enemyCanvas" width="60" height="80"></canvas>
+            </div>
+            <div>
+              <div>❤️ {{ playerStore.enemyHealth }}</div>
+              <div>💪 {{ playerStore.enemyStrength }}</div>
+              <div>🛡️ {{ playerStore.enemyDefense }}</div>
+            </div>
           </div>
         </div>
-        <div class="flex gap-2">
-          <div class="relative">
-            <canvas ref="enemyCanvas" width="60" height="80"></canvas>
-          </div>
-          <div>
-            <div>❤️ {{ playerStore.enemyHealth }}</div>
-            <div>💪 {{ playerStore.enemyStrength }}</div>
-            <div>🛡️ {{ playerStore.enemyDefense }}</div>
-          </div>
-        </div>
+        <p>{{ playerStore.combatMessage }}</p>
+        <p v-if="!playerStore.enemyDefeated" class="font-bold">{{ playerStore.playerTurn ? 'Your turn' : 'Enemy turn' }}</p>
       </div>
-      <p>{{ playerStore.combatMessage }}</p>
-      <p v-if="!playerStore.enemyDefeated" class="font-bold">{{ playerStore.playerTurn ? 'Your turn' : 'Enemy turn' }}</p>
       <div class="mt-4 flex space-x-2">
         <template v-if="!playerStore.enemyDefeated">
           <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atack</button>
