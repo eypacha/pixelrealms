@@ -76,9 +76,11 @@ function usePotion() {
 
 function loot() {
   // collect loot only when enemyDefeated
-  const reward = playerStore.collectLoot();
-  if (reward && reward > 0) {
-    playerStore.combatMessage = `Looted +${reward} coins`;
+  const result = playerStore.collectLoot();
+  if (result && typeof result === 'object') {
+    let msg = `Looted +${result.coins} coins`;
+    if (result.potion) msg += ' and +1 potion';
+    playerStore.combatMessage = msg;
   } else if (playerStore.lootCollected) {
     playerStore.combatMessage = 'Already looted';
   }

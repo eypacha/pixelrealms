@@ -107,11 +107,19 @@ export const usePlayerStore = defineStore('player', () => {
     const combatRandom = createSeededRandom(seed.value + 'loot' + Date.now());
     // Random coins between 1 and 10
     const reward = Math.floor(combatRandom() * 10) + 1;
+    // Separate roll for potion chance
+    const potionRoll = combatRandom();
+    const potionGiven = potionRoll < 0.2; // 20% chance
     coins.value += reward;
+    if (potionGiven) {
+      // Ensure inventory.potion exists
+      if (!inventory.value.potion) inventory.value.potion = 0;
+      inventory.value.potion += 1;
+    }
     lootCollected.value = true;
     // play coin sound
     soundStore.playCoin();
-    return reward;
+    return { coins: reward, potion: potionGiven };
   }
 
   function endCombat() {
