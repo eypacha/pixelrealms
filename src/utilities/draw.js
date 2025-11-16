@@ -99,8 +99,37 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   const facingLeft = playerStore.lastDirection === 'left';
   drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
   // Dibujar puntos de interés
+  // Usar la imagen del Dark Knight para los castillos
+  if (!drawAll.darkKnightImage) {
+    drawAll.darkKnightImage = new Image();
+    drawAll.darkKnightImage.src = '/images/darkknight.png';
+    drawAll.darkKnightImage.onload = () => {
+      // Redibujar el canvas cuando la imagen esté lista
+      if (terrainCanvas && terrainCanvas.value) {
+        // Llamar a drawAll con los mismos argumentos
+        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+      }
+    };
+  }
+  const darkKnightImg = drawAll.darkKnightImage;
   poiStore.pois.forEach(poi => {
-    ctx.fillStyle = poi.discovered ? 'gray' : 'white';
-    ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
+    if (poi.type === 'castle') {
+      if (darkKnightImg.complete) {
+        ctx.save();
+        if (poi.discovered) {
+          ctx.globalAlpha = 0.4;
+        }
+        ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
+        ctx.restore();
+      } else {
+        // Si la imagen no está cargada, dibujar un rectángulo gris/blanco como fallback
+        ctx.fillStyle = poi.discovered ? 'gray' : 'white';
+        ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
+      }
+    } else {
+      // Otros POIs (si existen), dibujar como antes
+      ctx.fillStyle = poi.discovered ? 'gray' : 'white';
+      ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
+    }
   });
 }
