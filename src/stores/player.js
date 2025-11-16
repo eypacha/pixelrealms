@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { PLAYER_SPEED } from '../constants/player.js';
+import { PLAYER_SPEED, ENCOUNTER_RATE } from '../constants/player.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { useSoundStore } from './sound.js';
 
@@ -18,7 +18,7 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyStrength = ref(8);
   const enemyDefense = ref(5);
   const playerTurn = ref(true);
-  const combatMessage = ref('Inicio de combate');
+  const combatMessage = ref('Combat start');
   let terrainRef = null;
   let widthRef = 0;
   let heightRef = 0;
@@ -127,7 +127,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function checkEncounter(pos) {
-    if (encounterRandom() < 0.2) {
+    if (encounterRandom() < ENCOUNTER_RATE) {
       startCombat();
     }
   }
