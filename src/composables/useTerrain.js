@@ -6,17 +6,32 @@ import { createSeededRandom } from '../utilities/randomWithSeed';
 export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = '12345') {
   const terrainCanvas = ref(null);
   const seedInput = ref(initialSeed);
+  // worldOffset in units of the generator grid (indices). Move by (terrainSize - 1) to shift one tile.
+  const worldOffset = ref({ x: 0, y: 0 });
+
+  function setOffset(x, y) {
+    worldOffset.value.x = x;
+    worldOffset.value.y = y;
+    updateTerrain();
+  }
+
+  function addOffset(dx, dy) {
+    worldOffset.value.x += dx;
+    worldOffset.value.y += dy;
+    updateTerrain();
+  }
 
   function randomizeSeed() {
     seedInput.value = Math.floor(Math.random() * 100000000).toString();
     updateTerrain();
   }
 
-  function drawTerrain(ctx, width, height, seed) {
+  function drawTerrain(ctx, width, height, seed, offset = { x: 0, y: 0 }) {
     ctx.fillStyle = '#87ceeb';
     ctx.fillRect(0, 0, width, height);
     const seededRandom = createSeededRandom(seed);
-    const heights2D = generateMidpointDisplacement2D(terrainSize, roughness, seededRandom);
+    // Pasar `seed` y `offset` al generador para generar la porción adecuada del mundo
+    const heights2D = generateMidpointDisplacement2D(terrainSize, roughness, null, offset.x || 0, offset.y || 0, seed);
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const tx = Math.floor(x * (terrainSize - 1) / (width - 1));
@@ -36,13 +51,18 @@ export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = '12
     const canvas = terrainCanvas.value;
     if (canvas) {
       const ctx = canvas.getContext('2d');
-      drawTerrain(ctx, canvas.width, canvas.height, seedInput.value);
+      drawTerrain(ctx, canvas.width, canvas.height, seedInput.value, worldOffset.value);
     }
   }
 
   return {
     terrainCanvas,
     seedInput,
+    worldOffset,
+    setOffset,
+    addOffset,
+    // step en indices de grilla que corresponde a desplazar una pantalla completa
+    tileStep: terrainSize - 1,
     randomizeSeed,
     updateTerrain,
   };

@@ -8,21 +8,31 @@ export function drawPlayer(ctx, position, image) {
   }
 }
 
-export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, options = {}) {
+export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset = { x: 0, y: 0 }, options = {}) {
   const { initializePlayer = false, redrawTerrain = initializePlayer } = options;
+  // Regenerar alturas si inicializamos el jugador o si explicitamente pedimos redrawTerrain
+  const regenerateHeights = initializePlayer || redrawTerrain;
   const canvas = terrainCanvas.value;
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const terrainSize = 257;
   const roughness = 0.7;
-  const regenerateHeights = initializePlayer;
   if (regenerateHeights) {
     const seededRandom = createSeededRandom(seedInput.value);
-    const heights2D = generateMidpointDisplacement2D(terrainSize, roughness, seededRandom);
+    // Pasar `seedInput.value` y `worldOffset` al generador para generación determinista por coordenada
+    const heights2D = generateMidpointDisplacement2D(
+      terrainSize,
+      roughness,
+      null,
+      worldOffset.x || 0,
+      worldOffset.y || 0,
+      seedInput.value
+    );
     playerStore.terrainRef = heights2D;
     playerStore.widthRef = canvas.width;
     playerStore.heightRef = canvas.height;
     if (initializePlayer) {
+      // mantener seededRandom para inicializar posiciones y POIs
       playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
       console.log('Posición inicial jugador:', playerStore.position);
       poiStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);

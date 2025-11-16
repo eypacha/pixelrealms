@@ -152,8 +152,10 @@ export const usePlayerStore = defineStore('player', () => {
       position.value.y -= PLAYER_SPEED;
       console.log('🚶 Mover arriba:', position.value);
       checkEncounter(position.value);
+      return true;
     } else {
       console.log('No puede mover arriba');
+      return false;
     }
   }
   function moveDown() {
@@ -163,8 +165,10 @@ export const usePlayerStore = defineStore('player', () => {
       position.value.y += PLAYER_SPEED;
       console.log('🚶 Mover abajo:', position.value);
       checkEncounter(position.value);
+      return true;
     } else {
       console.log('No puede mover abajo');
+      return false;
     }
   }
   function moveLeft() {
@@ -174,8 +178,10 @@ export const usePlayerStore = defineStore('player', () => {
       position.value.x -= PLAYER_SPEED;
       console.log('🚶 Mover izquierda:', position.value);
       checkEncounter(position.value);
+      return true;
     } else {
       console.log('No puede mover izquierda');
+      return false;
     }
   }
   function moveRight() {
@@ -185,8 +191,10 @@ export const usePlayerStore = defineStore('player', () => {
       position.value.x += PLAYER_SPEED;
       console.log('🚶 Mover derecha:', position.value);
       checkEncounter(position.value);
+      return true;
     } else {
       console.log('No puede mover derecha');
+      return false;
     }
   }
 
