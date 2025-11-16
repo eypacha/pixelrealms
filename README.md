@@ -43,6 +43,10 @@ Relevant Files
 - `src/utilities/midpointDisplacement2D.js`: Heightmap generator implementation.
 - `src/utilities/draw.js`: Canvas rendering helpers (`drawAll` paints terrain, POIs, and player).
 
+---
+
+Demo
+- Live demo: https://dev.eypacha.com/pixelrealms
 
 ---
 Last updated: game mechanics overview (English, no run instructions).
