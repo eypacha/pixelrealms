@@ -6,6 +6,7 @@ export const useSoundStore = defineStore('sound', () => {
   const hammerSound = new Howl({ src: ['/sounds/hammer.wav'] });
   const klingSound = new Howl({ src: ['/sounds/kling.wav'] });
   const whoshSound = new Howl({ src: ['/sounds/whosh.wav'] });
+  const coinSound = new Howl({ src: ['/sounds/coin.mp3'] });
 
   function playHammer() {
     hammerSound.play();
@@ -19,9 +20,14 @@ export const useSoundStore = defineStore('sound', () => {
     whoshSound.play();
   }
 
+  function playCoin() {
+    coinSound.play();
+  }
+
   return {
     playHammer,
     playKling,
-    playWhosh
+    playWhosh,
+    playCoin,
   };
 });

@@ -17,6 +17,7 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyStrength = ref(8);
   const enemyDefense = ref(5);
   const playerTurn = ref(true);
+  const combatMessage = ref('Inicio de combate');
   let terrainRef = null;
   let widthRef = 0;
   let heightRef = 0;
@@ -54,6 +55,7 @@ export const usePlayerStore = defineStore('player', () => {
     enemyDefense.value = 5;
     playerTurn.value = true;
     combatActive.value = true;
+    combatMessage.value = 'Combat start';
   }
 
   function playerAttack(damage) {
@@ -61,13 +63,24 @@ export const usePlayerStore = defineStore('player', () => {
     const hitChance = 0.7; // 70% chance to hit
     if (combatRandom() < hitChance) {
       const actualDamage = Math.max(1, damage - enemyDefense.value);
+      combatMessage.value = `Hit -${actualDamage}`;
       enemyHealth.value -= actualDamage;
       soundStore.playKling();
       console.log(`Jugador ataca: ${actualDamage} daño. Salud enemigo: ${enemyHealth.value}`);
       if (enemyHealth.value <= 0) {
-        combatActive.value = false;
-        coins.value += 5; // reward
+        combatMessage.value = 'Enemy defeated!';
         console.log('Enemigo derrotado!');
+
+
+        setTimeout(() => {
+           soundStore.playCoin();
+        }, 500);
+        
+        setTimeout(() => {
+          combatActive.value = false;
+          coins.value += 5; // reward
+          
+        }, 2000);
       } else {
         playerTurn.value = false;
         setTimeout(() => {
@@ -77,6 +90,7 @@ export const usePlayerStore = defineStore('player', () => {
     } else {
       console.log('Jugador falla el ataque!');
       soundStore.playWhosh();
+      combatMessage.value = 'Miss';
       playerTurn.value = false;
       setTimeout(() => {
         enemyAttack();
@@ -89,18 +103,23 @@ export const usePlayerStore = defineStore('player', () => {
     const hitChance = 0.6; // 60% chance to hit for enemy
     if (combatRandom() < hitChance) {
       const damage = Math.max(1, enemyStrength.value - defense.value);
+      combatMessage.value = `Hit -${damage}`;
       health.value -= damage;
       soundStore.playHammer();
       console.log(`Enemigo ataca: ${damage} daño. Salud jugador: ${health.value}`);
       if (health.value <= 0) {
-        combatActive.value = false;
+        combatMessage.value = 'Player defeated!';
         console.log('Jugador derrotado!');
+        setTimeout(() => {
+          combatActive.value = false;
+        }, 2000);
       } else {
         playerTurn.value = true;
       }
     } else {
       console.log('Enemigo falla el ataque!');
       soundStore.playWhosh();
+      combatMessage.value = 'Miss';
       playerTurn.value = true;
     }
   }
@@ -169,5 +188,5 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, enemyHealth, enemyStrength, enemyDefense, playerTurn, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat };
+  return { position, oldPosition, seed, health, strength, defense, coins, combatActive, enemyHealth, enemyStrength, enemyDefense, playerTurn, combatMessage, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, playerAttack, enemyAttack, fleeCombat };
 });

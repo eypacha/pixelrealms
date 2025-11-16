@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { CASTLE_COUNT, LOOT_MIN, LOOT_MAX } from '../constants/poi.js';
+import { useSoundStore } from './sound.js';
 
 export const usePoiStore = defineStore('poi', () => {
   const pois = ref([]);
+  const soundStore = useSoundStore();
 
   function initialize(terrain, width, height, randomFn, count = CASTLE_COUNT) {
     pois.value = [];
@@ -30,6 +32,7 @@ export const usePoiStore = defineStore('poi', () => {
       if (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10) {
         poi.discovered = true;
         playerStore.coins += poi.loot;
+        soundStore.playCoin();
         console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
       }
     });
