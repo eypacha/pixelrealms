@@ -7,7 +7,7 @@ import viteImagemin from 'vite-plugin-imagemin'
 import { qrcode } from 'vite-plugin-qrcode';
 import webfontDownload from 'vite-plugin-webfont-dl';
 
-const BASE_PATH = '/pixelrealms/'
+const BASE_PATH = '/'
 
 export default defineConfig({
   base: BASE_PATH,
