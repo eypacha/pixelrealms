@@ -26,6 +26,7 @@ import {
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { getColorForHeight } from '../utilities/draw.js';
 import { useSoundStore } from './sound.js';
+import { calculateDamage } from '../utilities/calculateDamage.js';
 
 export const usePlayerStore = defineStore('player', () => {
   const position = ref({ x: 0, y: 0 });
@@ -119,13 +120,13 @@ export const usePlayerStore = defineStore('player', () => {
     const combatRandom = createSeededRandom(seed.value + 'combat' + Date.now());
     const hitChance = PLAYER_HIT_CHANCE;
     if (combatRandom() < hitChance) {
-      const maxDmg = Math.max(1, damage - enemyDefense.value);
-      const minDmg = 1;
-      const actualDamage = Math.floor(Math.random() * (maxDmg - minDmg + 1)) + minDmg;
-      combatMessage.value = `Hit -${actualDamage}`;
+      const { damage: actualDamage, isCritical } = calculateDamage(damage, enemyDefense.value);
+      combatMessage.value = isCritical
+        ? `Critical! -${actualDamage}`
+        : `Hit -${actualDamage}`;
       enemyHealth.value -= actualDamage;
-      soundStore.playSound('kling');
-      console.log(`Jugador ataca: ${actualDamage} daño. Salud enemigo: ${enemyHealth.value}`);
+      soundStore.playSound(isCritical ? 'critical' : 'kling');
+      console.log(`Jugador ataca: ${actualDamage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud enemigo: ${enemyHealth.value}`);
       if (enemyHealth.value <= 0) {
         combatMessage.value = 'Enemy defeated!';
         console.log('Enemigo derrotado!');
@@ -203,13 +204,13 @@ export const usePlayerStore = defineStore('player', () => {
     const combatRandom = createSeededRandom(seed.value + 'enemyCombat' + Date.now());
     const hitChance = ENEMY_HIT_CHANCE;
     if (combatRandom() < hitChance) {
-      const maxDmg = Math.max(1, enemyStrength.value - defense.value);
-      const minDmg = 1;
-      const damage = Math.floor(Math.random() * (maxDmg - minDmg + 1)) + minDmg;
-      combatMessage.value = `Hit -${damage}`;
+      const { damage, isCritical } = calculateDamage(enemyStrength.value, defense.value);
+      combatMessage.value = isCritical
+        ? `Critical! -${damage}`
+        : `Hit -${damage}`;
       health.value -= damage;
-      soundStore.playSound('hammer');
-      console.log(`Enemigo ataca: ${damage} daño. Salud jugador: ${health.value}`);
+      soundStore.playSound(isCritical ? 'critical' : 'hammer');
+      console.log(`Enemigo ataca: ${damage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud jugador: ${health.value}`);
       if (health.value <= 0) {
         combatMessage.value = 'Player defeated!';
         console.log('Jugador derrotado!');
