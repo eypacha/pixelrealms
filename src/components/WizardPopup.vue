@@ -12,7 +12,7 @@
       <div class="mt-2 text-center text-sm text-gray-700 mb-5">{{ message }}</div>
 
       <div class="flex flex-col gap-2 items-center">
-        <button @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-1 w-full">Buy Potion: {{ POTION_COST }}🪙</button>
+        <button @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-1 w-full cursor-pointer">Buy Potion: {{ POTION_COST }}🪙</button>
         <button @click="enchantSword" class="px-4 py-1 w-full cursor-pointer">Enchant Sword: {{ ENCHANT_COST }}🪙</button>
         <button @click="enchantShield" class="px-4 py-1 w-full cursor-pointer">Enchant Shield: {{ ENCHANT_COST }}🪙</button>
         <button @click="closePopup" class="px-4 py-1 w-full mt-2 cursor-pointer">Leave</button>
