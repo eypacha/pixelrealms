@@ -11,19 +11,22 @@
       <GameOverPopup v-if="playerStore.gameOver" />
       <WizardPopup v-if="playerStore.wizardActive" />
     </div>
-    <div class="mt-4 text-center">
-      ❤️ {{ playerStore.health }}
-      🗡️ {{ playerStore.strength }}
-      🛡️ {{ playerStore.defense }}
-      🪙 {{ playerStore.coins }}
-      🧪 {{ playerStore.inventory.potion }}
-    </div>
-    <div class="mt-2 text-center">
-      <label for="volume" class="mr-2 font-bold">🔊 Volumen:</label>
-      <input id="volume" type="range" min="0" max="1" step="0.01" v-model="soundStore.volume" @input="soundStore.setVolume(Number(soundStore.volume))" style="width: 200px;" />
-      <span>{{ Math.round(soundStore.volume * 100) }}%</span>
-    </div>
-    <div class="text-center">
+    <div class="mt-4 flex items-center gap-20">
+      <div>
+        ❤️ {{ playerStore.health }}
+        🗡️ {{ playerStore.strength }}
+        🛡️ {{ playerStore.defense }}
+        🪙 {{ playerStore.coins }}
+        🧪 {{ playerStore.inventory.potion }}
+      </div>
+      <div class="flex items-center gap-2">
+        <label for="volume" class="mr-2 font-bold">
+          <span v-if="Number(soundStore.volume) === 0">🔇</span>
+          <span v-else>🔊</span>
+        </label>
+        <input id="volume" type="range" min="0" max="1" step="0.01" class="w-50" v-model="soundStore.volume" @input="soundStore.setVolume(Number(soundStore.volume))"/>
+        <span class="w-10">{{ Math.round(soundStore.volume * 100) }}%</span>
+      </div>
     </div>
   </div>
 </template>
