@@ -132,9 +132,6 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         }
         ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
         ctx.restore();
-      } else {
-        ctx.fillStyle = poi.discovered ? 'gray' : 'white';
-        ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
       }
     } else if (poi.type === 'wizard') {
       if (wizardImg.complete) {
