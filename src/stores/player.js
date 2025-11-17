@@ -3,7 +3,6 @@ import { usePoiStore } from './poi.js';
 import { ref } from 'vue';
 import {
     PLAYER_SPEED,
-    ENCOUNTER_RATE,
     INITIAL_HEALTH,
     INITIAL_STRENGTH,
     INITIAL_DEFENSE,
@@ -14,6 +13,7 @@ import {
   } from '../constants/player.js';
 
 import {
+    ENCOUNTER_RATE,
     GOBLIN_HEALTH,
     GOBLIN_STRENGTH,
     GOBLIN_DEFENSE,
