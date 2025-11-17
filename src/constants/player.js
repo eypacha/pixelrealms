@@ -5,5 +5,8 @@ export const INITIAL_DEFENSE = 10;
 export const INITIAL_COINS = 10;
 export const INITIAL_POTIONS = 2;
 
+
+export const PLAYER_HIT_CHANCE = 0.7;
+
 export const COVER_AMOUNT = 5;
 export const ENCOUNTER_RATE = 0.1;

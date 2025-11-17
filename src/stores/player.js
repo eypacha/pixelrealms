@@ -1,7 +1,28 @@
 import { defineStore } from 'pinia';
 import { usePoiStore } from './poi.js';
 import { ref } from 'vue';
-import { PLAYER_SPEED, ENCOUNTER_RATE, INITIAL_HEALTH, INITIAL_STRENGTH, INITIAL_DEFENSE, COVER_AMOUNT, INITIAL_COINS, INITIAL_POTIONS } from '../constants/player.js';
+import {
+    PLAYER_SPEED,
+    ENCOUNTER_RATE,
+    INITIAL_HEALTH,
+    INITIAL_STRENGTH,
+    INITIAL_DEFENSE,
+    COVER_AMOUNT,
+    INITIAL_COINS,
+    INITIAL_POTIONS,
+    PLAYER_HIT_CHANCE
+  } from '../constants/player.js';
+
+import {
+    GOBLIN_HEALTH,
+    GOBLIN_STRENGTH,
+    GOBLIN_DEFENSE,
+    DARK_KNIGHT_HEALTH,
+    DARK_KNIGHT_STRENGTH,
+    DARK_KNIGHT_DEFENSE,
+    ENEMY_HIT_CHANCE
+} from '../constants/enemies.js';
+
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { getColorForHeight } from '../utilities/draw.js';
 import { useSoundStore } from './sound.js';
@@ -19,9 +40,9 @@ export const usePlayerStore = defineStore('player', () => {
   const combatActive = ref(false);
   const gameOver = ref(false);
   const wizardActive = ref(false); // Para mostrar el WizardPopup
-  const enemyHealth = ref(10);
-  const enemyStrength = ref(8);
-  const enemyDefense = ref(5);
+  const enemyHealth = ref(GOBLIN_HEALTH);
+  const enemyStrength = ref(GOBLIN_STRENGTH);
+  const enemyDefense = ref(GOBLIN_DEFENSE);
   const enemyType = ref('goblin');
   const playerTurn = ref(true);
   const combatMessage = ref('Combat start');
@@ -65,9 +86,9 @@ export const usePlayerStore = defineStore('player', () => {
   function startCombat() {
     // default enemy (goblin)
     enemyType.value = 'goblin';
-    enemyHealth.value = 10;
-    enemyStrength.value = 8;
-    enemyDefense.value = 5;
+    enemyHealth.value = GOBLIN_HEALTH;
+    enemyStrength.value = GOBLIN_STRENGTH;
+    enemyDefense.value = GOBLIN_DEFENSE;
     playerTurn.value = true;
     combatActive.value = true;
     combatMessage.value = 'Combat start';
@@ -79,18 +100,15 @@ export const usePlayerStore = defineStore('player', () => {
     enemyType.value = type;
     if (type === 'darkknight') {
       // Dificultad progresiva
-      const baseHealth = 15;
-      const baseStrength = 12;
-      const baseDefense = 10;
       const scale = darkKnightDefeatedCount.value;
-      enemyHealth.value = baseHealth + scale * 2;
-      enemyStrength.value = baseStrength + scale * 2;
-      enemyDefense.value = baseDefense + scale * 2;
+      enemyHealth.value = DARK_KNIGHT_HEALTH + scale * 2;
+      enemyStrength.value = DARK_KNIGHT_STRENGTH + scale * 2;
+      enemyDefense.value = DARK_KNIGHT_DEFENSE + scale * 2;
     } else {
       // fallback to goblin-like stats
-      enemyHealth.value = 10;
-      enemyStrength.value = 8;
-      enemyDefense.value = 5;
+      enemyHealth.value = GOBLIN_HEALTH;
+      enemyStrength.value = GOBLIN_STRENGTH;
+      enemyDefense.value = GOBLIN_DEFENSE;
     }
     playerTurn.value = true;
     combatActive.value = true;
@@ -99,9 +117,11 @@ export const usePlayerStore = defineStore('player', () => {
 
   function playerAttack(damage) {
     const combatRandom = createSeededRandom(seed.value + 'combat' + Date.now());
-    const hitChance = 0.7; // 70% chance to hit
+    const hitChance = PLAYER_HIT_CHANCE;
     if (combatRandom() < hitChance) {
-      const actualDamage = Math.max(1, damage - enemyDefense.value);
+      const maxDmg = Math.max(1, damage - enemyDefense.value);
+      const minDmg = 1;
+      const actualDamage = Math.floor(Math.random() * (maxDmg - minDmg + 1)) + minDmg;
       combatMessage.value = `Hit -${actualDamage}`;
       enemyHealth.value -= actualDamage;
       soundStore.playSound('kling');
@@ -181,9 +201,11 @@ export const usePlayerStore = defineStore('player', () => {
 
   function enemyAttack() {
     const combatRandom = createSeededRandom(seed.value + 'enemyCombat' + Date.now());
-    const hitChance = 0.6; // 60% chance to hit for enemy
+    const hitChance = ENEMY_HIT_CHANCE;
     if (combatRandom() < hitChance) {
-      const damage = Math.max(1, enemyStrength.value - defense.value);
+      const maxDmg = Math.max(1, enemyStrength.value - defense.value);
+      const minDmg = 1;
+      const damage = Math.floor(Math.random() * (maxDmg - minDmg + 1)) + minDmg;
       combatMessage.value = `Hit -${damage}`;
       health.value -= damage;
       soundStore.playSound('hammer');
