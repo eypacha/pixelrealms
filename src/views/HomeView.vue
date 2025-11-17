@@ -12,11 +12,16 @@
       <WizardPopup v-if="playerStore.wizardActive" />
     </div>
     <div class="mt-4 text-center">
-        ❤️ {{ playerStore.health }}
-        🗡️ {{ playerStore.strength }}
-        🛡️ {{ playerStore.defense }}
-        🪙 {{ playerStore.coins }}
-        🧪 {{ playerStore.inventory.potion }}
+      ❤️ {{ playerStore.health }}
+      🗡️ {{ playerStore.strength }}
+      🛡️ {{ playerStore.defense }}
+      🪙 {{ playerStore.coins }}
+      🧪 {{ playerStore.inventory.potion }}
+    </div>
+    <div class="mt-2 text-center">
+      <label for="volume" class="mr-2 font-bold">🔊 Volumen:</label>
+      <input id="volume" type="range" min="0" max="1" step="0.01" v-model="soundStore.volume" @input="soundStore.setVolume(Number(soundStore.volume))" style="width: 200px;" />
+      <span>{{ Math.round(soundStore.volume * 100) }}%</span>
     </div>
     <div class="text-center">
     </div>
@@ -26,6 +31,8 @@
 
 
 <script setup>
+import { useSoundStore } from '../stores/sound';
+const soundStore = useSoundStore();
 import { onMounted, watch, ref } from 'vue';
 import { useTerrain } from '../composables/useTerrain';
 import { usePlayerStore } from '../stores/player';
