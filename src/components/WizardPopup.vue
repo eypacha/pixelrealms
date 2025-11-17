@@ -81,7 +81,16 @@ function closePopup() {
 
 onMounted(() => {
   // Draw player
-  drawKnight(playerCanvas);
+  if (playerCanvas.value) {
+    const ctx = playerCanvas.value.getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, 60, 80);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, 0, 0, 60, 80);
+    };
+    img.src = '/images/knight.png';
+  }
   // Draw wizard
   if (wizardCanvas.value) {
     const ctx = wizardCanvas.value.getContext('2d');
