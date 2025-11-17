@@ -6,7 +6,7 @@
       <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white">Random</button>
     </div> -->
     <div class="relative">
-      <canvas ref="terrainCanvas" width="800" height="600" class="border border-black"></canvas>
+      <canvas ref="terrainCanvas" width="800" height="600" class="border border-black bg-black"></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
       <WizardPopup v-if="playerStore.wizardActive" />
