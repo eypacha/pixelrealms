@@ -1,6 +1,6 @@
 <template>
   <div class="absolute inset-0 bg-[#00000040] flex justify-center items-center z-50">
-    <div class="bg-white p-5 text-center rounded shadow-lg min-w-[350px]">
+    <div class="bg-white p-5 text-center shadow-lg min-w-[350px]">
       <div class="flex justify-center gap-8 mb-4">
         <div>
           <canvas ref="playerCanvas" width="60" height="80"></canvas>
@@ -27,6 +27,7 @@ import { usePlayerStore } from '../stores/player';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
 
 const playerStore = usePlayerStore();
+const soundStore = playerStore.$state.soundStore || (typeof playerStore.playSound === 'function' ? playerStore : null);
 const { drawKnight } = useCombatDrawing();
 const playerCanvas = ref(null);
 const wizardCanvas = ref(null);
@@ -41,36 +42,45 @@ function usePotion() {
   playerStore.coins -= cost;
   if (!playerStore.inventory.potion) playerStore.inventory.potion = 0;
   playerStore.inventory.potion++;
-  message.value = `You bought a potion! (+1 potion, -${cost} coins)`;
+  if (typeof playerStore.playSound === 'function') {
+    playerStore.playSound('coin');
+  }
+  message.value = `You bought a potion!`;
 }
 
 function enchantSword() {
   const cost = 10;
   if (playerStore.coins < cost) {
-    message.value = `You need ${cost} coins to enchant your sword.`;
+    message.value = `Please ${cost} coins to enchant your sword.`;
     return;
   }
   playerStore.coins -= cost;
+  if (typeof playerStore.playSound === 'function') {
+    playerStore.playSound('coin');
+  }
   if (Math.random() < 0.5) {
     playerStore.strength++;
-    message.value = `Sword enchanted! +1 STR (-${cost} coins)`;
+    message.value = `Sword enchanted! +1 STR`;
   } else {
-    message.value = 'The spell failed. (-' + cost + ' coins)';
+    message.value = 'The spell failed.';
   }
 }
 
 function enchantShield() {
   const cost = 10;
   if (playerStore.coins < cost) {
-    message.value = `You need ${cost} coins to enchant your shield.`;
+    message.value = `Please ${cost} coins to enchant your shield.`;
     return;
   }
   playerStore.coins -= cost;
+  if (typeof playerStore.playSound === 'function') {
+    playerStore.playSound('coin');
+  }
   if (Math.random() < 0.5) {
     playerStore.defense++;
-    message.value = `Shield enchanted! +1 DEF (-${cost} coins)`;
+    message.value = `Shield enchanted! +1 DEF `;
   } else {
-    message.value = 'The spell failed. (-' + cost + ' coins)';
+    message.value = 'The spell failed.';
   }
 }
 
