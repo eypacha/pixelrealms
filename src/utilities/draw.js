@@ -4,10 +4,10 @@ import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
 
 export function drawPlayer(ctx, position, image, facingLeft = false) {
   if (!image || !image.complete) return;
-  const w = 15;
-  const h = 20;
+  const w = 20;
+  const h = 30;
   const drawX = position.x - w / 2;
-  const drawY = position.y - 10;
+  const drawY = position.y - h / 2;
   if (facingLeft) {
     ctx.save();
     
