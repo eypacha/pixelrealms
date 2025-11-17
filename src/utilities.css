@@ -55,7 +55,7 @@
 }
 
 .waves {
-  background-image: url('/images/waves.png');
+  background-image: url('images/waves.png');
   background-repeat: repeat-x;
   animation: move-bg 5000s linear infinite;
 }

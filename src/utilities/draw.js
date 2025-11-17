@@ -1,7 +1,7 @@
   // Imagen de wizard
   if (!drawAll.wizardImage) {
     drawAll.wizardImage = new Image();
-    drawAll.wizardImage.src = '/images/wizard.png';
+    drawAll.wizardImage.src = 'images/wizard.png';
     drawAll.wizardImage.onload = () => {
       if (terrainCanvas && terrainCanvas.value) {
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
@@ -113,7 +113,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   // Usar la imagen del Dark Knight para los castillos
   if (!drawAll.darkKnightImage) {
     drawAll.darkKnightImage = new Image();
-    drawAll.darkKnightImage.src = '/images/darkknight.png';
+    drawAll.darkKnightImage.src = 'images/darkknight.png';
     drawAll.darkKnightImage.onload = () => {
       // Redibujar el canvas cuando la imagen esté lista
       if (terrainCanvas && terrainCanvas.value) {

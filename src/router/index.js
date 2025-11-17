@@ -10,7 +10,7 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory('/'),
+  history: createWebHistory('/pixelrealms/'), // Usa el mismo BASE_PATH
   routes,
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 }

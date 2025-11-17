@@ -43,7 +43,7 @@ const playerImage = ref(null);
 
 onMounted(async () => {
   playerImage.value = new Image();
-  playerImage.value.src = '/images/knight.png';
+  playerImage.value.src = 'images/knight.png';
   await new Promise(resolve => {
     playerImage.value.onload = resolve;
   });

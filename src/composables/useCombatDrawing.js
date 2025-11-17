@@ -33,7 +33,7 @@ export function useCombatDrawing() {
     knightImg.value.onload = () => {
       drawKnight(knightCanvas);
     };
-    knightImg.value.src = '/images/knight.png';
+    knightImg.value.src = 'images/knight.png';
 
     // Prepare goblin and darkknight images. We'll point `enemyImg` to the active one.
     goblinImg.value = new Image();
@@ -41,13 +41,13 @@ export function useCombatDrawing() {
       // only draw if currently selected
       if (enemyImg.value === goblinImg.value) drawEnemy(enemyCanvas);
     };
-    goblinImg.value.src = '/images/goblin.png';
+    goblinImg.value.src = 'images/goblin.png';
 
     darkknightImg.value = new Image();
     darkknightImg.value.onload = () => {
       if (enemyImg.value === darkknightImg.value) drawEnemy(enemyCanvas);
     };
-    darkknightImg.value.src = '/images/darkknight.png';
+    darkknightImg.value.src = 'images/darkknight.png';
 
     // Default to goblin until changed
     enemyImg.value = goblinImg.value;

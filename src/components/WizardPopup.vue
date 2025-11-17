@@ -97,7 +97,7 @@ onMounted(() => {
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(img, 0, 0, 60, 80);
     };
-    img.src = '/images/knight.png';
+    img.src = 'images/knight.png';
   }
   // Draw wizard
   if (wizardCanvas.value) {
@@ -108,7 +108,7 @@ onMounted(() => {
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(img, 0, 0, 60, 80);
     };
-    img.src = '/images/wizard.png';
+    img.src = 'images/wizard.png';
   }
 });
 </script>
