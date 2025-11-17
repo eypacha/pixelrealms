@@ -158,16 +158,26 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
       ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
     }
   });
-  // Dibujar goblins derrotados con opacidad
+  // Dibujar goblins derrotados SOLO del tile actual
   if (goblinImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
-    poiStore.defeatedGoblins.forEach(pos => {
-      ctx.save();
-      ctx.globalAlpha = 0.4;
-      ctx.drawImage(goblinImg, pos.x - 10, pos.y - 15, 20, 30);
-      ctx.restore();
-    });
+    const offsetX = Number(worldOffset.x) || 0;
+    const offsetY = Number(worldOffset.y) || 0;
+    poiStore.defeatedGoblins
+      .filter(pos => Number(pos.offsetX) === offsetX && Number(pos.offsetY) === offsetY)
+      .forEach(pos => {
+        ctx.save();
+        ctx.globalAlpha = 0.4;
+        ctx.drawImage(goblinImg, pos.x - 10, pos.y - 15, 20, 30);
+        ctx.restore();
+      });
   }
   // Dibujar jugador (respetando la última dirección izquierda/derecha) al final para que quede encima
   const facingLeft = playerStore.lastDirection === 'left';
   drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
+
+  // Actualizar el offset actual en el store de jugador
+  if (playerStore.currentOffset) {
+    playerStore.currentOffset.x = worldOffset.x || 0;
+    playerStore.currentOffset.y = worldOffset.y || 0;
+  }
 }

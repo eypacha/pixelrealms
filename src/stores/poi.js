@@ -5,7 +5,8 @@ import { useSoundStore } from './sound.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 
 export const usePoiStore = defineStore('poi', () => {
-    const defeatedGoblins = ref([]); // Array of { x, y }
+    // Array de { x, y, offsetX, offsetY }
+    const defeatedGoblins = ref([]);
   // Mapa de POIs por tile key 'offsetX,offsetY'
   const poisByTile = ref({});
   const pois = ref([]); // current tile pois
@@ -85,7 +86,11 @@ export const usePoiStore = defineStore('poi', () => {
   }
 
   function addDefeatedGoblin(position) {
-    defeatedGoblins.value.push({ x: position.x, y: position.y });
+    // Recibe también el offset actual
+    if (position.offsetX === undefined || position.offsetY === undefined) {
+      console.warn('addDefeatedGoblin: falta offsetX/offsetY');
+    }
+    defeatedGoblins.value.push({ x: position.x, y: position.y, offsetX: position.offsetX, offsetY: position.offsetY });
   }
 
   return { pois, ensureForTile, checkDiscovery, defeatedGoblins, addDefeatedGoblin };

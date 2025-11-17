@@ -53,6 +53,9 @@ export const usePlayerStore = defineStore('player', () => {
   const lastDirection = ref('right');
   const darkKnightDefeatedCount = ref(0);
   
+  // Offset actual del tile
+  const currentOffset = ref({ x: 0, y: 0 });
+  
   let terrainRef = null;
   let widthRef = 0;
   let heightRef = 0;
@@ -137,7 +140,10 @@ export const usePlayerStore = defineStore('player', () => {
         // Si era un goblin, agregarlo a defeatedGoblins
         if (enemyType.value === 'goblin') {
           const poiStore = usePoiStore();
-          poiStore.addDefeatedGoblin({ x: position.value.x, y: position.value.y });
+          // Usar el offset actual guardado en el store
+          const wx = currentOffset.value.x;
+          const wy = currentOffset.value.y;
+          poiStore.addDefeatedGoblin({ x: position.value.x, y: position.value.y, offsetX: wx, offsetY: wy });
         }
         // Mark enemy as defeated and wait for player to loot or continue
         enemyDefeated.value = true;
@@ -349,5 +355,5 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
+  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, currentOffset, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
 });
