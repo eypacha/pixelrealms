@@ -1,3 +1,14 @@
+  // Imagen de wizard
+  if (!drawAll.wizardImage) {
+    drawAll.wizardImage = new Image();
+    drawAll.wizardImage.src = '/images/wizard.png';
+    drawAll.wizardImage.onload = () => {
+      if (terrainCanvas && terrainCanvas.value) {
+        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+      }
+    };
+  }
+  const wizardImg = drawAll.wizardImage;
 // src/utilities/draw.js
 import { createSeededRandom } from './randomWithSeed';
 import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
@@ -122,12 +133,27 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
         ctx.restore();
       } else {
-        // Si la imagen no está cargada, dibujar un rectángulo gris/blanco como fallback
         ctx.fillStyle = poi.discovered ? 'gray' : 'white';
         ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
       }
+    } else if (poi.type === 'wizard') {
+      if (wizardImg.complete) {
+        ctx.save();
+        if (poi.discovered) {
+          ctx.globalAlpha = 0.4;
+        }
+        ctx.drawImage(wizardImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
+        ctx.restore();
+      } else {
+        // Fallback: círculo azul
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(poi.position.x, poi.position.y, 7, 0, 2 * Math.PI);
+        ctx.fillStyle = poi.discovered ? 'lightblue' : 'blue';
+        ctx.fill();
+        ctx.restore();
+      }
     } else {
-      // Otros POIs (si existen), dibujar como antes
       ctx.fillStyle = poi.discovered ? 'gray' : 'white';
       ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
     }

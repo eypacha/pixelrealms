@@ -1,6 +1,3 @@
-
-
-
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
     <div class="mb-4">
@@ -12,6 +9,7 @@
       <canvas ref="terrainCanvas" width="800" height="600" class="border border-black"></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
+      <WizardPopup v-if="playerStore.wizardActive" />
     </div>
     <div class="mt-4 text-center">
         ❤️ {{ playerStore.health }}
@@ -36,6 +34,7 @@ import { drawAll } from '../utilities/draw';
 import { PLAYER_SPEED } from '../constants/player';
 import CombatPopup from '../components/CombatPopup.vue';
 import GameOverPopup from '../components/GameOverPopup.vue';
+import WizardPopup from '../components/WizardPopup.vue';
 
 const { terrainCanvas, seedInput, randomizeSeed, updateTerrain, worldOffset, addOffset, tileStep } = useTerrain();
 const playerStore = usePlayerStore();

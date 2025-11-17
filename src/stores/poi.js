@@ -10,7 +10,7 @@ export const usePoiStore = defineStore('poi', () => {
   const pois = ref([]); // current tile pois
   const soundStore = useSoundStore();
   // Generate POIs for a specific tile defined by offsetX, offsetY (in grid indices)
-  // seed is used to make POIs deterministic per tile
+  // Now generates both 'castle' and 'wizard' POIs
   function ensureForTile(offsetX, offsetY, terrain, width, height, seed, count = CASTLE_COUNT) {
     const key = `${offsetX},${offsetY}`;
     if (poisByTile.value[key]) {
@@ -19,6 +19,7 @@ export const usePoiStore = defineStore('poi', () => {
     }
     const rand = createSeededRandom(String(seed) + ':poi:' + key);
     const arr = [];
+    // Castles
     for (let i = 0; i < count; i++) {
       let x, y, attempts = 0;
       let placed = false;
@@ -29,7 +30,24 @@ export const usePoiStore = defineStore('poi', () => {
         const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
         if (terrain[ty]?.[tx] > -0.05) {
           const loot = Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN;
-          arr.push({ id: i, type: 'castle', position: { x, y }, discovered: false, loot });
+          arr.push({ id: 'castle-' + i, type: 'castle', position: { x, y }, discovered: false, loot });
+          placed = true;
+        }
+        attempts++;
+      }
+    }
+    // Wizards (por ejemplo, 3 por tile)
+    const WIZARD_COUNT = 3;
+    for (let i = 0; i < WIZARD_COUNT; i++) {
+      let x, y, attempts = 0;
+      let placed = false;
+      while (attempts < 1000 && !placed) {
+        x = Math.floor(rand() * width);
+        y = Math.floor(rand() * height);
+        const tx = Math.floor(x * (terrain.length - 1) / (width - 1));
+        const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
+        if (terrain[ty]?.[tx] > -0.05) {
+          arr.push({ id: 'wizard-' + i, type: 'wizard', position: { x, y }, discovered: false });
           placed = true;
         }
         attempts++;
@@ -43,22 +61,23 @@ export const usePoiStore = defineStore('poi', () => {
     pois.value.forEach(poi => {
       if (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10) {
         poi.discovered = true;
-        // If it's a castle, trigger a special encounter with the Dark Knight
-        if (poi.type === 'castle') {
-          console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
-          // start a harder fight; startCombatWith is defined in player store
-          if (typeof playerStore.startCombatWith === 'function') {
-            playerStore.startCombatWith({ type: 'darkknight' });
-            soundStore.playSound('drum');
-          } else {
-            // fallback to normal combat
-            playerStore.startCombat();
-          }
-        } else {
-          // default behavior: award loot and play coin sound
-          playerStore.coins += poi.loot;
-          soundStore.playSound('coin');
-          console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
+            if (poi.type === 'castle') {
+              console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
+              if (typeof playerStore.startCombatWith === 'function') {
+                playerStore.startCombatWith({ type: 'darkknight' });
+                soundStore.playSound('drum');
+              } else {
+                playerStore.startCombat();
+              }
+            } else if (poi.type === 'wizard') {
+              // Abrir WizardPopup
+              playerStore.wizardActive = true;
+              soundStore.playSound('gulp');
+              console.log('🧙‍♂️ Descubierto wizard en', poi.position);
+            } else {
+              playerStore.coins += poi.loot;
+              soundStore.playSound('coin');
+              console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
         }
       }
     });
