@@ -22,9 +22,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
+import { POTION_COST, ENCHANT_COST } from '../constants/wizard';
 
 const playerStore = usePlayerStore();
 const soundStore = playerStore.$state.soundStore || (typeof playerStore.playSound === 'function' ? playerStore : null);
@@ -34,53 +35,50 @@ const wizardCanvas = ref(null);
 const message = ref('Hi, traveler! How can I help you?');
 
 function usePotion() {
-  const cost = 6;
-  if (playerStore.coins < cost) {
-    message.value = `You need ${cost} coins to buy a potion.`;
+  if (playerStore.coins < POTION_COST) {
+    message.value = `You need ${POTION_COST} coins to buy a potion.`;
     return;
   }
-  playerStore.coins -= cost;
+  playerStore.coins -= POTION_COST;
   if (!playerStore.inventory.potion) playerStore.inventory.potion = 0;
   playerStore.inventory.potion++;
   if (typeof playerStore.playSound === 'function') {
     playerStore.playSound('coin');
   }
-  message.value = `You bought a potion!`;
+  message.value = `You bought a potion! (+1 potion, -${POTION_COST} coins)`;
 }
 
 function enchantSword() {
-  const cost = 10;
-  if (playerStore.coins < cost) {
-    message.value = `Please ${cost} coins to enchant your sword.`;
+  if (playerStore.coins < ENCHANT_COST) {
+    message.value = `You need ${ENCHANT_COST} coins to enchant your sword.`;
     return;
   }
-  playerStore.coins -= cost;
+  playerStore.coins -= ENCHANT_COST;
   if (typeof playerStore.playSound === 'function') {
     playerStore.playSound('coin');
   }
   if (Math.random() < 0.5) {
     playerStore.strength++;
-    message.value = `Sword enchanted! +1 STR`;
+    message.value = `Sword enchanted! +1 STR (-${ENCHANT_COST} coins)`;
   } else {
-    message.value = 'The spell failed.';
+    message.value = `The spell failed. (-${ENCHANT_COST} coins)`;
   }
 }
 
 function enchantShield() {
-  const cost = 10;
-  if (playerStore.coins < cost) {
-    message.value = `Please ${cost} coins to enchant your shield.`;
+  if (playerStore.coins < ENCHANT_COST) {
+    message.value = `You need ${ENCHANT_COST} coins to enchant your shield.`;
     return;
   }
-  playerStore.coins -= cost;
+  playerStore.coins -= ENCHANT_COST;
   if (typeof playerStore.playSound === 'function') {
     playerStore.playSound('coin');
   }
   if (Math.random() < 0.5) {
     playerStore.defense++;
-    message.value = `Shield enchanted! +1 DEF `;
+    message.value = `Shield enchanted! +1 DEF (-${ENCHANT_COST} coins)`;
   } else {
-    message.value = 'The spell failed.';
+    message.value = `The spell failed. (-${ENCHANT_COST} coins)`;
   }
 }
 
