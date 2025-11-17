@@ -28,6 +28,7 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyDefeated = ref(false);
   const lootCollected = ref(false);
   const lastDirection = ref('right');
+  const darkKnightDefeatedCount = ref(0);
   
   let terrainRef = null;
   let widthRef = 0;
@@ -76,9 +77,14 @@ export const usePlayerStore = defineStore('player', () => {
     const type = options.type || 'goblin';
     enemyType.value = type;
     if (type === 'darkknight') {
-      enemyHealth.value = 15;
-      enemyStrength.value = 12;
-      enemyDefense.value = 10;
+      // Dificultad progresiva
+      const baseHealth = 15;
+      const baseStrength = 12;
+      const baseDefense = 10;
+      const scale = darkKnightDefeatedCount.value;
+      enemyHealth.value = baseHealth + scale * 2;
+      enemyStrength.value = baseStrength + scale * 2;
+      enemyDefense.value = baseDefense + scale * 2;
     } else {
       // fallback to goblin-like stats
       enemyHealth.value = 10;
@@ -102,9 +108,12 @@ export const usePlayerStore = defineStore('player', () => {
       if (enemyHealth.value <= 0) {
         combatMessage.value = 'Enemy defeated!';
         console.log('Enemigo derrotado!');
+        // Si era un darkknight, aumentar el contador
+        if (enemyType.value === 'darkknight') {
+          darkKnightDefeatedCount.value++;
+        }
         // Mark enemy as defeated and wait for player to loot or continue
         enemyDefeated.value = true;
-        // ensure player turn is false so UI doesn't show 'Your turn'
         playerTurn.value = false;
         lootCollected.value = false;
       } else {
@@ -311,5 +320,5 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
+  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
 });

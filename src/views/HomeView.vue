@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
-    <div class="mb-4">
+    <!-- <div class="mb-4">
       <label for="seed" class="mr-2 font-bold">Seed:</label>
       <input id="seed" v-model="seedInput" type="text" class="border px-2 py-1" @input="updateTerrain" />
       <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white">Random</button>
-    </div>
+    </div> -->
     <div class="relative">
       <canvas ref="terrainCanvas" width="800" height="600" class="border border-black"></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
