@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { usePoiStore } from './poi.js';
 import { ref } from 'vue';
 import { PLAYER_SPEED, ENCOUNTER_RATE, INITIAL_HEALTH, INITIAL_STRENGTH, INITIAL_DEFENSE, COVER_AMOUNT, INITIAL_COINS, INITIAL_POTIONS } from '../constants/player.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
@@ -111,6 +112,11 @@ export const usePlayerStore = defineStore('player', () => {
         // Si era un darkknight, aumentar el contador
         if (enemyType.value === 'darkknight') {
           darkKnightDefeatedCount.value++;
+        }
+        // Si era un goblin, agregarlo a defeatedGoblins
+        if (enemyType.value === 'goblin') {
+          const poiStore = usePoiStore();
+          poiStore.addDefeatedGoblin({ x: position.value.x, y: position.value.y });
         }
         // Mark enemy as defeated and wait for player to loot or continue
         enemyDefeated.value = true;

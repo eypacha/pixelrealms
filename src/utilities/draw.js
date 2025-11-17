@@ -38,6 +38,17 @@ function drawCell(ctx, playerStore, px, py, canvasWidth, canvasHeight, terrainSi
 }
 
 export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset = { x: 0, y: 0 }, options = {}) {
+  // Imagen de goblin
+  if (!drawAll.goblinImage) {
+    drawAll.goblinImage = new Image();
+    drawAll.goblinImage.src = 'images/goblin.png';
+    drawAll.goblinImage.onload = () => {
+      if (terrainCanvas && terrainCanvas.value) {
+        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+      }
+    };
+  }
+  const goblinImg = drawAll.goblinImage;
 
   // Imagen de wizard
   if (!drawAll.wizardImage) {
@@ -108,9 +119,6 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
       }
     }
   }
-  // Dibujar jugador (respetando la última dirección izquierda/derecha)
-  const facingLeft = playerStore.lastDirection === 'left';
-  drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
   // Dibujar puntos de interés
   // Usar la imagen del Dark Knight para los castillos
   if (!drawAll.darkKnightImage) {
@@ -150,4 +158,16 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
       ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
     }
   });
+  // Dibujar goblins derrotados con opacidad
+  if (goblinImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
+    poiStore.defeatedGoblins.forEach(pos => {
+      ctx.save();
+      ctx.globalAlpha = 0.4;
+      ctx.drawImage(goblinImg, pos.x - 10, pos.y - 15, 20, 30);
+      ctx.restore();
+    });
+  }
+  // Dibujar jugador (respetando la última dirección izquierda/derecha) al final para que quede encima
+  const facingLeft = playerStore.lastDirection === 'left';
+  drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
 }

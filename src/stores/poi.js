@@ -5,6 +5,7 @@ import { useSoundStore } from './sound.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 
 export const usePoiStore = defineStore('poi', () => {
+    const defeatedGoblins = ref([]); // Array of { x, y }
   // Mapa de POIs por tile key 'offsetX,offsetY'
   const poisByTile = ref({});
   const pois = ref([]); // current tile pois
@@ -61,27 +62,31 @@ export const usePoiStore = defineStore('poi', () => {
     pois.value.forEach(poi => {
       if (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10) {
         poi.discovered = true;
-            if (poi.type === 'castle') {
-              console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
-              if (typeof playerStore.startCombatWith === 'function') {
-                playerStore.startCombatWith({ type: 'darkknight' });
-                soundStore.playSound('drum');
-              } else {
-                playerStore.startCombat();
-              }
-            } else if (poi.type === 'wizard') {
-              // Abrir WizardPopup
-              playerStore.wizardActive = true;
-              soundStore.playSound('gulp');
-              console.log('🧙‍♂️ Descubierto wizard en', poi.position);
-            } else {
-              playerStore.coins += poi.loot;
-              soundStore.playSound('coin');
-              console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
+        if (poi.type === 'castle') {
+          console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
+          if (typeof playerStore.startCombatWith === 'function') {
+            playerStore.startCombatWith({ type: 'darkknight' });
+            soundStore.playSound('drum');
+          } else {
+            playerStore.startCombat();
+          }
+        } else if (poi.type === 'wizard') {
+          // Abrir WizardPopup
+          playerStore.wizardActive = true;
+          soundStore.playSound('gulp');
+          console.log('🧙‍♂️ Descubierto wizard en', poi.position);
+        } else {
+          playerStore.coins += poi.loot;
+          soundStore.playSound('coin');
+          console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
         }
       }
     });
   }
 
-  return { pois, ensureForTile, checkDiscovery };
+  function addDefeatedGoblin(position) {
+    defeatedGoblins.value.push({ x: position.x, y: position.y });
+  }
+
+  return { pois, ensureForTile, checkDiscovery, defeatedGoblins, addDefeatedGoblin };
 });
