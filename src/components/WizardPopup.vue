@@ -4,20 +4,18 @@
       <div class="flex justify-center gap-8 mb-4">
         <div>
           <canvas ref="playerCanvas" width="60" height="80"></canvas>
-          <div class="mt-1 text-sm">You</div>
         </div>
         <div>
           <canvas ref="wizardCanvas" width="60" height="80"></canvas>
-          <div class="mt-1 text-sm">Wizard</div>
         </div>
       </div>
-      <div class="mt-2 text-center text-sm text-gray-700">{{ message }}</div>
+      <div class="mt-2 text-center text-sm text-gray-700 mb-5">{{ message }}</div>
 
       <div class="flex flex-col gap-2 items-center">
-        <button @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-2 w-full">Buy Potion ({{ playerStore.inventory.potion }})</button>
-        <button @click="enchantSword" class="px-4 py-2 w-full">Enchant Sword (+1 STR, 50%)</button>
-        <button @click="enchantShield" class="px-4 py-2 w-full">Enchant Shield (+1 DEF, 50%)</button>
-        <button @click="closePopup" class="px-4 py-2 w-full mt-2">Leave</button>
+        <button @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-1 w-full">Buy Potion: 6🪙</button>
+        <button @click="enchantSword" class="px-4 py-1 w-full">Enchant Sword: 10🪙</button>
+        <button @click="enchantShield" class="px-4 py-1 w-full">Enchant Shield: 10🪙</button>
+        <button @click="closePopup" class="px-4 py-1 w-full mt-2">Leave</button>
       </div>
     </div>
   </div>
