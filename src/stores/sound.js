@@ -4,11 +4,11 @@ import { Howl } from 'howler';
 export const useSoundStore = defineStore('sound', () => {
   // Sounds
   const sounds = {
-    hammer: new Howl({ src: ['/sounds/hammer.wav'] }),
-    kling: new Howl({ src: ['/sounds/kling.wav'] }),
-    whosh: new Howl({ src: ['/sounds/whosh.wav'] }),
-    coin: new Howl({ src: ['/sounds/coin.mp3'] }),
-    gulp: new Howl({ src: ['/sounds/gulp.wav'] }),
+    hammer: new Howl({ src: ['sounds/hammer.wav'] }),
+    kling: new Howl({ src: ['sounds/kling.wav'] }),
+    whosh: new Howl({ src: ['sounds/whosh.wav'] }),
+    coin: new Howl({ src: ['sounds/coin.mp3'] }),
+    gulp: new Howl({ src: ['sounds/gulp.wav'] }),
   };
 
   function playSound(name) {
