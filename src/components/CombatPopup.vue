@@ -1,6 +1,6 @@
 <template>
   <div class="absolute inset-0 bg-[#00000020] flex justify-center items-center z-50">
-    <div class="flex flex-col bg-white w-100 h-70 p-5 text-center">
+    <div class="flex flex-col bg-white w-100 h-80 p-5 text-center">
       <div class="flex-1">
         <h2>VS</h2>
         <div class="flex justify-center space-x-4 mb-4 border-b-4" :style="{ borderBottomColor: playerStore.getTerrainColor() }">
