@@ -1,14 +1,3 @@
-  // Imagen de wizard
-  if (!drawAll.wizardImage) {
-    drawAll.wizardImage = new Image();
-    drawAll.wizardImage.src = 'images/wizard.png';
-    drawAll.wizardImage.onload = () => {
-      if (terrainCanvas && terrainCanvas.value) {
-        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
-      }
-    };
-  }
-  const wizardImg = drawAll.wizardImage;
 // src/utilities/draw.js
 import { createSeededRandom } from './randomWithSeed';
 import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
@@ -49,6 +38,19 @@ function drawCell(ctx, playerStore, px, py, canvasWidth, canvasHeight, terrainSi
 }
 
 export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset = { x: 0, y: 0 }, options = {}) {
+
+  // Imagen de wizard
+  if (!drawAll.wizardImage) {
+    drawAll.wizardImage = new Image();
+    drawAll.wizardImage.src = 'images/wizard.png';
+    drawAll.wizardImage.onload = () => {
+      if (terrainCanvas && terrainCanvas.value) {
+        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+      }
+    };
+  }
+  const wizardImg = drawAll.wizardImage;
+  
   const { initializePlayer = false, redrawTerrain = initializePlayer } = options;
   // Regenerar alturas si inicializamos el jugador o si explicitamente pedimos redrawTerrain
   const regenerateHeights = initializePlayer || redrawTerrain;
@@ -141,15 +143,8 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         }
         ctx.drawImage(wizardImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
         ctx.restore();
-      } else {
-        // Fallback: círculo azul
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(poi.position.x, poi.position.y, 7, 0, 2 * Math.PI);
-        ctx.fillStyle = poi.discovered ? 'lightblue' : 'blue';
-        ctx.fill();
-        ctx.restore();
       }
+      // No dibujar nada si la imagen no está lista
     } else {
       ctx.fillStyle = poi.discovered ? 'gray' : 'white';
       ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
