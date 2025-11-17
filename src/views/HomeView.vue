@@ -24,8 +24,7 @@
           <span v-if="Number(soundStore.volume) === 0">🔇</span>
           <span v-else>🔊</span>
         </label>
-        <input id="volume" type="range" min="0" max="1" step="0.01" class="w-50" v-model="soundStore.volume" @input="soundStore.setVolume(Number(soundStore.volume))"/>
-        <span class="w-10">{{ Math.round(soundStore.volume * 100) }}%</span>
+        <input id="volume" type="range" min="0" max="1" step="0.01" class="w-25" v-model="soundStore.volume" @input="soundStore.setVolume(Number(soundStore.volume))"/>
       </div>
     </div>
   </div>
