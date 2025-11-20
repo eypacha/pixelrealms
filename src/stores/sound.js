@@ -7,6 +7,8 @@ export const useSoundStore = defineStore('sound', () => {
   const volume = ref(0.2);
   // Sounds
   const sounds = {
+    footstep: new Howl({ src: ['sounds/footstep.wav'], volume: volume.value }),
+    hammer: new Howl({ src: ['sounds/hammer.wav'], volume: volume.value }),
     hammer: new Howl({ src: ['sounds/hammer.wav'], volume: volume.value }),
     kling: new Howl({ src: ['sounds/kling.wav'], volume: volume.value }),
     whosh: new Howl({ src: ['sounds/whosh.wav'], volume: volume.value }),
@@ -22,6 +24,7 @@ export const useSoundStore = defineStore('sound', () => {
   }
 
   function playSound(name) {
+    console.log('playSound', name);
     const s = sounds[name];
     if (!s) {
       console.warn(`Sound not found: ${name}`);

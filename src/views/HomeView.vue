@@ -143,6 +143,9 @@ async function resetGameWithRandomSeed() {
   if (terrainCanvas.value) {
     terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seedInput.value);
   }
+  if (typeof poiStore.resetPois === 'function') {
+    poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
+  }
   if (typeof poiStore.ensureForTile === 'function') {
     poiStore.ensureForTile(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
   }
@@ -174,6 +177,7 @@ onMounted(async () => {
     if (narrativeActive.value) return;
     let moved = false;
       if (e.key === 'ArrowUp') {
+      soundStore.playSound('footstep');
       moved = playerStore.moveUp();
       if (!moved) {
         const canvas = terrainCanvas.value;
@@ -185,6 +189,7 @@ onMounted(async () => {
         }
       }
     } else if (e.key === 'ArrowDown') {
+      soundStore.playSound('footstep');
       moved = playerStore.moveDown();
       if (!moved) {
         const canvas = terrainCanvas.value;
@@ -195,6 +200,7 @@ onMounted(async () => {
         }
       }
     } else if (e.key === 'ArrowLeft') {
+      soundStore.playSound('footstep');
       moved = playerStore.moveLeft();
       if (!moved) {
         const canvas = terrainCanvas.value;
@@ -205,6 +211,7 @@ onMounted(async () => {
         }
       }
     } else if (e.key === 'ArrowRight') {
+      soundStore.playSound('footstep');
       moved = playerStore.moveRight();
       if (!moved) {
         const canvas = terrainCanvas.value;
