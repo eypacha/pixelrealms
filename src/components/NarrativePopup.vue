@@ -10,26 +10,25 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'NarrativePopup',
-  props: {
-    anecdote: {
-      type: Object,
-      required: true
-    },
-    visible: {
-      type: Boolean,
-      required: true
-    }
+<script setup>
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+  anecdote: {
+    type: Object,
+    required: true
   },
-  emits: ['close'],
-  methods: {
-    closePopup() {
-      this.$emit('close');
-    }
+  visible: {
+    type: Boolean,
+    required: true
   }
-};
+});
+
+const emit = defineEmits(['close']);
+
+function closePopup() {
+  emit('close');
+}
 </script>
 
 <style scoped>
