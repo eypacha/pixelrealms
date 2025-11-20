@@ -133,6 +133,25 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     };
   }
   const darkKnightImg = drawAll.darkKnightImage;
+  // Primero dibujar los tesoros (X roja) para que queden por debajo
+  
+  poiStore.pois.forEach(poi => {
+    if (poi.type === 'treasure') {
+      const length = 5
+
+      ctx.save();
+      ctx.strokeStyle = poi.discovered ? 'gray' : 'red';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(poi.position.x - length, poi.position.y - length);
+      ctx.lineTo(poi.position.x + length, poi.position.y + length);
+      ctx.moveTo(poi.position.x + length, poi.position.y - length);
+      ctx.lineTo(poi.position.x - length, poi.position.y + length);
+      ctx.stroke();
+      ctx.restore();
+    }
+  });
+  // Luego dibujar los demás POIs
   poiStore.pois.forEach(poi => {
     if (poi.type === 'darkKnight') {
       if (darkKnightImg.complete) {
@@ -153,7 +172,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         ctx.restore();
       }
       // No dibujar nada si la imagen no está lista
-    } else {
+    } else if (poi.type !== 'treasure') {
       ctx.fillStyle = poi.discovered ? 'gray' : 'white';
       ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
     }
