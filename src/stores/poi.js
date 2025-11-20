@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT } from '../constants/poi.js';
-import { useSoundStore } from './sound.js';
+import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT, WIZARD_COUNT } from '../constants/poi.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 
 export const usePoiStore = defineStore('poi', () => {
-    // Array de { x, y, offsetX, offsetY }
-    const defeatedGoblins = ref([]);
+  // Array de { x, y, offsetX, offsetY }
+  const defeatedGoblins = ref([]);
   // Mapa de POIs por tile key 'offsetX,offsetY'
   const poisByTile = ref({});
   const pois = ref([]); // current tile pois
-  const soundStore = useSoundStore();
+
+  // Reactive property for treasure popup
+  const treasureDiscovered = ref(false);
   // Generate POIs for a specific tile defined by offsetX, offsetY (in grid indices)
   // Now generates 'darkKnight', 'wizard' and 'treasure' POIs
   function ensureForTile(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
@@ -39,7 +40,6 @@ export const usePoiStore = defineStore('poi', () => {
       }
     }
     // Wizards (por ejemplo, 3 por tile)
-    const WIZARD_COUNT = 3;
     for (let i = 0; i < WIZARD_COUNT; i++) {
       let x, y, attempts = 0;
       let placed = false;
@@ -90,7 +90,10 @@ export const usePoiStore = defineStore('poi', () => {
           // Abrir WizardPopup
           playerStore.wizardActive = true;
           console.log('🧙‍♂️ Descubierto wizard en', poi.position);
-        } 
+        } else if (poi.type === 'treasure') {
+          treasureDiscovered.value = true;
+          console.log('💰 Tesoro descubierto en', poi.position);
+        }
       }
     });
   }
@@ -103,5 +106,5 @@ export const usePoiStore = defineStore('poi', () => {
     defeatedGoblins.value.push({ x: position.x, y: position.y, offsetX: position.offsetX, offsetY: position.offsetY });
   }
 
-  return { pois, ensureForTile, checkDiscovery, defeatedGoblins, addDefeatedGoblin };
+  return { pois, ensureForTile, checkDiscovery, defeatedGoblins, addDefeatedGoblin, treasureDiscovered };
 });

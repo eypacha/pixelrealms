@@ -16,6 +16,7 @@
         :visible="narrativeActive"
         @close="closeNarrative"
       />
+      <TreasurePopup v-if="treasureDiscovered" />
     </div>
     <div class="mt-4 flex items-center gap-20">
       <div>
@@ -52,10 +53,13 @@ import GameOverPopup from '../components/GameOverPopup.vue';
 import WizardPopup from '../components/WizardPopup.vue';
 import NarrativePopup from '../components/NarrativePopup.vue';
 import { useNarrativeEncounter } from '../composables/useNarrativeEncounter';
+import TreasurePopup from '../components/TreasurePopup.vue';
+import { storeToRefs } from 'pinia';
 
 const { terrainCanvas, seedInput, randomizeSeed, updateTerrain, worldOffset, addOffset, tileStep } = useTerrain();
 const playerStore = usePlayerStore();
 const poiStore = usePoiStore();
+const { treasureDiscovered } = storeToRefs(poiStore);
 const playerImage = ref(null);
 
 const narrativeActive = ref(false);
