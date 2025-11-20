@@ -176,19 +176,18 @@ onMounted(async () => {
     if (playerStore.combatActive) return;
     if (narrativeActive.value) return;
     let moved = false;
-      if (e.key === 'ArrowUp') {
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
       soundStore.playSound('footstep');
       moved = playerStore.moveUp();
       if (!moved) {
         const canvas = terrainCanvas.value;
-        // si estaba lo suficientemente cerca del borde superior, hacer wrap hacia el tile de arriba
         if (playerStore.position.y <= PLAYER_SPEED) {
           addOffset(0, -tileStep);
           playerStore.position.y = canvas.height - 1;
           moved = true;
         }
       }
-    } else if (e.key === 'ArrowDown') {
+    } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
       soundStore.playSound('footstep');
       moved = playerStore.moveDown();
       if (!moved) {
@@ -199,7 +198,7 @@ onMounted(async () => {
           moved = true;
         }
       }
-    } else if (e.key === 'ArrowLeft') {
+    } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
       soundStore.playSound('footstep');
       moved = playerStore.moveLeft();
       if (!moved) {
@@ -210,7 +209,7 @@ onMounted(async () => {
           moved = true;
         }
       }
-    } else if (e.key === 'ArrowRight') {
+    } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
       soundStore.playSound('footstep');
       moved = playerStore.moveRight();
       if (!moved) {

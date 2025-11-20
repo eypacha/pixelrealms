@@ -31,31 +31,31 @@
       <div class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto">
         <template v-if="!playerStore.enemyDefeated">
           <div class="flex flex-col items-center">
-            <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }">
+            <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-1 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }">
               <span style="font-size:1.5em;">🗡️</span>
               {{ $t('combat.attack') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
-            <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }">
+            <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-1 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }">
               <span style="font-size:1.5em;">🛡️</span>
               {{ $t('combat.cover') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
-            <button @click="usePotion" :disabled="!playerStore.playerTurn || playerStore.inventory.potion <= 0" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.inventory.potion <= 0 }">
+            <button @click="usePotion" :disabled="!playerStore.playerTurn || playerStore.inventory.potion <= 0" class="px-4 py-1 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.inventory.potion <= 0 }">
               <span style="font-size:1.5em;">🧪</span>
               {{ $t('combat.heal') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
-            <button @click="fireball" :disabled="!playerStore.playerTurn || playerStore.mana < 1" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.mana < 1 }">
+            <button @click="fireball" :disabled="!playerStore.playerTurn || playerStore.mana < 1" class="px-4 py-1 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.mana < 1 }">
               <span style="font-size:1.5em;">🔥</span>
               {{ $t('combat.fireball') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
-            <button @click="freeze" :disabled="!playerStore.playerTurn || playerStore.mana < 2" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.mana < 2 }">
+            <button @click="freeze" :disabled="!playerStore.playerTurn || playerStore.mana < 2" class="px-4 py-1 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.mana < 2 }">
               <span style="font-size:1.5em; color: #00bfff;">❄️</span>
               Freeze
             </button>

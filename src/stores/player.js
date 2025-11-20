@@ -455,6 +455,7 @@ export const usePlayerStore = defineStore('player', () => {
     enemyDefense,
     enemyType,
     playerTurn,
+    combatMessage,
     combatMessageKey,
     combatMessageParams,
     coverActive,

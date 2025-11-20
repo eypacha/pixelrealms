@@ -1,4 +1,4 @@
-export const ANECDOTE_CHANCHE = 0.1;
+export const ANECDOTE_CHANCHE = 0.05;
 
 export const ANECDOTES_EN = [
   { title: "The Wind Archive", text: "This cliff is known for a strange phenomenon: when the wind blows from the north, it produces a rustling that sounds like pages turning. Scholars believe the sound is actually an ancient elemental language recounting the world’s history before maps existed." },
