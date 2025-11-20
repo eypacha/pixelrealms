@@ -25,7 +25,7 @@
             </div>
           </div>
         </div>
-        <p>{{ playerStore.combatMessage }}</p>
+        <p>{{ $t(playerStore.combatMessageKey, playerStore.combatMessageParams) }}</p>
         <p v-if="!playerStore.enemyDefeated" class="font-bold">{{ playerStore.playerTurn ? $t('combat.yourTurn') : $t('combat.enemyTurn') }}</p>
       </div>
       <div class="mt-4 flex space-x-2 justify-center">

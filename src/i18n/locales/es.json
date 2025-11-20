@@ -22,6 +22,16 @@
     "leave": "Salir"
   },
   "combat": {
+    "start": "¡Comienza el combate!",
+    "critical": "¡Crítico! -{value}",
+    "hit": "Golpe -{value}",
+    "enemyDefeated": "¡Enemigo derrotado!",
+    "playerDefeated": "¡Jugador derrotado!",
+    "miss": "Falló",
+    "healed": "Curado +{value}",
+    "notEnoughMana": "¡No hay suficiente maná!",
+    "fireballHit": "¡Bola de fuego! -{value}",
+    "fireballMissed": "¡Bola de fuego falló!",
     "vs": "VS",
     "yourTurn": "Tu turno",
     "enemyTurn": "Turno enemigo",

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useI18n } from 'vue-i18n';
 import { usePoiStore } from './poi.js';
 import { ref } from 'vue';
 import {
@@ -32,6 +33,7 @@ import { useSoundStore } from './sound.js';
 import { calculateDamage } from '../utilities/calculateDamage.js';
 
 export const usePlayerStore = defineStore('player', () => {
+    const { t } = useI18n();
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
   const seed = ref(Date.now());
@@ -51,7 +53,8 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyDefense = ref(GOBLIN_DEFENSE);
   const enemyType = ref('goblin');
   const playerTurn = ref(true);
-  const combatMessage = ref('Combat start');
+  const combatMessageKey = ref('combat.start');
+  const combatMessageParams = ref({});
   const coverActive = ref(false);
   const enemyDefeated = ref(false);
   const lootCollected = ref(false);
@@ -100,7 +103,7 @@ export const usePlayerStore = defineStore('player', () => {
     enemyDefense.value = GOBLIN_DEFENSE;
     playerTurn.value = true;
     combatActive.value = true;
-    combatMessage.value = 'Combat start';
+    combatMessage.value = t('combat.start');
   }
 
   // Start combat with specific enemy type (e.g., { type: 'darkknight' })
@@ -121,7 +124,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
     playerTurn.value = true;
     combatActive.value = true;
-    combatMessage.value = 'Combat start';
+    combatMessage.value = t('combat.start');
   }
 
   function playerAttack(damage) {
@@ -130,13 +133,13 @@ export const usePlayerStore = defineStore('player', () => {
     if (combatRandom() < hitChance) {
       const { damage: actualDamage, isCritical } = calculateDamage(damage, enemyDefense.value);
       combatMessage.value = isCritical
-        ? `Critical! -${actualDamage}`
-        : `Hit -${actualDamage}`;
+        ? t('combat.critical', { value: actualDamage })
+        : t('combat.hit', { value: actualDamage });
       enemyHealth.value -= actualDamage;
       soundStore.playSound(isCritical ? 'critical' : 'kling');
       console.log(`Jugador ataca: ${actualDamage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud enemigo: ${enemyHealth.value}`);
       if (enemyHealth.value <= 0) {
-        combatMessage.value = 'Enemy defeated!';
+        combatMessage.value = t('combat.enemyDefeated');
         console.log('Enemigo derrotado!');
         // Si era un darkknight, aumentar el contador
         if (enemyType.value === 'darkknight') {
@@ -163,7 +166,8 @@ export const usePlayerStore = defineStore('player', () => {
     } else {
       console.log('Jugador falla el ataque!');
       soundStore.playSound('whosh');
-      combatMessage.value = 'Miss';
+      combatMessage.value = t('combat.miss');
+        combatMessage.value = t('combat.miss');
       playerTurn.value = false;
       setTimeout(() => {
         enemyAttack();
@@ -217,13 +221,15 @@ export const usePlayerStore = defineStore('player', () => {
     if (combatRandom() < hitChance) {
       const { damage, isCritical } = calculateDamage(enemyStrength.value, defense.value);
       combatMessage.value = isCritical
-        ? `Critical! -${damage}`
-        : `Hit -${damage}`;
+        ? t('combat.critical', { value: damage })
+        : t('combat.hit', { value: damage });
       health.value -= damage;
       soundStore.playSound(isCritical ? 'critical' : 'hammer');
       console.log(`Enemigo ataca: ${damage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud jugador: ${health.value}`);
       if (health.value <= 0) {
         combatMessage.value = 'Player defeated!';
+          combatMessage.value = t('combat.playerDefeated');
+          combatMessage.value = t('combat.miss');
         console.log('Jugador derrotado!');
         setTimeout(() => {
           combatActive.value = false;
@@ -257,6 +263,7 @@ export const usePlayerStore = defineStore('player', () => {
     const healed = health.value - before;
     if (healed > 0) {
       combatMessage.value = `Healed +${healed}`;
+      combatMessage.value = t('combat.healed', { value: healed });
     }
   }
 
@@ -366,12 +373,15 @@ export const usePlayerStore = defineStore('player', () => {
     if (!combatActive.value || !playerTurn.value) return;
     if (mana.value < 1) {
       combatMessage.value = 'Not enough mana!';
+        combatMessage.value = t('combat.notEnoughMana');
       return;
     }
     const combatRandom = Math.random(); // No seed, para simpleza
     if (combatRandom < 0.9) {
       enemyHealth.value -= 3;
       combatMessage.value = 'Fireball! -3';
+        combatMessage.value = t('combat.fireballHit', { value: 3 });
+        combatMessage.value = t('combat.enemyDefeated');
       soundStore.playSound('fireball');
       if (enemyHealth.value <= 0) {
         combatMessage.value = 'Enemy defeated!';
@@ -386,6 +396,7 @@ export const usePlayerStore = defineStore('player', () => {
       }
     } else {
       combatMessage.value = 'Fireball missed!';
+        combatMessage.value = t('combat.fireballMissed');
       soundStore.playSound('whosh');
       playerTurn.value = false;
       setTimeout(() => {
@@ -395,5 +406,5 @@ export const usePlayerStore = defineStore('player', () => {
     mana.value -= 1;
   }
 
-  return { position, mana, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, currentOffset, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor, fireballAttack };
+  return { position, mana, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessageKey, combatMessageParams, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, currentOffset, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor, fireballAttack };
 });

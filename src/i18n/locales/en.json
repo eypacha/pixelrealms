@@ -23,6 +23,16 @@
     "leave": "Leave"
   },
   "combat": {
+    "start": "Combat start",
+    "critical": "Critical! -{value}",
+    "hit": "Hit -{value}",
+    "enemyDefeated": "Enemy defeated!",
+    "playerDefeated": "Player defeated!",
+    "miss": "Miss",
+    "healed": "Healed +{value}",
+    "notEnoughMana": "Not enough mana!",
+    "fireballHit": "Fireball! -{value}",
+    "fireballMissed": "Fireball missed!",
     "vs": "VS",
     "yourTurn": "Your turn",
     "enemyTurn": "Enemy turn",
