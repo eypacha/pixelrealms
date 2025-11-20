@@ -15,7 +15,7 @@
         width="800"
         height="600"
         class="max-w-full border border-black border-2 bg-black transition-all"
-        :class="timeStore.isNight.value ? 'brightness-60 blur-sm' : 'brightness-100'"
+        :class="timeStore.isNight.value ? 'brightness-60' : 'brightness-100'"
       ></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
