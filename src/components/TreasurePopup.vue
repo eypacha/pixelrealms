@@ -56,8 +56,7 @@ const scrollClaimed = ref(false);
 onMounted(() => {
   coins.value = Math.floor(Math.random() * 16) + 5; // 5-20
   potions.value = Math.floor(Math.random() * 4); // 0-3
-  // 30% probabilidad de scroll mágico
-  scrollFound.value = Math.random() < 0.3;
+  scrollFound.value = Math.random() < 0.5; // 50% probabilidad de scroll mágico
 });
 
 function claimCoins() {

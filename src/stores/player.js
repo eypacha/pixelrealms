@@ -357,5 +357,38 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, mana, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, currentOffset, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
+  function fireballAttack() {
+    if (!combatActive.value || !playerTurn.value) return;
+    if (mana.value < 1) {
+      combatMessage.value = 'Not enough mana!';
+      return;
+    }
+    const combatRandom = Math.random(); // No seed, para simpleza
+    if (combatRandom < 0.9) {
+      enemyHealth.value -= 3;
+      combatMessage.value = 'Fireball! -3';
+      soundStore.playSound('fireball');
+      if (enemyHealth.value <= 0) {
+        combatMessage.value = 'Enemy defeated!';
+        enemyDefeated.value = true;
+        playerTurn.value = false;
+        lootCollected.value = false;
+      } else {
+        playerTurn.value = false;
+        setTimeout(() => {
+          enemyAttack();
+        }, 1000);
+      }
+    } else {
+      combatMessage.value = 'Fireball missed!';
+      soundStore.playSound('whosh');
+      playerTurn.value = false;
+      setTimeout(() => {
+        enemyAttack();
+      }, 1000);
+    }
+    mana.value -= 1;
+  }
+
+  return { position, mana, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, currentOffset, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor, fireballAttack };
 });
