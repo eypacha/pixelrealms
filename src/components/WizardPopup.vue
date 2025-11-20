@@ -12,10 +12,12 @@
       <div class="mt-2 text-center text-sm text-gray-700 mb-5">{{ message }}</div>
 
       <div class="flex flex-col gap-2 items-center">
-        <button @click="buyScroll" :disabled="playerStore.coins < 4" class="px-4 py-1 w-full cursor-pointer">Buy Magic Scroll: 4🪙 </button>
-        <button @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-1 w-full cursor-pointer">Buy Potion: {{ POTION_COST }}🪙</button>
-        <button @click="enchantSword" class="text-smpx-4 py-1 w-full cursor-pointer">Enchant Sword: {{ ENCHANT_COST }}🪙</button>
-        <button @click="enchantShield" class="px-4 py-1 w-full cursor-pointer">Enchant Shield: {{ ENCHANT_COST }}🪙</button>
+        <template v-for="option in wizardOptions" :key="option.key">
+          <button v-if="option.key === 'scroll'" @click="buyScroll" :disabled="playerStore.coins < 4" class="px-4 py-1 w-full cursor-pointer">Buy Magic Scroll: 4🪙 <span style="font-size:1.1em;">📜</span></button>
+          <button v-else-if="option.key === 'potion'" @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-1 w-full cursor-pointer">Buy Potion: {{ POTION_COST }}🪙</button>
+          <button v-else-if="option.key === 'sword'" @click="enchantSword" class="text-smpx-4 py-1 w-full cursor-pointer">Enchant Sword: {{ ENCHANT_COST }}🪙</button>
+          <button v-else-if="option.key === 'shield'" @click="enchantShield" class="px-4 py-1 w-full cursor-pointer">Enchant Shield: {{ ENCHANT_COST }}🪙</button>
+        </template>
         <button @click="closePopup" class="px-4 py-1 w-full mt-2 cursor-pointer">Leave</button>
       </div>
     </div>
@@ -23,6 +25,13 @@
 </template>
 
 <script setup>
+const allWizardOptions = [
+  { key: 'scroll', label: 'Buy Magic Scroll' },
+  { key: 'potion', label: 'Buy Potion' },
+  { key: 'sword', label: 'Enchant Sword' },
+  { key: 'shield', label: 'Enchant Shield' }
+];
+const wizardOptions = ref([]);
 import { ref, onMounted } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import { useSoundStore } from '../stores/sound';
@@ -93,6 +102,9 @@ function closePopup() {
 }
 
 onMounted(() => {
+    // Seleccionar 3 opciones al azar cada vez que aparece el mago
+    const shuffled = allWizardOptions.slice().sort(() => Math.random() - 0.5);
+    wizardOptions.value = shuffled.slice(0, 3);
   // Draw player
   if (playerCanvas.value) {
     const ctx = playerCanvas.value.getContext('2d');
