@@ -109,11 +109,11 @@ function loot() {
   // collect loot only when enemyDefeated
   const result = playerStore.collectLoot();
   if (result && typeof result === 'object') {
-    let msg = `Looted +${result.coins} coins`;
-    if (result.potion) msg += ' and +1 potion';
-    playerStore.combatMessage = msg;
+     let msg = $t('combat.looted', { coins: result.coins });
+     if (result.potion) msg += ' ' + $t('combat.lootedPotion');
+     playerStore.combatMessage = msg;
   } else if (playerStore.lootCollected) {
-    playerStore.combatMessage = 'Already looted';
+     playerStore.combatMessage = $t('combat.alreadyLooted');
   }
 }
 
