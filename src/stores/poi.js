@@ -76,8 +76,11 @@ export const usePoiStore = defineStore('poi', () => {
 
   function checkDiscovery(playerPosition, playerStore) {
     pois.value.forEach(poi => {
-      if (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10) {
-        poi.discovered = true;
+      if (
+        (poi.type === 'narrative' && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10)
+        || (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10)
+      ) {
+        if (poi.type !== 'narrative') poi.discovered = true;
         if (poi.type === 'darkKnight') {
           console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
           if (typeof playerStore.startCombatWith === 'function') {

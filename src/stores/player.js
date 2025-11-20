@@ -53,6 +53,7 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyDefense = ref(GOBLIN_DEFENSE);
   const enemyType = ref('goblin');
   const playerTurn = ref(true);
+  const combatMessage = ref('');
   const combatMessageKey = ref('combat.start');
   const combatMessageParams = ref({});
   const coverActive = ref(false);
