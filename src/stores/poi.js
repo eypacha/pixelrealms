@@ -1,3 +1,10 @@
+  function resetPois(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
+    // Limpia todos los POIs de todos los tiles
+    poisByTile.value = {};
+    pois.value = [];
+    // Genera primero los POIs del tile actual
+    ensureForTile(offsetX, offsetY, terrain, width, height, seed, count);
+  }
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT, WIZARD_COUNT } from '../constants/poi.js';
@@ -5,8 +12,8 @@ import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { useTerrain } from '../composables/useTerrain.js';
 
 export const usePoiStore = defineStore('poi', () => {
-    // Instancia de useTerrain para acceso a isValidTerrain
-    const terrainUtils = useTerrain();
+  // Instancia de useTerrain para acceso a isValidTerrain
+  const terrainUtils = useTerrain();
   // Array de { x, y, offsetX, offsetY }
   const defeatedGoblins = ref([]);
   // Mapa de POIs por tile key 'offsetX,offsetY'
@@ -15,6 +22,14 @@ export const usePoiStore = defineStore('poi', () => {
 
   // Reactive property for treasure popup
   const treasureDiscovered = ref(false);
+
+  // Limpia todos los POIs de todos los tiles y genera los del tile actual
+  function resetPois(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
+    poisByTile.value = {};
+    pois.value = [];
+    ensureForTile(offsetX, offsetY, terrain, width, height, seed, count);
+  }
+
   // Generate POIs for a specific tile defined by offsetX, offsetY (in grid indices)
   // Now generates 'darkKnight', 'wizard' and 'treasure' POIs
   function ensureForTile(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
@@ -127,5 +142,5 @@ export const usePoiStore = defineStore('poi', () => {
     defeatedGoblins.value.push({ x: position.x, y: position.y, offsetX: position.offsetX, offsetY: position.offsetY });
   }
 
-  return { pois, ensureForTile, checkDiscovery, defeatedGoblins, addDefeatedGoblin, treasureDiscovered, addNarrativePoi };
+  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedGoblins, addDefeatedGoblin, treasureDiscovered, addNarrativePoi };
 });

@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
-    <!-- <div class="mb-4">
+    <div class="mb-4 flex gap-2 items-center">
       <label for="seed" class="mr-2 font-bold">Seed:</label>
-      <input id="seed" v-model="seedInput" type="text" class="border px-2 py-1" @input="updateTerrain" />
-      <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white">Random</button>
-    </div> -->
+      <input id="seed" v-model="seedInput" type="text" class="border px-2 py-1" />
+      <button @click="resetGameWithRandomSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white" :disabled="isResetting">Nueva semilla</button>
+    </div>
     <div class="relative">
       <div class="absolute top-3 right-4 z-10 text-4xl pointer-events-none">
         <span v-if="!timeStore.isNight.value">☀️</span>
@@ -60,6 +60,7 @@
 
 
 <script setup>
+import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 import { useTimeStore } from '../stores/time';
 const timeStore = useTimeStore();
 import { useSoundStore } from '../stores/sound';
@@ -78,7 +79,7 @@ import { useNarrativeEncounter } from '../composables/useNarrativeEncounter';
 import TreasurePopup from '../components/TreasurePopup.vue';
 import { storeToRefs } from 'pinia';
 
-const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep } = useTerrain();
+const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep, randomizeSeed } = useTerrain();
 const playerStore = usePlayerStore();
 const poiStore = usePoiStore();
 const { treasureDiscovered } = storeToRefs(poiStore);
@@ -87,6 +88,50 @@ const playerImage = ref(null);
 const narrativeActive = ref(false);
 const currentAnecdote = ref({ index: null, lang: 'en' });
 const { maybeTriggerEncounter } = useNarrativeEncounter();
+const isResetting = ref(false);
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function resetGameWithRandomSeed() {
+  isResetting.value = true;
+  randomizeSeed();
+  // Resetear jugador y POIs
+  playerStore.health = playerStore.maxHealth;
+  playerStore.strength = 10;
+  playerStore.defense = 5;
+  playerStore.coins = 0;
+  playerStore.inventory.potion = 1;
+  playerStore.mana = 0;
+  playerStore.combatActive = false;
+  playerStore.gameOver = false;
+  playerStore.wizardActive = false;
+  playerStore.enemyHealth = 10;
+  playerStore.enemyStrength = 5;
+  playerStore.enemyDefense = 2;
+  playerStore.enemyType = 'goblin';
+  playerStore.playerTurn = true;
+  playerStore.coverActive = false;
+  playerStore.enemyDefeated = false;
+  playerStore.lootCollected = false;
+  playerStore.lastDirection = 'right';
+  playerStore.darkKnightDefeatedCount = 0;
+  playerStore.currentOffset = { x: 0, y: 0 };
+  if (poiStore.pois && typeof poiStore.pois.value !== 'undefined') poiStore.pois.value = [];
+  if (poiStore.treasureDiscovered && typeof poiStore.treasureDiscovered.value !== 'undefined') poiStore.treasureDiscovered.value = false;
+  // Regenerar todos los POIs del tile actual usando el terreno real
+  let terrain = null;
+  if (terrainCanvas.value) {
+    terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seedInput.value);
+  }
+  if (typeof poiStore.resetPois === 'function') {
+    poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
+  }
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true });
+  await sleep(300); // Espera 300ms para mostrar el botón deshabilitado
+  isResetting.value = false;
+}
 
 function closeNarrative() {
   narrativeActive.value = false;
