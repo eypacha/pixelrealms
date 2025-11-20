@@ -138,13 +138,13 @@ async function resetGameWithRandomSeed() {
   playerStore.currentOffset = { x: 0, y: 0 };
   if (poiStore.pois && typeof poiStore.pois.value !== 'undefined') poiStore.pois.value = [];
   if (poiStore.treasureDiscovered && typeof poiStore.treasureDiscovered.value !== 'undefined') poiStore.treasureDiscovered.value = false;
-  // Regenerar todos los POIs del tile actual usando el terreno real
+  // Regenerar POIs solo para el tile actual, usando caché si existe
   let terrain = null;
   if (terrainCanvas.value) {
     terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seedInput.value);
   }
-  if (typeof poiStore.resetPois === 'function') {
-    poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
+  if (typeof poiStore.ensureForTile === 'function') {
+    poiStore.ensureForTile(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
   }
   // Dibuja solo el terreno en el canvas de fondo
   drawAll(terrainCanvas, seedInput, null, null, null, worldOffset.value, { onlyTerrain: true });
@@ -216,12 +216,18 @@ onMounted(async () => {
       }
     }
     if (moved) {
+      // Si se movió a otro tile, asegúrate de regenerar/recuperar los POIs del tile actual
+      let terrain = null;
+      if (terrainCanvas.value) {
+        terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seedInput.value);
+      }
+      if (typeof poiStore.ensureForTile === 'function') {
+        poiStore.ensureForTile(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
+      }
       timeStore.registerMove();
       requestAnimationFrame(() => {
         poiStore.checkDiscovery(playerStore.position, playerStore);
-        // Solo redibuja los elementos reactivos
         drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
-        // Narrative encounter
         const result = maybeTriggerEncounter();
         if (result && typeof result.index === 'number') {
           currentAnecdote.value = result;
