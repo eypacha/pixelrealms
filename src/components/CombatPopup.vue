@@ -30,10 +30,26 @@
       </div>
       <div class="mt-4 flex space-x-2 justify-center">
         <template v-if="!playerStore.enemyDefeated">
-          <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atack</button>
-          <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Cover</button>
-          <button @click="usePotion" :disabled="!playerStore.playerTurn || playerStore.inventory.potion <= 0" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.inventory.potion <= 0 }">Heal</button>
-          <button @click="flee" class="px-4 py-2 cursor-pointer">Run</button>
+          <div class="flex flex-col items-center">
+            <span style="font-size:1.5em;">🗡️</span>
+            <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Atack</button>
+          </div>
+          <div class="flex flex-col items-center">
+            <span style="font-size:1.5em;">🛡️</span>
+            <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn }">Cover</button>
+          </div>
+          <div class="flex flex-col items-center">
+            <span style="font-size:1.5em;">🧪</span>
+            <button @click="usePotion" :disabled="!playerStore.playerTurn || playerStore.inventory.potion <= 0" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.inventory.potion <= 0 }">Heal</button>
+          </div>
+          <div class="flex flex-col items-center">
+            <span style="font-size:1.5em;">🔥</span>
+            <button @click="fireball" :disabled="!playerStore.playerTurn || playerStore.mana < 1" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.mana < 1 }">Fireball</button>
+          </div>
+          <div class="flex flex-col items-center">
+            <span style="font-size:1.5em;">🏃</span>
+            <button @click="flee" class="px-4 py-2 cursor-pointer">Run</button>
+          </div>
         </template>
         <template v-else>
           <button @click="loot" :disabled="playerStore.lootCollected" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': playerStore.lootCollected }">{{ playerStore.lootCollected ? 'Looted' : 'Loot' }}</button>
@@ -72,6 +88,11 @@ function cover() {
 
 function usePotion() {
   playerStore.usePotion();
+}
+
+
+function fireball() {
+  playerStore.fireballAttack();
 }
 
 function loot() {
