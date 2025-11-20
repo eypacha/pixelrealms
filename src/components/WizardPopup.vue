@@ -22,15 +22,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import { useSoundStore } from '../stores/sound';
-import { useCombatDrawing } from '../composables/useCombatDrawing';
 import { POTION_COST, ENCHANT_COST, ENCHANT_CHANCE } from '../constants/wizard';
 
 const playerStore = usePlayerStore();
 const soundStore = useSoundStore();
-const { drawKnight } = useCombatDrawing();
 const playerCanvas = ref(null);
 const wizardCanvas = ref(null);
 const message = ref('Hi, traveler! How can I help you?');
