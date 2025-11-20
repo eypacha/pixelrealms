@@ -1,6 +1,6 @@
 <template>
   <div class="absolute inset-0 bg-[#00000040] flex justify-center items-center z-50">
-    <div class="bg-white p-5 text-center shadow-lg w-100 h-80">
+    <div class="bg-white p-5 text-center shadow-lg w-100 h-100">
       <div class="flex justify-center gap-8 mb-4">
         <div>
           <canvas ref="playerCanvas" width="60" height="80"></canvas>
