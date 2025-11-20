@@ -69,8 +69,7 @@ export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = '14
     worldOffset,
     setOffset,
     addOffset,
-    // step en indices de grilla que corresponde a desplazar una pantalla completa
-    tileStep: terrainSize - 1,
+    tileStep: (terrainSize - 1) * 2,
     randomizeSeed,
     updateTerrain,
     isValidTerrain,
