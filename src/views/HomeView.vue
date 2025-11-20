@@ -12,7 +12,7 @@
         Nueva semilla
       </button>
     </div>
-    <div class="relative">
+    <div class="relative w-[800px] h-[600px]">
       <div class="absolute top-3 right-4 z-10 text-4xl pointer-events-none">
         <span v-if="!timeStore.isNight.value">☀️</span>
         <span v-else>🌙</span>
@@ -21,7 +21,14 @@
         ref="terrainCanvas"
         width="800"
         height="600"
-        class="max-w-full border border-black border-2 bg-black transition-all"
+        class="max-w-full border border-black border-2 bg-black transition-all absolute top-0 left-0 z-0"
+        :class="timeStore.isNight.value ? 'brightness-60' : 'brightness-100'"
+      ></canvas>
+      <canvas
+        ref="reactiveCanvas"
+        width="800"
+        height="600"
+        class="max-w-full absolute top-0 left-0 z-10 pointer-events-none"
         :class="timeStore.isNight.value ? 'brightness-60' : 'brightness-100'"
       ></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
@@ -87,6 +94,7 @@ import TreasurePopup from '../components/TreasurePopup.vue';
 import { storeToRefs } from 'pinia';
 
 const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep, randomizeSeed } = useTerrain();
+const reactiveCanvas = ref(null);
 const playerStore = usePlayerStore();
 const poiStore = usePoiStore();
 const { treasureDiscovered } = storeToRefs(poiStore);
@@ -138,7 +146,10 @@ async function resetGameWithRandomSeed() {
   if (typeof poiStore.resetPois === 'function') {
     poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
   }
-  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true });
+  // Dibuja solo el terreno en el canvas de fondo
+  drawAll(terrainCanvas, seedInput, null, null, null, worldOffset.value, { onlyTerrain: true });
+  // Dibuja los elementos reactivos en el canvas superior
+  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
 
 }
 
@@ -153,7 +164,10 @@ onMounted(async () => {
   await new Promise(resolve => {
     playerImage.value.onload = resolve;
   });
-  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true });
+  // Dibuja solo el terreno en el canvas de fondo
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
+  // Dibuja los elementos reactivos en el canvas superior
+  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
   window.addEventListener('keydown', (e) => {
     if (e.repeat) return;
     if (playerStore.combatActive) return;
@@ -205,14 +219,13 @@ onMounted(async () => {
       timeStore.registerMove();
       requestAnimationFrame(() => {
         poiStore.checkDiscovery(playerStore.position, playerStore);
-        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { redrawTerrain: true });
-        // Ya no se aplica filtro manual, se usa CSS
+        // Solo redibuja los elementos reactivos
+        drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
         // Narrative encounter
         const result = maybeTriggerEncounter();
         if (result && typeof result.index === 'number') {
           currentAnecdote.value = result;
           narrativeActive.value = true;
-          // Registrar POI narrativo en la posición actual
           poiStore.addNarrativePoi({
             x: playerStore.position.x,
             y: playerStore.position.y,
@@ -220,8 +233,6 @@ onMounted(async () => {
             offsetY: worldOffset.value.y
           }, result);
         }
-
-        // Revisar si hay POI narrativo en la posición actual y mostrarlo
         if (Array.isArray(poiStore.pois.value)) {
           poiStore.pois.value.forEach(poi => {
             if (poi.type === 'narrative' && Math.abs(poi.position.x - playerStore.position.x) < 10 && Math.abs(poi.position.y - playerStore.position.y) < 10) {
@@ -236,7 +247,8 @@ onMounted(async () => {
 });
 
 watch(seedInput, () => {
-  // Al cambiar la semilla, inicializa el jugador en tierra firme
-  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true });
+  // Al cambiar la semilla, inicializa el jugador y los POIs con el terreno
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
+  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
 });
 </script>

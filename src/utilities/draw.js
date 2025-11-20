@@ -28,11 +28,10 @@ export function getColorForHeight(h) {
   return '#228B22';
 }
 
-function drawCell(ctx, playerStore, px, py, canvasWidth, canvasHeight, terrainSize) {
-  if (!playerStore || !playerStore.terrainRef) return;
+function drawCell(ctx, heights2D, px, py, canvasWidth, canvasHeight, terrainSize) {
   const tx = Math.floor(px * (terrainSize - 1) / (canvasWidth - 1));
   const ty = Math.floor(py * (terrainSize - 1) / (canvasHeight - 1));
-  const h = playerStore.terrainRef[ty]?.[tx];
+  const h = heights2D[ty]?.[tx];
   ctx.fillStyle = getColorForHeight(h);
   ctx.fillRect(px, py, 1, 1);
 }
@@ -62,7 +61,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   }
   const wizardImg = drawAll.wizardImage;
   
-  const { initializePlayer = false, redrawTerrain = initializePlayer } = options;
+  const { initializePlayer = false, redrawTerrain = initializePlayer, onlyTerrain = false, onlyReactive = false } = options;
   // Regenerar alturas si inicializamos el jugador o si explicitamente pedimos redrawTerrain
   const regenerateHeights = initializePlayer || redrawTerrain;
   const canvas = terrainCanvas.value;
@@ -70,9 +69,8 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   const ctx = canvas.getContext('2d');
   const terrainSize = 257;
   const roughness = 0.7;
-  if (regenerateHeights) {
+  if (regenerateHeights && playerStore) {
     const seededRandom = createSeededRandom(seedInput.value);
-    // Pasar `seedInput.value` y `worldOffset` al generador para generación determinista por coordenada
     const heights2D = generateMidpointDisplacement2D(
       terrainSize,
       roughness,
@@ -83,30 +81,47 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     playerStore.terrainRef = heights2D;
     playerStore.widthRef = canvas.width;
     playerStore.heightRef = canvas.height;
-    // mantener seededRandom para inicializar posiciones
     if (initializePlayer) {
       playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
       console.log('Posición inicial jugador:', playerStore.position);
     }
-    // generar o asegurar POIs para el tile actual (usa seed + offset internamente)
-    if (typeof poiStore.ensureForTile === 'function') {
+    if (poiStore && typeof poiStore.ensureForTile === 'function') {
       poiStore.ensureForTile(worldOffset.x || 0, worldOffset.y || 0, heights2D, canvas.width, canvas.height, seedInput.value);
-    } else if (typeof poiStore.initialize === 'function') {
-      // fallback al comportamiento antiguo
+    } else if (poiStore && typeof poiStore.initialize === 'function') {
       poiStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
     }
   }
-  if (redrawTerrain) {
+  if (redrawTerrain || onlyTerrain) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // Pintar terreno
-    for (let y = 0; y < canvas.height; y++) {
-      for (let x = 0; x < canvas.width; x++) {
-        drawCell(ctx, playerStore, x, y, canvas.width, canvas.height, terrainSize);
+    let heights2D;
+    if (playerStore && playerStore.terrainRef) {
+      heights2D = playerStore.terrainRef;
+    } else {
+      heights2D = generateMidpointDisplacement2D(
+        terrainSize,
+        roughness,
+        worldOffset.x || 0,
+        worldOffset.y || 0,
+        seedInput.value
+      );
+      // Guardar el terreno en playerStore si existe
+      if (playerStore) {
+        playerStore.terrainRef = heights2D;
+        playerStore.widthRef = canvas.width;
+        playerStore.heightRef = canvas.height;
       }
     }
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        drawCell(ctx, heights2D, x, y, canvas.width, canvas.height, terrainSize);
+      }
+    }
+    // Si solo queremos terreno, salimos aquí
+    if (onlyTerrain) return;
   }
   // Erase old player if not redrawing terrain
-  if (!redrawTerrain) {
+  if (!redrawTerrain && playerStore && playerStore.oldPosition) {
     const { x, y } = playerStore.oldPosition;
     for (let dy = -12; dy < 13; dy++) {
       for (let dx = -10; dx < 10; dx++) {
@@ -118,84 +133,155 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
       }
     }
   }
-  // Dibujar puntos de interés
-  // Usar la imagen del Dark Knight para los castillos
-  if (!drawAll.darkKnightImage) {
-    drawAll.darkKnightImage = new Image();
-    drawAll.darkKnightImage.src = 'images/darkknight.png';
-    drawAll.darkKnightImage.onload = () => {
-      // Redibujar el canvas cuando la imagen esté lista
-      if (terrainCanvas && terrainCanvas.value) {
-        // Llamar a drawAll con los mismos argumentos
-        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+  // Si solo queremos terreno, no dibujamos nada reactivo
+  if (onlyTerrain) return;
+  // Si solo queremos elementos reactivos, no dibujamos el terreno ni borramos jugador
+  if (onlyReactive) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Dibujar puntos de interés y jugador solo si los stores existen
+    if (poiStore && Array.isArray(poiStore.pois)) {
+      if (!drawAll.darkKnightImage) {
+        drawAll.darkKnightImage = new Image();
+        drawAll.darkKnightImage.src = 'images/darkknight.png';
+        drawAll.darkKnightImage.onload = () => {
+          if (terrainCanvas && terrainCanvas.value) {
+            drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+          }
+        };
       }
-    };
-  }
-  const darkKnightImg = drawAll.darkKnightImage;
-  // Primero dibujar los tesoros (X roja) para que queden por debajo
-  
-  poiStore.pois.forEach(poi => {
-    if (poi.type === 'treasure') {
-      const length = 5
-
-      ctx.save();
-      ctx.strokeStyle = poi.discovered ? 'gray' : 'red';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(poi.position.x - length, poi.position.y - length);
-      ctx.lineTo(poi.position.x + length, poi.position.y + length);
-      ctx.moveTo(poi.position.x + length, poi.position.y - length);
-      ctx.lineTo(poi.position.x - length, poi.position.y + length);
-      ctx.stroke();
-      ctx.restore();
-    }
-  });
-  // Luego dibujar los demás POIs
-  poiStore.pois.forEach(poi => {
-    if (poi.type === 'darkKnight') {
-      if (darkKnightImg.complete) {
-        ctx.save();
-        if (poi.discovered) {
-          ctx.globalAlpha = 0.4;
+      const darkKnightImg = drawAll.darkKnightImage;
+      poiStore.pois.forEach(poi => {
+        if (poi.type === 'treasure') {
+          const length = 5;
+          ctx.save();
+          ctx.strokeStyle = poi.discovered ? 'gray' : 'red';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(poi.position.x - length, poi.position.y - length);
+          ctx.lineTo(poi.position.x + length, poi.position.y + length);
+          ctx.moveTo(poi.position.x + length, poi.position.y - length);
+          ctx.lineTo(poi.position.x - length, poi.position.y + length);
+          ctx.stroke();
+          ctx.restore();
         }
-        ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
-        ctx.restore();
-      }
-    } else if (poi.type === 'wizard') {
-      if (wizardImg.complete) {
-        ctx.save();
-        if (poi.discovered) {
-          ctx.globalAlpha = 0.4;
-        }
-        ctx.drawImage(wizardImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
-        ctx.restore();
-      }
-      // No dibujar nada si la imagen no está lista
-    } else if (poi.type !== 'treasure') {
-      ctx.fillStyle = poi.discovered ? 'gray' : 'white';
-      ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
-    }
-  });
-  // Dibujar goblins derrotados SOLO del tile actual
-  if (goblinImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
-    const offsetX = Number(worldOffset.x) || 0;
-    const offsetY = Number(worldOffset.y) || 0;
-    poiStore.defeatedGoblins
-      .filter(pos => Number(pos.offsetX) === offsetX && Number(pos.offsetY) === offsetY)
-      .forEach(pos => {
-        ctx.save();
-        ctx.globalAlpha = 0.4;
-        ctx.drawImage(goblinImg, pos.x - 10, pos.y - 15, 20, 30);
-        ctx.restore();
       });
+      poiStore.pois.forEach(poi => {
+        if (poi.type === 'darkKnight') {
+          if (darkKnightImg.complete) {
+            ctx.save();
+            if (poi.discovered) {
+              ctx.globalAlpha = 0.4;
+            }
+            ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
+            ctx.restore();
+          }
+        } else if (poi.type === 'wizard') {
+          if (wizardImg.complete) {
+            ctx.save();
+            if (poi.discovered) {
+              ctx.globalAlpha = 0.4;
+            }
+            ctx.drawImage(wizardImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
+            ctx.restore();
+          }
+        } else if (poi.type !== 'treasure') {
+          ctx.fillStyle = poi.discovered ? 'gray' : 'white';
+          ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
+        }
+      });
+      if (goblinImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
+        const offsetX = Number(worldOffset.x) || 0;
+        const offsetY = Number(worldOffset.y) || 0;
+        poiStore.defeatedGoblins
+          .filter(pos => Number(pos.offsetX) === offsetX && Number(pos.offsetY) === offsetY)
+          .forEach(pos => {
+            ctx.save();
+            ctx.globalAlpha = 0.4;
+            ctx.drawImage(goblinImg, pos.x - 10, pos.y - 15, 20, 30);
+            ctx.restore();
+          });
+      }
+    }
+    if (playerStore && playerStore.position) {
+      const facingLeft = playerStore.lastDirection === 'left';
+      drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
+      if (playerStore.currentOffset) {
+        playerStore.currentOffset.x = worldOffset.x || 0;
+        playerStore.currentOffset.y = worldOffset.y || 0;
+      }
+    }
+    return;
   }
-  // Dibujar jugador (respetando la última dirección izquierda/derecha) al final para que quede encima
-  const facingLeft = playerStore.lastDirection === 'left';
-  drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
-
-  // Actualizar el offset actual en el store de jugador
-  if (playerStore.currentOffset) {
-    playerStore.currentOffset.x = worldOffset.x || 0;
-    playerStore.currentOffset.y = worldOffset.y || 0;
+  // Si no es solo terreno ni solo reactivo, sigue el flujo original
+  if (poiStore && Array.isArray(poiStore.pois)) {
+    if (!drawAll.darkKnightImage) {
+      drawAll.darkKnightImage = new Image();
+      drawAll.darkKnightImage.src = 'images/darkknight.png';
+      drawAll.darkKnightImage.onload = () => {
+        if (terrainCanvas && terrainCanvas.value) {
+          drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+        }
+      };
+    }
+    const darkKnightImg = drawAll.darkKnightImage;
+    poiStore.pois.forEach(poi => {
+      if (poi.type === 'treasure') {
+        const length = 5;
+        ctx.save();
+        ctx.strokeStyle = poi.discovered ? 'gray' : 'red';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(poi.position.x - length, poi.position.y - length);
+        ctx.lineTo(poi.position.x + length, poi.position.y + length);
+        ctx.moveTo(poi.position.x + length, poi.position.y - length);
+        ctx.lineTo(poi.position.x - length, poi.position.y + length);
+        ctx.stroke();
+        ctx.restore();
+      }
+    });
+    poiStore.pois.forEach(poi => {
+      if (poi.type === 'darkKnight') {
+        if (darkKnightImg.complete) {
+          ctx.save();
+          if (poi.discovered) {
+            ctx.globalAlpha = 0.4;
+          }
+          ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
+          ctx.restore();
+        }
+      } else if (poi.type === 'wizard') {
+        if (wizardImg.complete) {
+          ctx.save();
+          if (poi.discovered) {
+            ctx.globalAlpha = 0.4;
+          }
+          ctx.drawImage(wizardImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
+          ctx.restore();
+        }
+      } else if (poi.type !== 'treasure') {
+        ctx.fillStyle = poi.discovered ? 'gray' : 'white';
+        ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
+      }
+    });
+    if (goblinImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
+      const offsetX = Number(worldOffset.x) || 0;
+      const offsetY = Number(worldOffset.y) || 0;
+      poiStore.defeatedGoblins
+        .filter(pos => Number(pos.offsetX) === offsetX && Number(pos.offsetY) === offsetY)
+        .forEach(pos => {
+          ctx.save();
+          ctx.globalAlpha = 0.4;
+          ctx.drawImage(goblinImg, pos.x - 10, pos.y - 15, 20, 30);
+          ctx.restore();
+        });
+    }
+  }
+  if (playerStore && playerStore.position) {
+    const facingLeft = playerStore.lastDirection === 'left';
+    drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
+    if (playerStore.currentOffset) {
+      playerStore.currentOffset.x = worldOffset.x || 0;
+      playerStore.currentOffset.y = worldOffset.y || 0;
+    }
   }
 }
