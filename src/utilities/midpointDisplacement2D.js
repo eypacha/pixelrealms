@@ -2,7 +2,7 @@
 // Genera una matriz de alturas usando el algoritmo fractal
 
 
-export function generateMidpointDisplacement2D(size, roughness = 0.7, randomFn = Math.random, offsetX = 0, offsetY = 0, seed = 0) {
+export function generateMidpointDisplacement2D(size, roughness = 0.7, offsetX = 0, offsetY = 0, seed = 0) {
   // size debe ser potencia de 2 + 1 (ej: 513, 1025)
   // Ahora acepta `offsetX` y `offsetY` (enteros) y `seed` (string|number) para generar
   // valores deterministas por coordenada global, lo que permite generar porciones contiguas.
@@ -33,7 +33,6 @@ export function generateMidpointDisplacement2D(size, roughness = 0.7, randomFn =
     h = (h ^ (h >>> 13)) >>> 0;
     // map to [0,1)
     const v = (h >>> 0) / 4294967296;
-    // map to [-0.2,0.2) to match previous randomFn() * 0.4 - 0.2
     return v * 0.4 - 0.2;
   }
 

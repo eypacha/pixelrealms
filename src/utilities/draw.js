@@ -76,7 +76,6 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     const heights2D = generateMidpointDisplacement2D(
       terrainSize,
       roughness,
-      null,
       worldOffset.x || 0,
       worldOffset.y || 0,
       seedInput.value

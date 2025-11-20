@@ -31,7 +31,7 @@ export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = '14
     ctx.fillRect(0, 0, width, height);
     const seededRandom = createSeededRandom(seed);
     // Pasar `seed` y `offset` al generador para generar la porción adecuada del mundo
-    const heights2D = generateMidpointDisplacement2D(terrainSize, roughness, null, offset.x || 0, offset.y || 0, seed);
+    const heights2D = generateMidpointDisplacement2D(terrainSize, roughness, offset.x || 0, offset.y || 0, seed);
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const tx = Math.floor(x * (terrainSize - 1) / (width - 1));
