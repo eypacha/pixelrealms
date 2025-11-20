@@ -42,7 +42,9 @@
     "run": "Huir",
     "loot": "Botín",
     "looted": "Botín recogido",
-    "continue": "Continuar"
+    "continue": "Continuar",
+    "frozen": "¡Enemigo congelado!",
+    "thawed": "¡Enemigo descongelado!"
   },
   "title": "Has encontrado un tesoro",
     "grabCoins": "Recoge monedas (+{coins})",

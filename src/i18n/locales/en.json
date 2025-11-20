@@ -43,7 +43,9 @@
     "run": "Run",
     "loot": "Loot",
     "looted": "Looted",
-    "continue": "Continue"
+    "continue": "Continue",
+    "frozen": "Enemy frozen!",
+    "thawed": "Enemy thawed!"
   },
   "sections": {
     "section1": {

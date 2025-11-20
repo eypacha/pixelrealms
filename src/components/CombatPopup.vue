@@ -28,7 +28,7 @@
         <p>{{ playerStore.combatMessage }}</p>
         <p v-if="!playerStore.enemyDefeated" class="font-bold">{{ playerStore.playerTurn ? $t('combat.yourTurn') : $t('combat.enemyTurn') }}</p>
       </div>
-      <div class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] margin-auto">
+      <div class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto">
         <template v-if="!playerStore.enemyDefeated">
           <div class="flex flex-col items-center">
             <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }">
