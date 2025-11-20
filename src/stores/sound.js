@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 export const useSoundStore = defineStore('sound', () => {
   // Global volume (0.0 - 1.0)
-  const volume = ref(1.0);
+  const volume = ref(0.2);
   // Sounds
   const sounds = {
     hammer: new Howl({ src: ['sounds/hammer.wav'], volume: volume.value }),
