@@ -30,8 +30,10 @@
 import { ref, onMounted } from 'vue';
 import { usePoiStore } from '../stores/poi';
 import { usePlayerStore } from '../stores/player';
+import { useSoundStore } from '../stores/sound';
 const poiStore = usePoiStore();
 const playerStore = usePlayerStore();
+const soundStore = useSoundStore();
 
 const coins = ref(0);
 const potions = ref(0);
@@ -47,6 +49,8 @@ function claimCoins() {
   if (!coinsClaimed.value) {
     playerStore.coins += coins.value;
     coinsClaimed.value = true;
+    // Sonido de monedas
+    soundStore.playSound('coin');
   }
 }
 
@@ -55,6 +59,7 @@ function claimPotions() {
     if (!playerStore.inventory.potion) playerStore.inventory.potion = 0;
     playerStore.inventory.potion += potions.value;
     potionsClaimed.value = true;
+    soundStore.playSound('gulp');
   }
 }
 
