@@ -56,7 +56,7 @@ import { useNarrativeEncounter } from '../composables/useNarrativeEncounter';
 import TreasurePopup from '../components/TreasurePopup.vue';
 import { storeToRefs } from 'pinia';
 
-const { terrainCanvas, seedInput, randomizeSeed, updateTerrain, worldOffset, addOffset, tileStep } = useTerrain();
+const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep } = useTerrain();
 const playerStore = usePlayerStore();
 const poiStore = usePoiStore();
 const { treasureDiscovered } = storeToRefs(poiStore);

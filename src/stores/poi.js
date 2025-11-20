@@ -2,8 +2,11 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT, WIZARD_COUNT } from '../constants/poi.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
+import { useTerrain } from '../composables/useTerrain.js';
 
 export const usePoiStore = defineStore('poi', () => {
+    // Instancia de useTerrain para acceso a isValidTerrain
+    const terrainUtils = useTerrain();
   // Array de { x, y, offsetX, offsetY }
   const defeatedGoblins = ref([]);
   // Mapa de POIs por tile key 'offsetX,offsetY'
@@ -29,9 +32,7 @@ export const usePoiStore = defineStore('poi', () => {
       while (attempts < 1000 && !placed) {
         x = Math.floor(rand() * width);
         y = Math.floor(rand() * height);
-        const tx = Math.floor(x * (terrain.length - 1) / (width - 1));
-        const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
-        if (terrain[ty]?.[tx] > -0.05) {
+        if (terrainUtils.isValidTerrain(x, y, width, height, terrain)) {
           const loot = Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN;
           arr.push({ id: 'darkKnight-' + i, type: 'darkKnight', position: { x, y }, discovered: false, loot });
           placed = true;
@@ -46,9 +47,7 @@ export const usePoiStore = defineStore('poi', () => {
       while (attempts < 1000 && !placed) {
         x = Math.floor(rand() * width);
         y = Math.floor(rand() * height);
-        const tx = Math.floor(x * (terrain.length - 1) / (width - 1));
-        const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
-        if (terrain[ty]?.[tx] > -0.05) {
+        if (terrainUtils.isValidTerrain(x, y, width, height, terrain)) {
           arr.push({ id: 'wizard-' + i, type: 'wizard', position: { x, y }, discovered: false });
           placed = true;
         }

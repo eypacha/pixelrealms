@@ -55,6 +55,14 @@ export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = '12
     }
   }
 
+  // Verifica si una posición (x, y) es terreno válido (no agua)
+  function isValidTerrain(x, y, width, height, heights2D) {
+    if (x < 0 || y < 0 || x >= width || y >= height) return false;
+    const tx = Math.floor(x * (terrainSize - 1) / (width - 1));
+    const ty = Math.floor(y * (terrainSize - 1) / (height - 1));
+    return heights2D[ty]?.[tx] > -0.05;
+  }
+
   return {
     terrainCanvas,
     seedInput,
@@ -65,5 +73,6 @@ export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = '12
     tileStep: terrainSize - 1,
     randomizeSeed,
     updateTerrain,
+    isValidTerrain,
   };
 }
