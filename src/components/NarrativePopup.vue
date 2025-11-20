@@ -11,13 +11,15 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { anecdotesEn, anecdotesEs } from '../constants/anecdotes';
 
 const props = defineProps({
   anecdoteIndex: {
     type: Number,
+    required: true
+  },
+  anecdoteLang: {
+    type: String,
     required: true
   },
   visible: {
@@ -27,10 +29,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
-const { locale } = useI18n();
 
 function getAnecdote() {
-  if (locale.value === 'es') {
+  if (props.anecdoteLang === 'es') {
     return anecdotesEs[props.anecdoteIndex] || anecdotesEn[props.anecdoteIndex];
   }
   return anecdotesEn[props.anecdoteIndex] || anecdotesEs[props.anecdoteIndex];

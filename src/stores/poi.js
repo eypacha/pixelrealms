@@ -92,9 +92,28 @@ export const usePoiStore = defineStore('poi', () => {
         } else if (poi.type === 'treasure') {
           treasureDiscovered.value = true;
           console.log('💰 Tesoro descubierto en', poi.position);
+        } else if (poi.type === 'narrative') {
+          // Activar cuadro narrativo
+          if (typeof playerStore.showNarrative === 'function') {
+            playerStore.showNarrative(poi.narrativeData);
+          }
         }
       }
     });
+  }
+
+  function addNarrativePoi(position, narrativeData) {
+    // Añade un POI narrativo en la posición actual
+    const key = `${position.offsetX},${position.offsetY}`;
+    if (!poisByTile.value[key]) poisByTile.value[key] = [];
+    poisByTile.value[key].push({
+      id: 'narrative-' + Date.now(),
+      type: 'narrative',
+      position: { x: position.x, y: position.y },
+      discovered: false,
+      narrativeData
+    });
+    pois.value = poisByTile.value[key];
   }
 
   function addDefeatedGoblin(position) {
@@ -105,5 +124,5 @@ export const usePoiStore = defineStore('poi', () => {
     defeatedGoblins.value.push({ x: position.x, y: position.y, offsetX: position.offsetX, offsetY: position.offsetY });
   }
 
-  return { pois, ensureForTile, checkDiscovery, defeatedGoblins, addDefeatedGoblin, treasureDiscovered };
+  return { pois, ensureForTile, checkDiscovery, defeatedGoblins, addDefeatedGoblin, treasureDiscovered, addNarrativePoi };
 });

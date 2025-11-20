@@ -22,7 +22,8 @@
       <WizardPopup v-if="playerStore.wizardActive" />
       <NarrativePopup
         v-if="narrativeActive"
-        :anecdote="currentAnecdote"
+        :anecdote-index="currentAnecdote.index"
+        :anecdote-lang="currentAnecdote.lang"
         :visible="narrativeActive"
         @close="closeNarrative"
       />
@@ -84,12 +85,12 @@ const { treasureDiscovered } = storeToRefs(poiStore);
 const playerImage = ref(null);
 
 const narrativeActive = ref(false);
-const currentAnecdote = ref(null);
+const currentAnecdote = ref({ index: null, lang: 'en' });
 const { maybeTriggerEncounter } = useNarrativeEncounter();
 
 function closeNarrative() {
   narrativeActive.value = false;
-  currentAnecdote.value = null;
+  currentAnecdote.value = { index: null, lang: 'en' };
 }
 
 onMounted(async () => {
@@ -153,10 +154,27 @@ onMounted(async () => {
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { redrawTerrain: true });
         // Ya no se aplica filtro manual, se usa CSS
         // Narrative encounter
-        const anecdote = maybeTriggerEncounter();
-        if (anecdote) {
-          currentAnecdote.value = anecdote;
+        const result = maybeTriggerEncounter();
+        if (result && typeof result.index === 'number') {
+          currentAnecdote.value = result;
           narrativeActive.value = true;
+          // Registrar POI narrativo en la posición actual
+          poiStore.addNarrativePoi({
+            x: playerStore.position.x,
+            y: playerStore.position.y,
+            offsetX: worldOffset.value.x,
+            offsetY: worldOffset.value.y
+          }, result);
+        }
+
+        // Revisar si hay POI narrativo en la posición actual y mostrarlo
+        if (Array.isArray(poiStore.pois.value)) {
+          poiStore.pois.value.forEach(poi => {
+            if (poi.type === 'narrative' && Math.abs(poi.position.x - playerStore.position.x) < 10 && Math.abs(poi.position.y - playerStore.position.y) < 10) {
+              currentAnecdote.value = poi.narrativeData;
+              narrativeActive.value = true;
+            }
+          });
         }
       });
     }
