@@ -6,11 +6,17 @@
       <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white">Random</button>
     </div> -->
     <div class="relative">
-      <div style="position:absolute;top:12px;right:18px;z-index:10;font-size:2.5em;pointer-events:none;">
+      <div class="absolute top-3 right-4 z-10 text-4xl pointer-events-none">
         <span v-if="!timeStore.isNight.value">☀️</span>
         <span v-else>🌙</span>
       </div>
-      <canvas ref="terrainCanvas" width="800" height="600" class="max-w-full border border-black border-2 bg-black"></canvas>
+      <canvas
+        ref="terrainCanvas"
+        width="800"
+        height="600"
+        class="max-w-full border border-black border-2 bg-black transition-all"
+        :class="timeStore.isNight.value ? 'brightness-60 blur-sm' : 'brightness-100'"
+      ></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
       <WizardPopup v-if="playerStore.wizardActive" />
@@ -137,15 +143,7 @@ onMounted(async () => {
       requestAnimationFrame(() => {
         poiStore.checkDiscovery(playerStore.position, playerStore);
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { redrawTerrain: true });
-        // Filtro noche
-        if (timeStore.isNight.value) {
-          const ctx = terrainCanvas.value.getContext('2d');
-          ctx.save();
-          ctx.globalAlpha = 0.35;
-          ctx.fillStyle = '#001030';
-          ctx.fillRect(0, 0, terrainCanvas.value.width, terrainCanvas.value.height);
-          ctx.restore();
-        }
+        // Ya no se aplica filtro manual, se usa CSS
         // Narrative encounter
         const anecdote = maybeTriggerEncounter();
         if (anecdote) {
