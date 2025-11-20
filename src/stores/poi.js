@@ -67,20 +67,14 @@ export const usePoiStore = defineStore('poi', () => {
           console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
           if (typeof playerStore.startCombatWith === 'function') {
             playerStore.startCombatWith({ type: 'darkknight' });
-            soundStore.playSound('drum');
           } else {
             playerStore.startCombat();
           }
         } else if (poi.type === 'wizard') {
           // Abrir WizardPopup
           playerStore.wizardActive = true;
-          soundStore.playSound('gulp');
           console.log('🧙‍♂️ Descubierto wizard en', poi.position);
-        } else {
-          playerStore.coins += poi.loot;
-          soundStore.playSound('coin');
-          console.log('🏰 Descubierto punto de interés:', poi.type, 'en', poi.position, 'Botín:', poi.loot);
-        }
+        } 
       }
     });
   }
