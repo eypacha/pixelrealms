@@ -429,6 +429,7 @@ export const usePlayerStore = defineStore('player', () => {
     enemyFrozen.value = true;
     combatMessage.value = t('combat.frozen');
     mana.value -= 2;
+    soundStore.playSound('freeze');
     playerTurn.value = false;
     setTimeout(() => {
       playerTurn.value = true;

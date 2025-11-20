@@ -13,6 +13,7 @@ export const useSoundStore = defineStore('sound', () => {
     coin: new Howl({ src: ['sounds/coin.mp3'], volume: volume.value }),
     gulp: new Howl({ src: ['sounds/gulp.wav'], volume: volume.value }),
     fireball: new Howl({ src: ['sounds/fireball.wav'], volume: volume.value }),
+    freeze: new Howl({ src: ['sounds/freeze.wav'], volume: volume.value }),
   };
 
   function setVolume(val) {
