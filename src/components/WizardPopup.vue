@@ -25,7 +25,7 @@
 import { ref, onMounted } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import { useSoundStore } from '../stores/sound';
-import { POTION_COST, ENCHANT_COST, ENCHANT_CHANCE } from '../constants/wizard';
+import { POTION_COST, ENCHANT_COST, ENCHANT_CHANCE } from '../constants/poi';
 
 const playerStore = usePlayerStore();
 const soundStore = useSoundStore();
