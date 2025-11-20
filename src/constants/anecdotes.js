@@ -1,5 +1,6 @@
-// Anecdotes in English
-export const anecdotesEn = [
+export const ANECDOTE_CHANCHE = 0.1;
+
+export const ANECDOTES_EN = [
   { title: "The Wind Archive", text: "This cliff is known for a strange phenomenon: when the wind blows from the north, it produces a rustling that sounds like pages turning. Scholars believe the sound is actually an ancient elemental language recounting the world’s history before maps existed." },
   { title: "Footsteps of the Shy Giant", text: "Generations ago, a solitary giant walked these hills only at dusk to avoid being seen. His steps were so gentle that nearby villages thought he was a benevolent spirit. On foggy nights, some travelers claim they can still feel a faint trembling under the ground." },
   { title: "The Buried Palace", text: "Beneath this stretch of land lies a palace that once ruled a forgotten dynasty. Its walls sank slowly under sand and roots. Occasionally, fragments of its mosaics surface, as if the palace were trying to remind the world of its existence." },
@@ -22,8 +23,7 @@ export const anecdotesEn = [
   { title: "The Circle Where Time Misbehaves", text: "An explorer once found a ring of stones where moss never grows and fallen leaves never decay. Decades later, he returned to find it unchanged. He claimed time inside the circle flows differently—or perhaps doesn’t flow at all." }
 ];
 
-// Anecdotes in Spanish
-export const anecdotesEs = [
+export const ANECDOTES_ES = [
   { title: "El Archivo del Viento", text: "Este acantilado es conocido por un extraño fenómeno: cuando el viento sopla desde el norte, produce un susurro que suena como páginas pasando. Los eruditos creen que el sonido es en realidad un antiguo lenguaje elemental que narra la historia del mundo antes de que existieran los mapas." },
   { title: "Las Huellas del Gigante Tímido", text: "Hace generaciones, un gigante solitario caminaba por estas colinas solo al atardecer para evitar ser visto. Sus pasos eran tan suaves que los pueblos cercanos pensaban que era un espíritu benévolo. En noches de niebla, algunos viajeros afirman que aún sienten un leve temblor bajo el suelo." },
   { title: "El Palacio Enterrado", text: "Bajo este tramo de tierra yace un palacio que una vez gobernó una dinastía olvidada. Sus muros se hundieron lentamente bajo la arena y las raíces. Ocasionalmente, fragmentos de sus mosaicos emergen, como si el palacio intentara recordar al mundo su existencia." },

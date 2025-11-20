@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { anecdotesEn, anecdotesEs } from '../constants/anecdotes';
+import { ANECDOTES_EN, ANECDOTES_ES } from '../constants/anecdotes';
 
 const props = defineProps({
   anecdoteIndex: {
@@ -32,9 +32,9 @@ const emit = defineEmits(['close']);
 
 function getAnecdote() {
   if (props.anecdoteLang === 'es') {
-    return anecdotesEs[props.anecdoteIndex] || anecdotesEn[props.anecdoteIndex];
+    return ANECDOTES_ES[props.anecdoteIndex] || ANECDOTES_EN[props.anecdoteIndex];
   }
-  return anecdotesEn[props.anecdoteIndex] || anecdotesEs[props.anecdoteIndex];
+  return ANECDOTES_EN[props.anecdoteIndex] || ANECDOTES_ES[props.anecdoteIndex];
 }
 
 function closePopup() {
