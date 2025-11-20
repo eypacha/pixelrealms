@@ -13,15 +13,18 @@ import {
   } from '../constants/player.js';
 
 import {
-    ENCOUNTER_RATE,
-    GOBLIN_HEALTH,
-    GOBLIN_STRENGTH,
-    GOBLIN_DEFENSE,
-    DARK_KNIGHT_HEALTH,
-    DARK_KNIGHT_STRENGTH,
-    DARK_KNIGHT_DEFENSE,
-    ENEMY_HIT_CHANCE
+  ENCOUNTER_RATE_DAY,
+  ENCOUNTER_RATE_NIGHT,
+  GOBLIN_HEALTH,
+  GOBLIN_STRENGTH,
+  GOBLIN_DEFENSE,
+  DARK_KNIGHT_HEALTH,
+  DARK_KNIGHT_STRENGTH,
+  DARK_KNIGHT_DEFENSE,
+  ENEMY_HIT_CHANCE
 } from '../constants/enemies.js';
+
+import { useTimeStore } from './time.js';
 
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { getColorForHeight } from '../utilities/draw.js';
@@ -275,7 +278,9 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function checkEncounter(pos) {
-    if (encounterRandom() < ENCOUNTER_RATE) {
+    const timeStore = useTimeStore();
+    const rate = timeStore.isNight.value ? ENCOUNTER_RATE_NIGHT : ENCOUNTER_RATE_DAY;
+    if (encounterRandom() < rate) {
       startCombat();
     }
   }
