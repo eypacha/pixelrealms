@@ -102,9 +102,11 @@ export const usePlayerStore = defineStore('player', () => {
     enemyHealth.value = GOBLIN_HEALTH;
     enemyStrength.value = GOBLIN_STRENGTH;
     enemyDefense.value = GOBLIN_DEFENSE;
-    playerTurn.value = true;
-    combatActive.value = true;
-    combatMessage.value = t('combat.start');
+      playerTurn.value = true;
+      combatActive.value = true;
+      combatMessage.value = t('combat.start');
+      combatMessageKey.value = 'combat.start';
+      combatMessageParams.value = {};
   }
 
   // Start combat with specific enemy type (e.g., { type: 'darkknight' })
@@ -123,9 +125,11 @@ export const usePlayerStore = defineStore('player', () => {
       enemyStrength.value = GOBLIN_STRENGTH;
       enemyDefense.value = GOBLIN_DEFENSE;
     }
-    playerTurn.value = true;
-    combatActive.value = true;
-    combatMessage.value = t('combat.start');
+      playerTurn.value = true;
+      combatActive.value = true;
+      combatMessage.value = t('combat.start');
+      combatMessageKey.value = 'combat.start';
+      combatMessageParams.value = {};
   }
 
   function playerAttack(damage) {
