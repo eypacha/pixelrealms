@@ -12,6 +12,7 @@
       <div class="mt-2 text-center text-sm text-gray-700 mb-5">{{ message }}</div>
 
       <div class="flex flex-col gap-2 items-center">
+        <button @click="buyScroll" :disabled="playerStore.coins < 4" class="px-4 py-1 w-full cursor-pointer">Buy Magic Scroll: 4🪙 </button>
         <button @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-1 w-full cursor-pointer">Buy Potion: {{ POTION_COST }}🪙</button>
         <button @click="enchantSword" class="text-smpx-4 py-1 w-full cursor-pointer">Enchant Sword: {{ ENCHANT_COST }}🪙</button>
         <button @click="enchantShield" class="px-4 py-1 w-full cursor-pointer">Enchant Shield: {{ ENCHANT_COST }}🪙</button>
@@ -73,6 +74,17 @@ function enchantShield() {
   } else {
     message.value = `The spell failed.`;
   }
+}
+
+function buyScroll() {
+  if (playerStore.coins < 4) {
+    message.value = 'You need 4 coins to buy a Magic Scroll.';
+    return;
+  }
+  playerStore.coins -= 4;
+  playerStore.mana += 2;
+  soundStore.playSound('coin');
+  message.value = 'You bought a Magic Scroll!';
 }
 
 function closePopup() {
