@@ -6,6 +6,10 @@
       <button @click="randomizeSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white">Random</button>
     </div> -->
     <div class="relative">
+      <div style="position:absolute;top:12px;right:18px;z-index:10;font-size:2.5em;pointer-events:none;">
+        <span v-if="!timeStore.isNight.value">☀️</span>
+        <span v-else>🌙</span>
+      </div>
       <canvas ref="terrainCanvas" width="800" height="600" class="max-w-full border border-black border-2 bg-black"></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
@@ -41,6 +45,8 @@
 
 
 <script setup>
+import { useTimeStore } from '../stores/time';
+const timeStore = useTimeStore();
 import { useSoundStore } from '../stores/sound';
 const soundStore = useSoundStore();
 import { onMounted, watch, ref } from 'vue';
@@ -127,9 +133,19 @@ onMounted(async () => {
       }
     }
     if (moved) {
+      timeStore.registerMove();
       requestAnimationFrame(() => {
         poiStore.checkDiscovery(playerStore.position, playerStore);
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { redrawTerrain: true });
+        // Filtro noche
+        if (timeStore.isNight.value) {
+          const ctx = terrainCanvas.value.getContext('2d');
+          ctx.save();
+          ctx.globalAlpha = 0.35;
+          ctx.fillStyle = '#001030';
+          ctx.fillRect(0, 0, terrainCanvas.value.width, terrainCanvas.value.height);
+          ctx.restore();
+        }
         // Narrative encounter
         const anecdote = maybeTriggerEncounter();
         if (anecdote) {
