@@ -28,7 +28,7 @@
         <p>{{ playerStore.combatMessage }}</p>
         <p v-if="!playerStore.enemyDefeated" class="font-bold">{{ playerStore.playerTurn ? $t('combat.yourTurn') : $t('combat.enemyTurn') }}</p>
       </div>
-      <div class="mt-4 flex space-x-2 justify-center">
+      <div class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] margin-auto">
         <template v-if="!playerStore.enemyDefeated">
           <div class="flex flex-col items-center">
             <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }">
@@ -55,6 +55,12 @@
             </button>
           </div>
           <div class="flex flex-col items-center">
+            <button @click="freeze" :disabled="!playerStore.playerTurn || playerStore.mana < 2" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.mana < 2 }">
+              <span style="font-size:1.5em; color: #00bfff;">❄️</span>
+              Freeze
+            </button>
+          </div>
+          <div class="flex flex-col items-center">
             <button @click="flee" class="px-4 py-2 cursor-pointer flex flex-col items-center">
               <span style="font-size:1.5em;">🏃</span>
               {{ $t('combat.run') }}
@@ -71,12 +77,15 @@
 </template>
 
 <script setup>
+function freeze() {
+  playerStore.freezeEnemy();
+}
 import { ref, onMounted, watch } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
 
 const playerStore = usePlayerStore();
-const { knightTint, enemyTint, drawKnight, drawEnemy, loadImages, setEnemyType } = useCombatDrawing();
+const { knightTint, enemyTint, enemyFreezeTint, drawKnight, drawEnemy, loadImages, setEnemyType } = useCombatDrawing();
 
 const knightCanvas = ref(null);
 const enemyCanvas = ref(null);
@@ -160,6 +169,17 @@ watch(() => playerStore.enemyHealth, (newVal, oldVal) => {
       enemyTint.value = false;
       drawEnemy(enemyCanvas);
     }, 100);
+  }
+});
+
+watch(() => playerStore.enemyFrozen, (isFrozen) => {
+  if (isFrozen) {
+    enemyTint.value = false;
+    enemyFreezeTint.value = true;
+    drawEnemy(enemyCanvas);
+  } else {
+    enemyFreezeTint.value = false;
+    drawEnemy(enemyCanvas);
   }
 });
 </script>

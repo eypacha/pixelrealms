@@ -61,6 +61,7 @@ export const usePlayerStore = defineStore('player', () => {
   const lootCollected = ref(false);
   const lastDirection = ref('right');
   const darkKnightDefeatedCount = ref(0);
+  const enemyFrozen = ref(false);
   
   // Offset actual del tile
   const currentOffset = ref({ x: 0, y: 0 });
@@ -221,6 +222,18 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function enemyAttack() {
+    if (enemyFrozen.value) {
+      // 50% chance to thaw
+      if (Math.random() < 0.5) {
+        combatMessage.value = t('combat.enemyTurn') + ' (Frozen: skips turn)';
+        playerTurn.value = true;
+        return;
+      } else {
+        enemyFrozen.value = false;
+        combatMessage.value = t('combat.enemyTurn') + ' (Thawed!)';
+        // sigue con el ataque normal
+      }
+    }
     const combatRandom = createSeededRandom(seed.value + 'enemyCombat' + Date.now());
     const hitChance = ENEMY_HIT_CHANCE;
     if (combatRandom() < hitChance) {
@@ -411,5 +424,62 @@ export const usePlayerStore = defineStore('player', () => {
     mana.value -= 1;
   }
 
-  return { position, mana, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessageKey, combatMessageParams, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, currentOffset, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor, fireballAttack };
+  function freezeEnemy() {
+    if (!combatActive.value || !playerTurn.value || mana.value < 2) return;
+    enemyFrozen.value = true;
+    combatMessage.value = t('combat.frozen');
+    mana.value -= 2;
+    playerTurn.value = false;
+    setTimeout(() => {
+      playerTurn.value = true;
+    }, 500);
+  }
+
+  return {
+    position,
+    mana,
+    oldPosition,
+    seed,
+    health,
+    maxHealth,
+    strength,
+    defense,
+    coins,
+    inventory,
+    combatActive,
+    gameOver,
+    wizardActive,
+    enemyHealth,
+    enemyStrength,
+    enemyDefense,
+    enemyType,
+    playerTurn,
+    combatMessageKey,
+    combatMessageParams,
+    coverActive,
+    enemyDefeated,
+    lootCollected,
+    lastDirection,
+    darkKnightDefeatedCount,
+    enemyFrozen,
+    currentOffset,
+    initialize,
+    moveUp,
+    moveDown,
+    moveLeft,
+    moveRight,
+    startCombat,
+    startCombatWith,
+    playerAttack,
+    enemyAttack,
+    activateCover,
+    fleeCombat,
+    collectLoot,
+    endCombat,
+    heal,
+    usePotion,
+    getTerrainColor,
+    fireballAttack,
+    freezeEnemy
+  };
 });

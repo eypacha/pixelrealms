@@ -7,24 +7,34 @@ export function useCombatDrawing() {
   const darkknightImg = ref(null);
   const knightTint = ref(false);
   const enemyTint = ref(false);
+  const enemyFreezeTint = ref(false);
 
-  function drawCharacter(canvas, img, isTinted) {
+  function drawCharacter(canvas, img, tintType) {
     if (canvas.value && img.value) {
       const ctx = canvas.value.getContext('2d');
       ctx.clearRect(0, 0, 60, 80);
       ctx.imageSmoothingEnabled = false;
-      ctx.filter = isTinted ? 'sepia(1) hue-rotate(-50deg) saturate(2) brightness(1.2)' : 'none';
+      let filter = 'none';
+      if (tintType === 'hit') {
+        filter = 'sepia(1) hue-rotate(-50deg) saturate(2) brightness(1.2)'; // rojo
+      } else if (tintType === 'freeze') {
+        filter = 'sepia(1) hue-rotate(170deg) saturate(2) brightness(2)'; // azul
+      }
+      ctx.filter = filter;
       ctx.drawImage(img.value, 0, 0, 60, 80);
       ctx.filter = 'none';
     }
   }
 
   function drawKnight(knightCanvas) {
-    drawCharacter(knightCanvas, knightImg, knightTint.value);
+    drawCharacter(knightCanvas, knightImg, knightTint.value ? 'hit' : null);
   }
 
   function drawEnemy(enemyCanvas) {
-    drawCharacter(enemyCanvas, enemyImg, enemyTint.value);
+    let tintType = null;
+    if (enemyFreezeTint.value) tintType = 'freeze';
+    else if (enemyTint.value) tintType = 'hit';
+    drawCharacter(enemyCanvas, enemyImg, tintType);
   }
 
   function loadImages(knightCanvas, enemyCanvas) {
@@ -75,6 +85,7 @@ export function useCombatDrawing() {
     enemyImg,
     knightTint,
     enemyTint,
+    enemyFreezeTint,
     drawKnight,
     drawEnemy,
     loadImages,
