@@ -2,7 +2,7 @@
   <div class="absolute inset-0 bg-[#00000020] flex justify-center items-center z-50">
     <div class="flex flex-col bg-white w-100 h-80 p-5 text-center">
       <div class="flex-1">
-        <h2>VS</h2>
+        <h2>{{ $t('combat.vs') }}</h2>
         <div class="flex justify-center space-x-4 mb-4 border-b-4" :style="{ borderBottomColor: playerStore.getTerrainColor() }">
           <div class="flex gap-2">
             <div>
@@ -26,44 +26,44 @@
           </div>
         </div>
         <p>{{ playerStore.combatMessage }}</p>
-        <p v-if="!playerStore.enemyDefeated" class="font-bold">{{ playerStore.playerTurn ? 'Your turn' : 'Enemy turn' }}</p>
+        <p v-if="!playerStore.enemyDefeated" class="font-bold">{{ playerStore.playerTurn ? $t('combat.yourTurn') : $t('combat.enemyTurn') }}</p>
       </div>
       <div class="mt-4 flex space-x-2 justify-center">
         <template v-if="!playerStore.enemyDefeated">
           <div class="flex flex-col items-center">
             <button @click="swordAttack" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }">
               <span style="font-size:1.5em;">🗡️</span>
-              Atack
+              {{ $t('combat.attack') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
             <button @click="cover" :disabled="!playerStore.playerTurn" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }">
               <span style="font-size:1.5em;">🛡️</span>
-              Cover
+              {{ $t('combat.cover') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
             <button @click="usePotion" :disabled="!playerStore.playerTurn || playerStore.inventory.potion <= 0" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.inventory.potion <= 0 }">
               <span style="font-size:1.5em;">🧪</span>
-              Heal
+              {{ $t('combat.heal') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
             <button @click="fireball" :disabled="!playerStore.playerTurn || playerStore.mana < 1" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn || playerStore.mana < 1 }">
               <span style="font-size:1.5em;">🔥</span>
-              Fireball
+              {{ $t('combat.fireball') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
             <button @click="flee" class="px-4 py-2 cursor-pointer flex flex-col items-center">
               <span style="font-size:1.5em;">🏃</span>
-              Run
+              {{ $t('combat.run') }}
             </button>
           </div>
         </template>
         <template v-else>
-          <button @click="loot" :disabled="playerStore.lootCollected" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': playerStore.lootCollected }">{{ playerStore.lootCollected ? 'Looted' : 'Loot' }}</button>
-          <button @click="continueCombat" class="px-4 py-2 cursor-pointer">Continue</button>
+          <button @click="loot" :disabled="playerStore.lootCollected" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': playerStore.lootCollected }">{{ playerStore.lootCollected ? $t('combat.looted') : $t('combat.loot') }}</button>
+          <button @click="continueCombat" class="px-4 py-2 cursor-pointer">{{ $t('combat.continue') }}</button>
         </template>
       </div>
     </div>

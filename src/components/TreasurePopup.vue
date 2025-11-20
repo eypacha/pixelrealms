@@ -1,14 +1,14 @@
 <template>
   <div class="absolute inset-0 bg-[#00000040] flex justify-center items-center z-50">
     <div class="bg-white p-5 text-center w-100 h-80 flex flex-col justify-center items-center">
-      <h2 class="text-lg font-bold mb-2">You have found a treasure</h2>
+      <h2 class="text-lg font-bold mb-2">{{ $t('treasure.title') }}</h2>
       <div class="flex flex-col gap-2 items-center w-full mt-2">
         <button
             @click="claimCoins"
             :disabled="coinsClaimed"
             :class="['px-4 w-full mt-2 cursor-pointer text-black transition', coinsClaimed ? 'opacity-50' : '']"
           >
-            Grab Coins (+{{ coins }} <span style="font-size:1.1em;">🪙</span>)
+            {{ $t('treasure.grabCoins', { coins }) }} <span style="font-size:1.1em;">🪙</span>
           </button>
         <button
             v-if="potions > 0"
@@ -16,7 +16,7 @@
             :disabled="potionsClaimed"
             :class="['px-4 w-full mt-2 cursor-pointer text-black transition', potionsClaimed ? 'opacity-50' : '']"
           >
-            Grab Potions (+{{ potions }} <span style="font-size:1.1em;">🧪</span>)
+            {{ $t('treasure.grabPotions', { potions }) }} <span style="font-size:1.1em;">🧪</span>
           </button>
         <button
             v-if="scrollFound"
@@ -24,11 +24,11 @@
             :disabled="scrollClaimed"
             :class="['px-4 w-full mt-2 cursor-pointer text-black transition', scrollClaimed ? 'opacity-50' : '']"
           >
-            Grab Magic Scroll (<span style="font-size:1.1em;">+2 🪬</span>)
+            {{ $t('treasure.grabScroll') }} (<span style="font-size:1.1em;">+2 🪬</span>)
           </button>
       </div>
       <div class="flex flex-col gap-2 items-center w-full mt-4">
-        <button @click="closePopup" class="px-4 py-1 w-full mt-2 cursor-pointer text-black transition">Continue the journey</button>
+        <button @click="closePopup" class="px-4 py-1 w-full mt-2 cursor-pointer text-black transition">{{ $t('treasure.continue') }}</button>
       </div>
     </div>
   </div>

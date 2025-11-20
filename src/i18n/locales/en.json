@@ -7,6 +7,34 @@
   "footer": {
     "rights": "All rights reserved."
   },
+  "treasure": {
+    "title": "You have found a treasure",
+    "grabCoins": "Grab Coins (+{coins})",
+    "grabPotions": "Grab Potions (+{potions})",
+    "grabScroll": "Grab Magic Scroll",
+    "continue": "Continue the journey"
+  },
+  
+  "wizard": {
+    "buyScroll": "Buy Magic Scroll",
+    "buyPotion": "Buy Potion: {cost}",
+    "enchantSword": "Enchant Sword: {cost}",
+    "enchantShield": "Enchant Shield: {cost}",
+    "leave": "Leave"
+  },
+  "combat": {
+    "vs": "VS",
+    "yourTurn": "Your turn",
+    "enemyTurn": "Enemy turn",
+    "attack": "Attack",
+    "cover": "Cover",
+    "heal": "Heal",
+    "fireball": "Fireball",
+    "run": "Run",
+    "loot": "Loot",
+    "looted": "Looted",
+    "continue": "Continue"
+  },
   "sections": {
     "section1": {
       "title": "Section 1",
@@ -20,5 +48,10 @@
       "title": "Section 3",
       "description": "This is the description for Section 3."
     }
+  },
+  "hud": {
+    "language": "Language",
+    "spanish": "Español",
+    "english": "English"
   }
 }

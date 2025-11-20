@@ -7,6 +7,39 @@
   "footer": {
     "rights": "Todos los derechos reservados."
   },
+  "treasure": {
+    "title": "Has encontrado un tesoro",
+    "grabCoins": "Recoge monedas (+{coins})",
+    "grabPotions": "Recoge pociones (+{potions})",
+    "grabScroll": "Recoge Pergamino Mágico",
+    "continue": "Continúa el viaje"
+  },
+  "wizard": {
+    "buyScroll": "Comprar Pergamino Mágico",
+    "buyPotion": "Comprar Poción: {cost}",
+    "enchantSword": "Encantar Espada: {cost}",
+    "enchantShield": "Encantar Escudo: {cost}",
+    "leave": "Salir"
+  },
+  "combat": {
+    "vs": "VS",
+    "yourTurn": "Tu turno",
+    "enemyTurn": "Turno enemigo",
+    "attack": "Atacar",
+    "cover": "Cubrirse",
+    "heal": "Curar",
+    "fireball": "Bola de fuego",
+    "run": "Huir",
+    "loot": "Botín",
+    "looted": "Botín recogido",
+    "continue": "Continuar"
+  },
+  "title": "Has encontrado un tesoro",
+    "grabCoins": "Recoge monedas (+{coins})",
+    "grabPotions": "Recoge pociones (+{potions})",
+    "grabScroll": "Recoge Pergamino Mágico",
+    "continue": "Continúa el viaje"
+  ,
   "sections": {
     "section1": {
       "title": "Sección 1",
@@ -20,5 +53,10 @@
       "title": "Sección 3",
       "description": "Esta es la descripción de la Sección 3."
     }
+  },
+  "hud": {
+    "language": "Idioma",
+    "spanish": "Español",
+    "english": "Inglés"
   }
 }

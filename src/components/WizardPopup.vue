@@ -13,12 +13,12 @@
 
       <div class="flex flex-col gap-2 items-center">
         <template v-for="option in wizardOptions" :key="option.key">
-          <button v-if="option.key === 'scroll'" @click="buyScroll" :disabled="playerStore.coins < 4" class="px-4 py-1 w-full cursor-pointer">Buy Magic Scroll: 4🪙 <span style="font-size:1.1em;">📜</span></button>
-          <button v-else-if="option.key === 'potion'" @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-1 w-full cursor-pointer">Buy Potion: {{ POTION_COST }}🪙</button>
-          <button v-else-if="option.key === 'sword'" @click="enchantSword" class="text-smpx-4 py-1 w-full cursor-pointer">Enchant Sword: {{ ENCHANT_COST }}🪙</button>
-          <button v-else-if="option.key === 'shield'" @click="enchantShield" class="px-4 py-1 w-full cursor-pointer">Enchant Shield: {{ ENCHANT_COST }}🪙</button>
+          <button v-if="option.key === 'scroll'" @click="buyScroll" :disabled="playerStore.coins < 4" class="px-4 py-1 w-full cursor-pointer">{{ $t('wizard.buyScroll') }}: 4🪙 <span style="font-size:1.1em;">📜</span></button>
+          <button v-else-if="option.key === 'potion'" @click="usePotion" :disabled="playerStore.inventory.potion <= 0" class="px-4 py-1 w-full cursor-pointer">{{ $t('wizard.buyPotion', { cost: POTION_COST }) }}🪙</button>
+          <button v-else-if="option.key === 'sword'" @click="enchantSword" class="text-smpx-4 py-1 w-full cursor-pointer">{{ $t('wizard.enchantSword', { cost: ENCHANT_COST }) }}🪙</button>
+          <button v-else-if="option.key === 'shield'" @click="enchantShield" class="px-4 py-1 w-full cursor-pointer">{{ $t('wizard.enchantShield', { cost: ENCHANT_COST }) }}🪙</button>
         </template>
-        <button @click="closePopup" class="px-4 py-1 w-full mt-2 cursor-pointer">Leave</button>
+        <button @click="closePopup" class="px-4 py-1 w-full mt-2 cursor-pointer">{{ $t('wizard.leave') }}</button>
       </div>
     </div>
   </div>
