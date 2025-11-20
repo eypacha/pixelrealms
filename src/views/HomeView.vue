@@ -10,6 +10,12 @@
       <CombatPopup v-if="playerStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
       <WizardPopup v-if="playerStore.wizardActive" />
+      <NarrativePopup
+        v-if="narrativeActive"
+        :anecdote="currentAnecdote"
+        :visible="narrativeActive"
+        @close="closeNarrative"
+      />
     </div>
     <div class="mt-4 flex items-center gap-20">
       <div>
@@ -44,11 +50,22 @@ import { PLAYER_SPEED } from '../constants/player';
 import CombatPopup from '../components/CombatPopup.vue';
 import GameOverPopup from '../components/GameOverPopup.vue';
 import WizardPopup from '../components/WizardPopup.vue';
+import NarrativePopup from '../components/NarrativePopup.vue';
+import { useNarrativeEncounter } from '../composables/useNarrativeEncounter';
 
 const { terrainCanvas, seedInput, randomizeSeed, updateTerrain, worldOffset, addOffset, tileStep } = useTerrain();
 const playerStore = usePlayerStore();
 const poiStore = usePoiStore();
 const playerImage = ref(null);
+
+const narrativeActive = ref(false);
+const currentAnecdote = ref(null);
+const { maybeTriggerEncounter } = useNarrativeEncounter();
+
+function closeNarrative() {
+  narrativeActive.value = false;
+  currentAnecdote.value = null;
+}
 
 onMounted(async () => {
   playerImage.value = new Image();
@@ -60,6 +77,7 @@ onMounted(async () => {
   window.addEventListener('keydown', (e) => {
     if (e.repeat) return;
     if (playerStore.combatActive) return;
+    if (narrativeActive.value) return;
     let moved = false;
       if (e.key === 'ArrowUp') {
       moved = playerStore.moveUp();
@@ -106,8 +124,13 @@ onMounted(async () => {
     if (moved) {
       requestAnimationFrame(() => {
         poiStore.checkDiscovery(playerStore.position, playerStore);
-        // redrawTerrain true when we wrapped (worldOffset changed), else false to only repaint player
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { redrawTerrain: true });
+        // Narrative encounter
+        const anecdote = maybeTriggerEncounter();
+        if (anecdote) {
+          currentAnecdote.value = anecdote;
+          narrativeActive.value = true;
+        }
       });
     }
   });

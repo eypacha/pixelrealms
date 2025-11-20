@@ -24,11 +24,12 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue';
 import { usePlayerStore } from '../stores/player';
+import { useSoundStore } from '../stores/sound';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
 import { POTION_COST, ENCHANT_COST, ENCHANT_CHANCE } from '../constants/wizard';
 
 const playerStore = usePlayerStore();
-const soundStore = playerStore.$state.soundStore || (typeof playerStore.playSound === 'function' ? playerStore : null);
+const soundStore = useSoundStore();
 const { drawKnight } = useCombatDrawing();
 const playerCanvas = ref(null);
 const wizardCanvas = ref(null);
@@ -42,9 +43,7 @@ function usePotion() {
   playerStore.coins -= POTION_COST;
   if (!playerStore.inventory.potion) playerStore.inventory.potion = 0;
   playerStore.inventory.potion++;
-  if (typeof playerStore.playSound === 'function') {
-    playerStore.playSound('coin');
-  }
+  soundStore.playSound('coin');
   message.value = `You bought a potion!`;
 }
 
@@ -54,9 +53,7 @@ function enchantSword() {
     return;
   }
   playerStore.coins -= ENCHANT_COST;
-  if (typeof playerStore.playSound === 'function') {
-    playerStore.playSound('coin');
-  }
+  soundStore.playSound('coin');
   if (Math.random() < ENCHANT_CHANCE) {
     playerStore.strength++;
     message.value = `Sword enchanted! +1 STR`;
@@ -71,9 +68,7 @@ function enchantShield() {
     return;
   }
   playerStore.coins -= ENCHANT_COST;
-  if (typeof playerStore.playSound === 'function') {
-    playerStore.playSound('coin');
-  }
+  soundStore.playSound('coin');
   if (Math.random() < ENCHANT_CHANCE) {
     playerStore.defense++;
     message.value = `Shield enchanted! +1 DEF`;

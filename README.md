@@ -3,7 +3,7 @@
 **PixelRealms** is a prototype for exploration and turn-based encounters built on a procedurally generated terrain. The world is created using a midpoint displacement heightmap and explored screen-by-screen using a deterministic seed. This document explains the game's mechanics and points to the key files in the codebase. It intentionally omits installation and run instructions.
 
 Summary
-- Genre: Tile-based exploration with simple turn-based encounters.
+- Genre: Exploration with simple turn-based encounters.
 - Generation: 2D procedural terrain using midpoint displacement; the visible canvas is a window into that generated grid.
 - Goal: Explore, discover points of interest (POIs), collect loot, and survive encounters.
 
