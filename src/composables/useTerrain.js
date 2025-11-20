@@ -69,7 +69,7 @@ export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = '14
     worldOffset,
     setOffset,
     addOffset,
-    tileStep: (terrainSize - 1) * 2,
+    tileStep: terrainSize - 1,
     randomizeSeed,
     updateTerrain,
     isValidTerrain,
