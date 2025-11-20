@@ -8,7 +8,7 @@
             :disabled="coinsClaimed"
             :class="['px-4 w-full mt-2 cursor-pointer text-black transition', coinsClaimed ? 'opacity-50' : '']"
           >
-            Grab {{ coins }} <span style="font-size:1.1em;">🪙</span>
+            Grab Coins (+{{ coins }} <span style="font-size:1.1em;">🪙</span>)
           </button>
         <button
             v-if="potions > 0"
@@ -16,7 +16,15 @@
             :disabled="potionsClaimed"
             :class="['px-4 w-full mt-2 cursor-pointer text-black transition', potionsClaimed ? 'opacity-50' : '']"
           >
-            Grab {{ potions }} <span style="font-size:1.1em;">🧪</span>
+            Grab Potions (+{{ potions }} <span style="font-size:1.1em;">🧪</span>)
+          </button>
+        <button
+            v-if="scrollFound"
+            @click="claimScroll"
+            :disabled="scrollClaimed"
+            :class="['px-4 w-full mt-2 cursor-pointer text-black transition', scrollClaimed ? 'opacity-50' : '']"
+          >
+            Grab Magic Scroll (<span style="font-size:1.1em;">+2 🪬</span>)
           </button>
       </div>
       <div class="flex flex-col gap-2 items-center w-full mt-4">
@@ -35,14 +43,21 @@ const poiStore = usePoiStore();
 const playerStore = usePlayerStore();
 const soundStore = useSoundStore();
 
+
 const coins = ref(0);
 const potions = ref(0);
 const coinsClaimed = ref(false);
 const potionsClaimed = ref(false);
 
+// Magic scroll
+const scrollFound = ref(false);
+const scrollClaimed = ref(false);
+
 onMounted(() => {
   coins.value = Math.floor(Math.random() * 16) + 5; // 5-20
   potions.value = Math.floor(Math.random() * 4); // 0-3
+  // 30% probabilidad de scroll mágico
+  scrollFound.value = Math.random() < 0.3;
 });
 
 function claimCoins() {
@@ -60,6 +75,14 @@ function claimPotions() {
     playerStore.inventory.potion += potions.value;
     potionsClaimed.value = true;
     soundStore.playSound('gulp');
+  }
+}
+
+function claimScroll() {
+  if (!scrollClaimed.value && scrollFound.value) {
+    playerStore.mana += 2;
+    scrollClaimed.value = true;
+    soundStore.playSound('magic'); // Usa un sonido apropiado si existe
   }
 }
 

@@ -25,6 +25,7 @@
         🛡️ {{ playerStore.defense }}
         🪙 {{ playerStore.coins }}
         🧪 {{ playerStore.inventory.potion }}
+        🪬 {{ playerStore.mana }}
       </div>
       <div class="flex items-center gap-2">
         <label for="volume" class="mr-2 font-bold">

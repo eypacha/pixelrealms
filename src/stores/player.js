@@ -38,6 +38,8 @@ export const usePlayerStore = defineStore('player', () => {
   const defense = ref(INITIAL_DEFENSE);
   const coins = ref(INITIAL_COINS);
   const inventory = ref({ potion: INITIAL_POTIONS });
+    
+  const mana = ref(0);
   const combatActive = ref(false);
   const gameOver = ref(false);
   const wizardActive = ref(false); // Para mostrar el WizardPopup
@@ -355,5 +357,5 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  return { position, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, currentOffset, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
+  return { position, mana, oldPosition, seed, health, maxHealth, strength, defense, coins, inventory, combatActive, gameOver, wizardActive, enemyHealth, enemyStrength, enemyDefense, enemyType, playerTurn, combatMessage, coverActive, enemyDefeated, lootCollected, lastDirection, darkKnightDefeatedCount, currentOffset, initialize, moveUp, moveDown, moveLeft, moveRight, startCombat, startCombatWith, playerAttack, enemyAttack, activateCover, fleeCombat, collectLoot, endCombat, heal, usePotion, getTerrainColor };
 });
