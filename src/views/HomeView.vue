@@ -3,7 +3,14 @@
     <div class="mb-4 flex gap-2 items-center">
       <label for="seed" class="mr-2 font-bold">Seed:</label>
       <input id="seed" v-model="seedInput" type="text" class="border px-2 py-1" />
-      <button @click="resetGameWithRandomSeed" class="ml-2 px-2 py-1 bg-blue-500 text-white" :disabled="isResetting">Nueva semilla</button>
+      <button
+        @click="resetGameWithRandomSeed"
+        class="ml-2 px-2 py-1 bg-blue-500 text-white"
+        :disabled="isResetting"
+        :class="isResetting ? 'opacity-50 pointer-events-none' : ''"
+      >
+        Nueva semilla
+      </button>
     </div>
     <div class="relative">
       <div class="absolute top-3 right-4 z-10 text-4xl pointer-events-none">
@@ -96,6 +103,9 @@ function sleep(ms) {
 
 async function resetGameWithRandomSeed() {
   isResetting.value = true;
+  await sleep(300); // Espera 300ms para mostrar el botón deshabilitado
+  isResetting.value = false;
+
   randomizeSeed();
   // Resetear jugador y POIs
   playerStore.health = playerStore.maxHealth;
@@ -129,8 +139,7 @@ async function resetGameWithRandomSeed() {
     poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
   }
   drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true });
-  await sleep(300); // Espera 300ms para mostrar el botón deshabilitado
-  isResetting.value = false;
+
 }
 
 function closeNarrative() {
