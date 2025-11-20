@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { CASTLE_COUNT, LOOT_MIN, LOOT_MAX } from '../constants/poi.js';
+import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX } from '../constants/poi.js';
 import { useSoundStore } from './sound.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 
@@ -12,8 +12,8 @@ export const usePoiStore = defineStore('poi', () => {
   const pois = ref([]); // current tile pois
   const soundStore = useSoundStore();
   // Generate POIs for a specific tile defined by offsetX, offsetY (in grid indices)
-  // Now generates both 'castle' and 'wizard' POIs
-  function ensureForTile(offsetX, offsetY, terrain, width, height, seed, count = CASTLE_COUNT) {
+  // Now generates both 'darkKnight' and 'wizard' POIs
+  function ensureForTile(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
     const key = `${offsetX},${offsetY}`;
     if (poisByTile.value[key]) {
       pois.value = poisByTile.value[key];
@@ -32,7 +32,7 @@ export const usePoiStore = defineStore('poi', () => {
         const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
         if (terrain[ty]?.[tx] > -0.05) {
           const loot = Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN;
-          arr.push({ id: 'castle-' + i, type: 'castle', position: { x, y }, discovered: false, loot });
+          arr.push({ id: 'darkKnight-' + i, type: 'darkKnight', position: { x, y }, discovered: false, loot });
           placed = true;
         }
         attempts++;
@@ -63,7 +63,7 @@ export const usePoiStore = defineStore('poi', () => {
     pois.value.forEach(poi => {
       if (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10) {
         poi.discovered = true;
-        if (poi.type === 'castle') {
+        if (poi.type === 'darkKnight') {
           console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
           if (typeof playerStore.startCombatWith === 'function') {
             playerStore.startCombatWith({ type: 'darkknight' });

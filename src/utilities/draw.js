@@ -134,7 +134,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   }
   const darkKnightImg = drawAll.darkKnightImage;
   poiStore.pois.forEach(poi => {
-    if (poi.type === 'castle') {
+    if (poi.type === 'darkKnight') {
       if (darkKnightImg.complete) {
         ctx.save();
         if (poi.discovered) {

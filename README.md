@@ -10,7 +10,7 @@ Summary
 Core Mechanics
 - Terrain: Heights are produced by `midpointDisplacement2D`. The canvas is painted from the generated heightmap using the current `seed` and `worldOffset`. Height ranges map to water / sand / land / mountain colors.
 - Seed & tiles: Changing the `seed` or shifting `worldOffset` yields different world regions deterministically. The UI exposes a `Seed` input and a `Random` button for quick experimentation.
-- POIs: Each tile (world chunk) deterministically spawns POIs (e.g., castles). Approaching a POI marks it as discovered and immediately awards its loot (coins and sometimes a potion).
+- POIs: Each tile (world chunk) deterministically spawns POIs (e.g., Wizards, Dark Knights). Approaching a POI marks it as discovered and immediately awards its loot (coins and sometimes a potion).
 - Encounters: After each valid movement, the player runs a probabilistic check (`ENCOUNTER_RATE`, default 0.1) that may trigger a combat encounter.
 
 Player & Stats
