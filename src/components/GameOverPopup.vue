@@ -11,12 +11,6 @@
 </template>
 
 <script setup>
-import { usePlayerStore } from '../stores/player';
-import { usePoiStore } from '../stores/poi';
-
-const playerStore = usePlayerStore();
-const poiStore = usePoiStore();
-
 function restartGame() {
     window.location.reload();
 }
