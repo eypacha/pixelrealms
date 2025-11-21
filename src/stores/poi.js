@@ -1,10 +1,4 @@
-  function resetPois(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
-    // Limpia todos los POIs de todos los tiles
-    poisByTile.value = {};
-    pois.value = [];
-    // Genera primero los POIs del tile actual
-    ensureForTile(offsetX, offsetY, terrain, width, height, seed, count);
-  }
+
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT, WIZARD_COUNT } from '../constants/poi.js';
@@ -27,6 +21,7 @@ export const usePoiStore = defineStore('poi', () => {
   function resetPois(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
     poisByTile.value = {};
     pois.value = [];
+    defeatedGoblins.value = [];
     ensureForTile(offsetX, offsetY, terrain, width, height, seed, count);
   }
 

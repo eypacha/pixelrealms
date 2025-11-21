@@ -9,7 +9,7 @@
         :disabled="isResetting"
         :class="isResetting ? 'opacity-50 pointer-events-none' : ''"
       >
-        Nueva semilla
+        Random Seed
       </button>
     </div>
     <div class="relative w-[800px] h-[600px]">
@@ -180,44 +180,14 @@ async function resetGameWithRandomSeed() {
 
   randomizeSeed();
   // Resetear jugador y POIs
-  playerStore.health = playerStore.maxHealth;
-  playerStore.strength = 10;
-  playerStore.defense = 5;
-  playerStore.coins = 0;
-  playerStore.inventory.potion = 1;
-  playerStore.mana = 0;
-  playerStore.combatActive = false;
-  playerStore.gameOver = false;
-  playerStore.wizardActive = false;
-  playerStore.enemyHealth = 10;
-  playerStore.enemyStrength = 5;
-  playerStore.enemyDefense = 2;
-  playerStore.enemyType = 'goblin';
-  playerStore.playerTurn = true;
-  playerStore.coverActive = false;
-  playerStore.enemyDefeated = false;
-  playerStore.lootCollected = false;
-  playerStore.lastDirection = 'right';
-  playerStore.darkKnightDefeatedCount = 0;
-  playerStore.currentOffset = { x: 0, y: 0 };
-  if (poiStore.pois && typeof poiStore.pois.value !== 'undefined') poiStore.pois.value = [];
-  if (poiStore.treasureDiscovered && typeof poiStore.treasureDiscovered.value !== 'undefined') poiStore.treasureDiscovered.value = false;
-  // Regenerar POIs solo para el tile actual, usando caché si existe
-  let terrain = null;
-  if (terrainCanvas.value) {
-    terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seedInput.value);
-  }
-  if (typeof poiStore.resetPois === 'function') {
-    poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
-  }
-  if (typeof poiStore.ensureForTile === 'function') {
-    poiStore.ensureForTile(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
-  }
+  playerStore.reset();
+  // Regenerar POIs y defeatedGoblins solo con resetPois
+  let terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seedInput.value);
+  poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
   // Dibuja solo el terreno en el canvas de fondo
   drawAll(terrainCanvas, seedInput, null, null, null, worldOffset.value, { onlyTerrain: true });
   // Dibuja los elementos reactivos en el canvas superior
   drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
-
 }
 
 function closeNarrative() {

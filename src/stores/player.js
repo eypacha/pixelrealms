@@ -37,7 +37,7 @@ import { useSoundStore } from './sound.js';
 import { calculateDamage } from '../utilities/calculateDamage.js';
 
 export const usePlayerStore = defineStore('player', () => {
-      // Recupera vida cada 3 pasos
+  // Recupera vida cada 3 pasos
   const { t } = useI18n();
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
@@ -102,6 +102,29 @@ export const usePlayerStore = defineStore('player', () => {
     position.value = { x: 0, y: 0 };
     oldPosition.value = { ...position.value };
   }
+
+  function reset() {
+      health.value = maxHealth.value;
+      strength.value = 10;
+      defense.value = 10;
+      coins.value = 10;
+      inventory.value.potion = 2;
+      mana.value = 0;
+      combatActive.value = false;
+      gameOver.value = false;
+      wizardActive.value = false;
+      enemyHealth.value = 10;
+      enemyStrength.value = 5;
+      enemyDefense.value = 2;
+      enemyType.value = GOBLIN;
+      playerTurn.value = true;
+      coverActive.value = false;
+      enemyDefeated.value = false;
+      lootCollected.value = false;
+      lastDirection.value = 'right';
+      darkKnightDefeatedCount.value = 0;
+      currentOffset.value = { x: 0, y: 0 };
+    }
 
   function startCombat() {
     enemyType.value = GOBLIN;
@@ -501,6 +524,7 @@ export const usePlayerStore = defineStore('player', () => {
     usePotion,
     getTerrainColor,
     fireballAttack,
-    freezeEnemy
+    freezeEnemy,
+    reset
   };
 });
