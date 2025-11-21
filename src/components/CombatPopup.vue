@@ -1,10 +1,16 @@
 <template>
-  <div class="absolute inset-0 bg-[#00000020] flex justify-center items-center z-50">
+  <!-- Eliminado div antiguo, solo queda el div con fondo dinámico -->
+    <div
+      class="absolute inset-0 flex justify-center items-center z-50 bg-[#00000040]"
+    >
     <div class="flex flex-col bg-white w-100 h-100 p-5 text-center">
       <div class="flex-1">
         <h2>{{ $t('combat.vs') }}</h2>
-        <div class="flex justify-center space-x-4 mb-4 border-b-4"
-          :style="{ borderBottomColor: playerStore.getTerrainColor() }">
+        <div
+          class="flex justify-center space-x-4 mb-4 border-b-4 pt-4"
+          :class="timeStore.isNight ? 'bg-blue-950 text-white' : 'bg-blue-100'"
+          :style="{ borderBottomColor: playerStore.getTerrainColor() }"
+        >
           <div class="flex gap-2">
             <div>
               <div>❤️ {{ playerStore.health }}</div>
@@ -107,6 +113,7 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 import { ref, onMounted, watch } from 'vue';
 import { usePlayerStore } from '../stores/player';
+import { useTimeStore } from '../stores/time';
 
 import { useCombatDrawing } from '../composables/useCombatDrawing';
 import { ENEMIES } from '../constants/enemies';
@@ -116,6 +123,7 @@ function freeze() {
 }
 
 const playerStore = usePlayerStore();
+  const timeStore = useTimeStore();
 const { knightTint, enemyTint, enemyFreezeTint, drawKnight, drawEnemy, loadImages, setEnemyType } = useCombatDrawing();
 
 const knightCanvas = ref(null);
