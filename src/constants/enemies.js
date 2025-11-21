@@ -21,4 +21,4 @@ export const DARK_KNIGHT_DEFENSE = 10;
 export const SKELETON = 'skeleton';
 export const SKELETON_HEALTH = 7;
 export const SKELETON_STRENGTH = 5;
-export const SKELETON_DEFENSE = 2;
+export const SKELETON_DEFENSE = 4;
