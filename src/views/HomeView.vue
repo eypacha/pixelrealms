@@ -87,9 +87,6 @@ function sleep(ms) {
 }
 
 async function resetGame(seed) {
-  isResetting.value = true;
-  await sleep(300);
-  isResetting.value = false;
   playerStore.reset();
   let terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seed);
   poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seed);
