@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
+    <CharacterSelectPopup v-if="showCharacterSelect" />
     <TopBar
       :seed="seedLocal"
       :isResetting="isResetting"
@@ -68,6 +69,7 @@ import TreasurePopup from '../components/TreasurePopup.vue';
 import { storeToRefs } from 'pinia';
 import SettingsBar from '../components/SettingsBar.vue';
 import StatusBar from '../components/StatusBar.vue';
+import CharacterSelectPopup from '../components/CharacterSelectPopup.vue';
 
 const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep, randomizeSeed } = useTerrain();
 const seedLocal = ref(seedInput.value);
@@ -81,6 +83,7 @@ const narrativeActive = ref(false);
 const currentAnecdote = ref({ index: null, lang: 'en' });
 const { maybeTriggerEncounter } = useNarrativeEncounter();
 const isResetting = ref(false);
+const showCharacterSelect = computed(() => !playerStore.characterSelected);
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -111,15 +114,24 @@ function closeNarrative() {
   currentAnecdote.value = { index: null, lang: 'en' };
 }
 
+watch(() => playerStore.image, (newImg) => {
+  if (newImg) {
+    playerImage.value = new Image();
+    playerImage.value.src = newImg;
+    playerImage.value.onload = () => {
+      drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyTerrain: true });
+      drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+    };
+  }
+});
+
 onMounted(async () => {
   playerImage.value = new Image();
-  playerImage.value.src = 'images/knight.png';
+  playerImage.value.src = playerStore.image || 'images/knight.png';
   await new Promise(resolve => {
     playerImage.value.onload = resolve;
   });
-  // Dibuja solo el terreno en el canvas de fondo
   drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
-  // Dibuja los elementos reactivos en el canvas superior
   drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
 });
 

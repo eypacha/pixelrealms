@@ -91,7 +91,7 @@
             </button>
             <button v-if="combatLoot.scrollFound" @click="claimCombatScroll" :disabled="combatLoot.scrollClaimed"
               :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.scrollClaimed ? 'opacity-50' : '']">
-              {{ $t('treasure.grabScroll') }} (<span style="font-size:1.1em;">+2 🪬</span>)
+              {{ $t('treasure.grabScroll') }} (<span style="font-size:1.1em;">+1 🪬</span>)
             </button>
           </div>
           <button @click="continueCombat" class="px-4 py-2 w-full mt-4 cursor-pointer">{{ $t('treasure.continue')
@@ -202,7 +202,7 @@ function claimCombatPotions() {
 
 function claimCombatScroll() {
   if (!combatLoot.value.scrollClaimed && combatLoot.value.scrollFound) {
-    playerStore.mana += 2;
+    playerStore.mana += 1;
     combatLoot.value.scrollClaimed = true;
     playerStore.lootCollected = true;
     playerStore.combatMessage = t('combat.lootedScroll');
