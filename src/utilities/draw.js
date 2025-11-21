@@ -49,6 +49,18 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   }
   const orcImg = drawAll.orcImage;
 
+  // Imagen de goblin
+  if (!drawAll.goblinImage) {
+    drawAll.goblinImage = new Image();
+    drawAll.goblinImage.src = 'images/goblin.png';
+    drawAll.goblinImage.onload = () => {
+      if (terrainCanvas && terrainCanvas.value) {
+        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+      }
+    };
+  }
+  const goblinImg = drawAll.goblinImage;
+
   // Imagen de wizard
   if (!drawAll.wizardImage) {
     drawAll.wizardImage = new Image();
@@ -189,15 +201,26 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
           ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
         }
       });
-      if (orcImg.complete && Array.isArray(poiStore.defeatedOrcs)) {
+      // Dibujar enemigos derrotados de cualquier tipo
+      if (Array.isArray(poiStore.defeatedEnemies)) {
         const offsetX = Number(worldOffset.x) || 0;
         const offsetY = Number(worldOffset.y) || 0;
-        poiStore.defeatedOrcs
+        poiStore.defeatedEnemies
           .filter(pos => Number(pos.offsetX) === offsetX && Number(pos.offsetY) === offsetY)
           .forEach(pos => {
             ctx.save();
             ctx.globalAlpha = 0.4;
-            ctx.drawImage(orcImg, pos.x - 10, pos.y - 15, 20, 30);
+            let img = null;
+            if (pos.type === 'orc' && orcImg.complete) img = orcImg;
+            if (pos.type === 'goblin' && goblinImg.complete) img = goblinImg;
+            // Puedes agregar más tipos aquí
+            if (img) {
+              ctx.drawImage(img, pos.x - 10, pos.y - 15, 20, 30);
+            } else {
+              // Si no hay imagen, dibuja un cuadrado gris
+              ctx.fillStyle = 'gray';
+              ctx.fillRect(pos.x - 5, pos.y - 5, 10, 10);
+            }
             ctx.restore();
           });
       }

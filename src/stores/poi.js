@@ -8,8 +8,8 @@ import { useTerrain } from '../composables/useTerrain.js';
 export const usePoiStore = defineStore('poi', () => {
   // Instancia de useTerrain para acceso a isValidTerrain
   const terrainUtils = useTerrain();
-  // Array de { x, y, offsetX, offsetY }
-  const defeatedOrcs = ref([]);
+  // Array de enemigos derrotados: { type, x, y, offsetX, offsetY }
+  const defeatedEnemies = ref([]);
   // Mapa de POIs por tile key 'offsetX,offsetY'
   const poisByTile = ref({});
   const pois = ref([]); // current tile pois
@@ -21,7 +21,7 @@ export const usePoiStore = defineStore('poi', () => {
   function resetPois(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
     poisByTile.value = {};
     pois.value = [];
-    defeatedOrcs.value = [];
+    defeatedEnemies.value = [];
     ensureForTile(offsetX, offsetY, terrain, width, height, seed, count);
   }
 
@@ -130,13 +130,19 @@ export const usePoiStore = defineStore('poi', () => {
     pois.value = poisByTile.value[key];
   }
 
-  function addDefeatedOrc(position) {
-    // Recibe también el offset actual
+  // Agrega un enemigo derrotado de cualquier tipo
+  function addDefeatedEnemy(position, type) {
     if (position.offsetX === undefined || position.offsetY === undefined) {
-      console.warn('addDefeatedOrc: falta offsetX/offsetY');
+      console.warn('addDefeatedEnemy: falta offsetX/offsetY');
     }
-    defeatedOrcs.value.push({ x: position.x, y: position.y, offsetX: position.offsetX, offsetY: position.offsetY });
+    defeatedEnemies.value.push({
+      type,
+      x: position.x,
+      y: position.y,
+      offsetX: position.offsetX,
+      offsetY: position.offsetY
+    });
   }
 
-  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedOrcs, addDefeatedOrc, treasureDiscovered, addNarrativePoi };
+  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi };
 });

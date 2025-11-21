@@ -199,7 +199,13 @@ export const usePlayerStore = defineStore('player', () => {
           // Usar el offset actual guardado en el store
           const wx = currentOffset.value.x;
           const wy = currentOffset.value.y;
-          poiStore.addDefeatedGoblin({ x: position.value.x, y: position.value.y, offsetX: wx, offsetY: wy });
+          poiStore.addDefeatedEnemy({ x: position.value.x, y: position.value.y, offsetX: wx, offsetY: wy }, 'orc');
+        }
+        if (enemyType.value === GOBLIN) {
+          const poiStore = usePoiStore();
+          const wx = currentOffset.value.x;
+          const wy = currentOffset.value.y;
+          poiStore.addDefeatedEnemy({ x: position.value.x, y: position.value.y, offsetX: wx, offsetY: wy }, 'goblin');
         }
         // Mark enemy as defeated and wait for player to loot or continue
         enemyDefeated.value = true;
