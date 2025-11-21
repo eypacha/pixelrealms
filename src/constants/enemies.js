@@ -36,8 +36,8 @@ export const ENEMIES = {
 	 skeleton: {
 	  type: 'skeleton',
 	  health: 7,
-	  strength: 9,
-	  defense: 6,
+	  strength: 11,
+	  defense: 9,
 	  image: 'images/skeleton.png',
 	  chance: 1,
 	  freezeChance: 0.5

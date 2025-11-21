@@ -17,8 +17,8 @@
           @click="selectCharacter(char)"
           :key="char.key"
           :class="[
-            'flex flex-col items-center cursor-pointer hover:scale-105 transition-transform',
-            selected?.key === char.key ? 'border-2 border-gray-400' : 'border-2 border-transparent'
+            'flex flex-col items-center cursor-pointer transition-all',
+            selected?.key === char.key ? 'scale-105 border-2 border-gray-400' : 'border-2 border-transparent'
           ]"
           style="padding: 8px;"
         >
