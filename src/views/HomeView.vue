@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
-    <CharacterSelectPopup v-if="showCharacterSelect" />
-    <TopBar
+    <CharacterSelectPopup
+      v-if="showCharacterSelect"
       :seed="seedLocal"
       :isResetting="isResetting"
       @update:seed="handleSeedInputChangeFromBar"
@@ -40,7 +40,6 @@
     </div>
     <div class="mt-4 flex items-center gap-20">
       <StatusBar />
-      <SettingsBar />
     </div>
   </div>
 </template>
@@ -48,7 +47,6 @@
 
 
 <script setup>
-import TopBar from '../components/TopBar.vue';
 import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 import { useTimeStore } from '../stores/time';
 const timeStore = useTimeStore();
@@ -67,7 +65,6 @@ import NarrativePopup from '../components/NarrativePopup.vue';
 import { useNarrativeEncounter } from '../composables/useNarrativeEncounter';
 import TreasurePopup from '../components/TreasurePopup.vue';
 import { storeToRefs } from 'pinia';
-import SettingsBar from '../components/SettingsBar.vue';
 import StatusBar from '../components/StatusBar.vue';
 import CharacterSelectPopup from '../components/CharacterSelectPopup.vue';
 

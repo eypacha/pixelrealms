@@ -1,7 +1,5 @@
 <template>
   <div class="mb-4 flex gap-2 items-center">
-    <span class="font-bold text-sm mr-4">Pixel Realms</span>
-
     <div>
         <label for="seed" class="mr-2 font-bold">Seed:</label>
         <input id="seed" v-model="seedLocal" type="text" class="border px-2 py-1" @change="handleSeedInputChange" @blur="handleSeedInputChange" />
