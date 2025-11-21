@@ -35,7 +35,8 @@ export const usePoiStore = defineStore('poi', () => {
     }
     const rand = createSeededRandom(String(seed) + ':poi:' + key);
     const arr = [];
-    // Castles
+    
+    // Dark Knights
     for (let i = 0; i < count; i++) {
       let x, y, attempts = 0;
       let placed = false;
