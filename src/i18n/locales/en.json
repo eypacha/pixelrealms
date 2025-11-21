@@ -42,6 +42,7 @@
     "fireball": "Fireball",
     "run": "Run",
     "loot": "Loot",
+    "lootedScroll": "Magic Scroll looted",
     "looted": "Looted",
     "continue": "Continue",
     "frozen": "Enemy frozen!",
