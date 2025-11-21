@@ -1,15 +1,16 @@
 <template>
-  <div class="fixed inset-0 bg-[#00000080] flex justify-center items-center z-50" style="width:800px;height:600px;left:50%;top:50%;transform:translate(-50%,-50%);">
+  <div class="absolute bg-[#00000080] flex justify-center items-center w-full h-full    z-50">
     <div class="bg-white flex flex-col items-center justify-center w-full h-full p-8">
       <TopBar
-        class="absolute top-5 left-5"
+        class="absolute bottom-5 left-5"
         :seed="seed"
         :isResetting="isResetting"
         @update:seed="onUpdateSeed"
         @random-seed="onRandomSeed"
       />
-      <SettingsBar class="absolute top-5 right-5" />
-      <h2 class="text-2xl font-bold mb-6">Choose Your Character</h2>
+      <SettingsBar class="absolute bottom-5 right-5" />
+      <h1 class="text-2xl font-bold mb-6">Pixel Realms</h1>
+      <h2 class="text-lg font-bold mb-6">Choose Your Character</h2>
       <div class="flex gap-8 justify-center items-center mb-8">
         <div
           v-for="char in characters"

@@ -1,13 +1,13 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
-    <CharacterSelectPopup
+  <div class="relative flex flex-col items-center justify-center min-h-screen bg-blue-100">
+    <div class="relative w-[800px] h-[600px]">
+      <CharacterSelectPopup
       v-if="showCharacterSelect"
       :seed="seedLocal"
       :isResetting="isResetting"
       @update:seed="handleSeedInputChangeFromBar"
       @random-seed="handleRandomSeedFromBar"
     />
-    <div class="relative w-[800px] h-[600px]">
       <div class="absolute top-3 right-4 z-10 text-4xl pointer-events-none">
         <span v-if="!timeStore.isNight.value">☀️</span>
         <span v-else>🌙</span>
