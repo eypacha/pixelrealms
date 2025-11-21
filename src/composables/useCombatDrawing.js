@@ -45,7 +45,7 @@ export function useCombatDrawing() {
     knightImg.value.onload = () => {
       drawKnight(knightCanvas);
     };
-    knightImg.value.src = playerStore.image || 'images/knight.png';
+    knightImg.value.src = playerStore.image || 'images/blank.png';
 
     // Prepare goblin, orc and darkknight images. We'll point `enemyImg` to the active one.
     goblinImg.value = new Image();

@@ -18,7 +18,7 @@
           :key="char.key"
           :class="[
             'flex flex-col items-center cursor-pointer hover:scale-105 transition-transform',
-            selected?.key === char.key ? 'border-2 border-green-600' : 'border-2 border-transparent'
+            selected?.key === char.key ? 'border-2 border-gray-400' : 'border-2 border-transparent'
           ]"
           style="padding: 8px;"
         >
@@ -71,7 +71,7 @@ const characters = [
   {
     key: 'knight',
     name: 'Knight',
-    img: 'images/knight.png',
+    img: 'images/realknight.png',
     stats: {
       health: 10,
       strength: 10,
