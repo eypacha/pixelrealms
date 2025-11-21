@@ -30,6 +30,10 @@ import {
   DARK_KNIGHT_HEALTH,
   DARK_KNIGHT_STRENGTH,
   DARK_KNIGHT_DEFENSE,
+  SKELETON,
+  SKELETON_HEALTH,
+  SKELETON_STRENGTH,
+  SKELETON_DEFENSE,
   ENEMY_HIT_CHANCE,
 } from '../constants/enemies.js';
 
@@ -133,20 +137,18 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
   function startCombat() {
-    // Probabilidad de goblin vs orc (por defecto 50/50, pero puedes cambiar goblinChance)
-    const goblinChance = 0.5; // Cambia este valor para ajustar la probabilidad
-    const roll = Math.random();
-    if (roll < goblinChance) {
-      enemyType.value = GOBLIN;
-      enemyHealth.value = GOBLIN_HEALTH;
-      enemyStrength.value = GOBLIN_STRENGTH;
-      enemyDefense.value = GOBLIN_DEFENSE;
-    } else {
-      enemyType.value = ORC;
-      enemyHealth.value = ORC_HEALTH;
-      enemyStrength.value = ORC_STRENGTH;
-      enemyDefense.value = ORC_DEFENSE;
-    }
+    // Probabilidad de aparición de enemigos
+    const enemies = [
+      { type: GOBLIN, health: GOBLIN_HEALTH, strength: GOBLIN_STRENGTH, defense: GOBLIN_DEFENSE },
+      { type: ORC, health: ORC_HEALTH, strength: ORC_STRENGTH, defense: ORC_DEFENSE },
+      { type: SKELETON, health: SKELETON_HEALTH, strength: SKELETON_STRENGTH, defense: SKELETON_DEFENSE },
+    ];
+    const idx = Math.floor(Math.random() * enemies.length);
+    const enemy = enemies[idx];
+    enemyType.value = enemy.type;
+    enemyHealth.value = enemy.health;
+    enemyStrength.value = enemy.strength;
+    enemyDefense.value = enemy.defense;
     playerTurn.value = true;
     combatActive.value = true;
     combatMessage.value = t('combat.start');

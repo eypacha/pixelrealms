@@ -11,6 +11,7 @@ export function useCombatDrawing() {
     goblin: 'images/goblin.png',
     orc: 'images/medium-orc.png',
     darkknight: 'images/darkknight.png',
+    skeleton: 'images/skeleton.png', // Nuevo enemigo
     // Agrega aquí más enemigos fácilmente
   };
   const knightTint = ref(false);
