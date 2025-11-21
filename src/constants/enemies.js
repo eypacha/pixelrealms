@@ -35,7 +35,7 @@ export const ENEMIES = {
 	 },
 	 skeleton: {
 	  type: 'skeleton',
-	  health: 7,
+	  health: 8,
 	  strength: 11,
 	  defense: 9,
 	  image: 'images/skeleton.png',

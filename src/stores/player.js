@@ -268,6 +268,8 @@ export const usePlayerStore = defineStore('player', () => {
 
   function enemyAttack() {
 
+    if (gameOver.value || health.value <= 0) return;
+    
     const enemyFreezeChance = ENEMIES[enemyType.value]?.freezeChance || 0;
     if (enemyFreezeChance > 0 && !playerFrozen.value) {
       console.log('❄️ Intentando congelar al jugador');
@@ -290,13 +292,14 @@ export const usePlayerStore = defineStore('player', () => {
       console.log(`👾  Enemy hits the player! ${damage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud jugador: ${health.value}`);
       if (health.value <= 0) {
         combatMessage.value = 'Player defeated!';
-          combatMessage.value = t('combat.playerDefeated');
-          combatMessage.value = t('combat.miss');
+        combatMessage.value = t('combat.playerDefeated');
+        combatMessage.value = t('combat.miss');
         console.log('Jugador derrotado!');
         setTimeout(() => {
           combatActive.value = false;
           gameOver.value = true;
         }, 2000);
+        return; // Evita más ataques
       } else {
         // clear cover after enemy finished its attack
         if (coverActive.value) {
@@ -313,7 +316,6 @@ export const usePlayerStore = defineStore('player', () => {
         defense.value -= COVER_AMOUNT;
         coverActive.value = false;
       }
-
     }
 
     if (playerFrozen.value) {
