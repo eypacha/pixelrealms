@@ -45,6 +45,7 @@
     "looted": "Looted",
     "continue": "Continue",
     "frozen": "Enemy frozen!",
+    "frozenPlayer": "Player frozen!",
     "thawed": "Enemy thawed!"
   },
   "sections": {

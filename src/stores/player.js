@@ -65,11 +65,13 @@ export const usePlayerStore = defineStore('player', () => {
   const lastDirection = ref('right');
   const darkKnightDefeatedCount = ref(0);
   const enemyFrozen = ref(false);
+  const playerFrozen = ref(false);
   
   // Offset actual del tile
   const currentOffset = ref({ x: 0, y: 0 });
   
   let terrainRef = null;
+
   let widthRef = 0;
   let heightRef = 0;
   let encounterRandom = null;
@@ -101,6 +103,7 @@ export const usePlayerStore = defineStore('player', () => {
   function reset() {
       health.value = maxHealth.value;
       strength.value = 10;
+      playerFrozen.value = false;
       defense.value = 10;
       coins.value = 10;
       inventory.value.potion = 2;
@@ -264,27 +267,27 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function enemyAttack() {
-    if (enemyFrozen.value) {
-      // 50% chance to thaw
-      if (Math.random() < 0.5) {
-        combatMessage.value = t('combat.enemyTurn') + ' (Frozen: skips turn)';
-        playerTurn.value = true;
+
+    const enemyFreezeChance = ENEMIES[enemyType.value]?.freezeChance || 0;
+    if (enemyFreezeChance > 0 && !playerFrozen.value) {
+      console.log('❄️ Intentando congelar al jugador');
+      if (Math.random() < enemyFreezeChance) {
+        freezePlayer();
         return;
-      } else {
-        enemyFrozen.value = false;
-        combatMessage.value = t('combat.enemyTurn') + ' (Thawed!)';
       }
     }
+
     const combatRandom = createSeededRandom(seed.value + 'enemyCombat' + Date.now());
     const hitChance = ENEMY_HIT_CHANCE;
+
     if (combatRandom() < hitChance) {
       const { damage, isCritical } = calculateDamage(enemyStrength.value, defense.value);
       combatMessage.value = isCritical
         ? t('combat.critical', { value: damage })
         : t('combat.hit', { value: damage });
       health.value -= damage;
-      soundStore.playSound(isCritical ? 'critical' : 'hammer');
-      console.log(`Enemigo ataca: ${damage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud jugador: ${health.value}`);
+      soundStore.playSound('hammer');
+      console.log(`👾  Enemy hits the player! ${damage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud jugador: ${health.value}`);
       if (health.value <= 0) {
         combatMessage.value = 'Player defeated!';
           combatMessage.value = t('combat.playerDefeated');
@@ -300,19 +303,33 @@ export const usePlayerStore = defineStore('player', () => {
           defense.value -= COVER_AMOUNT;
           coverActive.value = false;
         }
-        playerTurn.value = true;
       }
     } else {
-      console.log('Enemigo falla el ataque!');
+      console.log('👾 Enemy misses the player!');
       soundStore.playSound('whosh');
-      combatMessage.value = 'Miss';
+      combatMessage.value = t('combat.miss');
       // clear cover even if enemy misses
       if (coverActive.value) {
         defense.value -= COVER_AMOUNT;
         coverActive.value = false;
       }
-      playerTurn.value = true;
+
     }
+
+    if (playerFrozen.value) {
+      if (Math.random() < 0.5) {
+        console.log('❄️ Player is frozen, skipping turn');
+        playerTurn.value = false;
+        setTimeout(() => {
+          enemyAttack();
+        }, ENEMY_PAUSE);
+        return;
+      } else {
+        console.log('❄️ Player thaws and can act');
+        playerFrozen.value = false;
+      }
+    }
+    playerTurn.value = true;
   }
 
   // Heal the player by amount (not exceeding maxHealth)
@@ -344,7 +361,6 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function checkEncounter() {
-    console.log('Checking for encounter. isNight', timeStore.isNight);
     const rate = timeStore.isNight ? ENCOUNTER_RATE_NIGHT : ENCOUNTER_RATE_DAY;
     if (encounterRandom() < rate) {
       startCombat();
@@ -479,6 +495,29 @@ export const usePlayerStore = defineStore('player', () => {
     mana.value -= 1;
   }
 
+  
+  function freezePlayer() {
+      console.log('❄️ Jugador Congelado');
+
+      playerFrozen.value = true;
+      soundStore.playSound('freeze');
+      combatMessage.value = t('combat.frozenPlayer');
+
+      setTimeout(() => {
+        enemyAttack()
+      }, ENEMY_PAUSE);
+
+      
+
+      
+
+      // if (!combatActive.value || !playerTurn.value) return;
+      // console.log('freezePlayer set playerFrozen:', playerFrozen.value);
+      // playerTurn.value = false;
+      // combatMessage.value = t('combat.frozenPlayer');
+      // soundStore.playSound('freeze');
+    }
+
   function freezeEnemy() {
     if (!combatActive.value || !playerTurn.value || mana.value < 2) return;
     enemyFrozen.value = true;
@@ -490,6 +529,7 @@ export const usePlayerStore = defineStore('player', () => {
       playerTurn.value = true;
     }, 500);
   }
+
 
   return {
     steps,
@@ -520,6 +560,7 @@ export const usePlayerStore = defineStore('player', () => {
     lastDirection,
     darkKnightDefeatedCount,
     enemyFrozen,
+    playerFrozen,
     currentOffset,
     initialize,
     moveUp,

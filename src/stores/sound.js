@@ -24,7 +24,7 @@ export const useSoundStore = defineStore('sound', () => {
   }
 
   function playSound(name) {
-    console.log('playSound', name);
+    console.log('🎵 playSound', name);
     const s = sounds[name];
     if (!s) {
       console.warn(`Sound not found: ${name}`);

@@ -124,7 +124,7 @@ function freeze() {
 
 const playerStore = usePlayerStore();
   const timeStore = useTimeStore();
-const { knightTint, enemyTint, enemyFreezeTint, drawKnight, drawEnemy, loadImages, setEnemyType } = useCombatDrawing();
+const { knightTint, knightFreezeTint, enemyTint, enemyFreezeTint, drawKnight, drawEnemy, loadImages, setEnemyType } = useCombatDrawing();
 
 const knightCanvas = ref(null);
 const enemyCanvas = ref(null);
@@ -266,6 +266,19 @@ watch(() => playerStore.enemyFrozen, (isFrozen) => {
   } else {
     enemyFreezeTint.value = false;
     drawEnemy(enemyCanvas);
+  }
+});
+
+// Tinte celeste al jugador cuando está congelado
+watch(() => playerStore.playerFrozen, (isFrozen) => {
+  console.log('playerFrozen changed:', isFrozen);
+  if (isFrozen) {
+    knightTint.value = false;
+    knightFreezeTint.value = true;
+    drawKnight(knightCanvas);
+  } else {
+    knightFreezeTint.value = false;
+    drawKnight(knightCanvas);
   }
 });
 

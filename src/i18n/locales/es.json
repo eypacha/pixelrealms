@@ -44,6 +44,7 @@
     "looted": "Botín recogido",
     "continue": "Continuar",
     "frozen": "¡Enemigo congelado!",
+    "frozenPlayer": "¡Jugador congelado!",
     "thawed": "¡Enemigo descongelado!"
   },
   "title": "Has encontrado un tesoro",

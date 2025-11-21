@@ -15,6 +15,7 @@ export function useCombatDrawing() {
     // Agrega aquí más enemigos fácilmente
   };
   const knightTint = ref(false);
+  const knightFreezeTint = ref(false);
   const enemyTint = ref(false);
   const enemyFreezeTint = ref(false);
 
@@ -36,7 +37,10 @@ export function useCombatDrawing() {
   }
 
   function drawKnight(knightCanvas) {
-    drawCharacter(knightCanvas, knightImg, knightTint.value ? 'hit' : null);
+    let tintType = null;
+    if (knightFreezeTint.value) tintType = 'freeze';
+    else if (knightTint.value) tintType = 'hit';
+    drawCharacter(knightCanvas, knightImg, tintType);
   }
 
   function drawEnemy(enemyCanvas) {
@@ -80,6 +84,7 @@ export function useCombatDrawing() {
 
   return {
     knightTint,
+    knightFreezeTint,
     enemyTint,
     enemyFreezeTint,
     drawKnight,
