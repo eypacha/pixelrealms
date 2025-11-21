@@ -114,7 +114,7 @@ onMounted(() => {
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(img, 0, 0, 60, 80);
     };
-    img.src = 'images/knight.png';
+    img.src = playerStore.image || 'images/blank.png';
   }
   // Draw wizard
   if (wizardCanvas.value) {

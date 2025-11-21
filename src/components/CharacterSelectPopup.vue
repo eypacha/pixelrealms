@@ -10,7 +10,8 @@
       />
       <SettingsBar class="absolute bottom-5 right-5" />
       <h1 class="text-2xl font-bold mb-6">Pixel Realms</h1>
-      <h2 class="text-lg font-bold mb-6">Choose Your Character</h2>
+        <h1 class="text-2xl font-bold mb-6">{{ $t('characterSelect.title') }}</h1>
+        <h2 class="text-lg font-bold mb-6">{{ $t('characterSelect.choose') }}</h2>
       <div class="flex gap-8 justify-center items-center mb-8">
         <div
           v-for="char in characters"
@@ -23,23 +24,23 @@
           style="padding: 8px;"
         >
           <img :src="char.img" :alt="char.name" class="w-[60px] h-[80px] mb-2" />
-          <div class="font-bold mb-1">{{ char.name }}</div>
-          <div class="text-sm mb-2 flex max-w-[150px] justify-center flex-wrap gap-2">
-            <span title="Health">❤️ {{ char.stats.health }}</span>
-            <span title="Strength">🗡️ {{ char.stats.strength }}</span>
-            <span title="Defense">🛡️ {{ char.stats.defense }}</span><br>
-            <span title="Coins">🪙 {{ char.stats.coins }}</span>
-            <span title="Potions">🧪 {{ char.stats.potion }}</span>
-            <span title="Mana">🪬 {{ char.stats.mana }}</span>
-          </div>
+            <div class="font-bold mb-1">{{ $t('characterSelect.characters.' + char.key) }}</div>
+            <div class="text-sm mb-2 flex max-w-[150px] justify-center flex-wrap gap-2">
+              <span :title="$t('characterSelect.stats.health')">❤️{{ char.stats.health }}</span>
+              <span :title="$t('characterSelect.stats.strength')">🗡️{{ char.stats.strength }}</span>
+              <span :title="$t('characterSelect.stats.defense')">🛡️{{ char.stats.defense }}</span><br>
+              <span :title="$t('characterSelect.stats.coins')">🪙{{ char.stats.coins }}</span>
+              <span :title="$t('characterSelect.stats.potions')">🧪{{ char.stats.potion }}</span>
+              <span :title="$t('characterSelect.stats.mana')">🪬{{ char.stats.mana }}</span>
+            </div>
         </div>
       </div>
       <div :class="['flex flex-col', !selected ? 'invisible pointer-events-none' : '']">
         <button
-          @click="startGame"
-          class="mt-8 px-6 py-2 bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
-          :disabled="!selected"
-        >Start</button>
+            @click="startGame"
+            class="mt-8 px-6 py-2 bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
+            :disabled="!selected"
+          >{{ $t('characterSelect.start') }}</button>
       </div>
     </div>
   </div>
@@ -71,7 +72,7 @@ const characters = [
   {
     key: 'knight',
     name: 'Knight',
-    img: 'images/realknight.png',
+    img: 'images/yellowknight.png',
     stats: {
       health: 10,
       strength: 10,

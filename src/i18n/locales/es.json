@@ -72,4 +72,23 @@
     "spanish": "Español",
     "english": "Inglés"
   }
+  ,
+  "characterSelect": {
+    "title": "Pixel Realms",
+    "choose": "Elige tu personaje",
+    "start": "Comenzar",
+    "characters": {
+      "knight": "Caballero",
+      "barbarian": "Bárbaro",
+      "elf": "Elfo"
+    },
+    "stats": {
+      "health": "Salud",
+      "strength": "Fuerza",
+      "defense": "Defensa",
+      "coins": "Monedas",
+      "potions": "Pociones",
+      "mana": "Maná"
+    }
+  }
 }
