@@ -33,7 +33,8 @@ import { useSoundStore } from './sound.js';
 import { calculateDamage } from '../utilities/calculateDamage.js';
 
 export const usePlayerStore = defineStore('player', () => {
-    const { t } = useI18n();
+      // Recupera vida cada 3 pasos
+  const { t } = useI18n();
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
   const seed = ref(Date.now());
@@ -43,7 +44,8 @@ export const usePlayerStore = defineStore('player', () => {
   const defense = ref(INITIAL_DEFENSE);
   const coins = ref(INITIAL_COINS);
   const inventory = ref({ potion: INITIAL_POTIONS });
-    
+
+  const steps = ref(0);
   const mana = ref(0);
   const combatActive = ref(false);
   const gameOver = ref(false);
@@ -328,8 +330,8 @@ export const usePlayerStore = defineStore('player', () => {
     if (canMoveTo(x, y - PLAYER_SPEED)) {
       oldPosition.value = { ...position.value };
       position.value.y -= PLAYER_SPEED;
-      console.log('🚶 Mover arriba:', position.value);
-      checkEncounter(position.value);
+      console.log('🚶 Mover arriba');
+      MoveTo(position);
       return true;
     } else {
       console.log('No puede mover arriba');
@@ -341,8 +343,8 @@ export const usePlayerStore = defineStore('player', () => {
     if (canMoveTo(x, y + PLAYER_SPEED)) {
       oldPosition.value = { ...position.value };
       position.value.y += PLAYER_SPEED;
-      console.log('🚶 Mover abajo:', position.value);
-      checkEncounter(position.value);
+      console.log('🚶 Mover abajo');
+      MoveTo(position);
       return true;
     } else {
       console.log('No puede mover abajo');
@@ -355,8 +357,8 @@ export const usePlayerStore = defineStore('player', () => {
       oldPosition.value = { ...position.value };
       position.value.x -= PLAYER_SPEED;
       lastDirection.value = 'left';
-      console.log('🚶 Mover izquierda:', position.value);
-      checkEncounter(position.value);
+      console.log('🚶 Mover izquierda');
+      MoveTo(position);
       return true;
     } else {
       console.log('No puede mover izquierda');
@@ -366,16 +368,24 @@ export const usePlayerStore = defineStore('player', () => {
   function moveRight() {
     const { x, y } = position.value;
     if (canMoveTo(x + PLAYER_SPEED, y)) {
+      console.log('🚶 Mover derecha');
       oldPosition.value = { ...position.value };
       position.value.x += PLAYER_SPEED;
       lastDirection.value = 'right';
-      console.log('🚶 Mover derecha:', position.value);
-      checkEncounter(position.value);
+      MoveTo(position);
       return true;
     } else {
       console.log('No puede mover derecha');
       return false;
     }
+  }
+
+  function MoveTo(position) {
+    steps.value += 1;
+    if (steps.value % 3 === 0) {
+      health.value = Math.min(maxHealth.value, health.value + 1);
+    }
+    checkEncounter(position.value);
   }
 
   function getTerrainColor() {
@@ -437,6 +447,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   return {
+    steps,
     position,
     mana,
     oldPosition,
