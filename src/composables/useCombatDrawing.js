@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { usePlayerStore } from '../stores/player';
 
 export function useCombatDrawing() {
   const knightImg = ref(null);
@@ -38,13 +39,13 @@ export function useCombatDrawing() {
     drawCharacter(enemyCanvas, enemyImg, tintType);
   }
 
-  function loadImages(knightCanvas, enemyCanvas) {
-    // Draw knight.png on knightCanvas
+  function loadImages(knightCanvas, enemyCanvas, playerStore) {
+    // Draw player image (dynamic) on knightCanvas
     knightImg.value = new Image();
     knightImg.value.onload = () => {
       drawKnight(knightCanvas);
     };
-    knightImg.value.src = 'images/knight.png';
+    knightImg.value.src = playerStore.image || 'images/knight.png';
 
     // Prepare goblin, orc and darkknight images. We'll point `enemyImg` to the active one.
     goblinImg.value = new Image();
@@ -90,9 +91,6 @@ export function useCombatDrawing() {
   }
 
   return {
-    knightImg,
-    enemyImg,
-    goblinImg,
     knightTint,
     enemyTint,
     enemyFreezeTint,

@@ -214,7 +214,7 @@ function continueCombat() {
 }
 
 onMounted(() => {
-  loadImages(knightCanvas, enemyCanvas);
+  loadImages(knightCanvas, enemyCanvas, playerStore);
   if (playerStore.enemyType) {
     setEnemyType(playerStore.enemyType, enemyCanvas);
   }
@@ -258,6 +258,19 @@ watch(() => playerStore.enemyFrozen, (isFrozen) => {
   } else {
     enemyFreezeTint.value = false;
     drawEnemy(enemyCanvas);
+  }
+});
+
+watch(() => playerStore.image, (newImg) => {
+  if (newImg && knightCanvas.value) {
+    const img = new Image();
+    img.onload = () => {
+      const ctx = knightCanvas.value.getContext('2d');
+      ctx.clearRect(0, 0, 60, 80);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, 0, 0, 60, 80);
+    };
+    img.src = newImg;
   }
 });
 </script>
