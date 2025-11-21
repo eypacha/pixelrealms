@@ -127,7 +127,7 @@ watch(() => playerStore.image, (newImg) => {
 
 onMounted(async () => {
   playerImage.value = new Image();
-  playerImage.value.src = playerStore.image || 'images/knight.png';
+  playerImage.value.src = playerStore.image || 'images/blank.png';
   await new Promise(resolve => {
     playerImage.value.onload = resolve;
   });
