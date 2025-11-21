@@ -104,6 +104,7 @@ export const usePoiStore = defineStore('poi', () => {
           playerStore.wizardActive = true;
           console.log('🧙‍♂️ Descubierto wizard en', poi.position);
         } else if (poi.type === 'treasure') {
+          playerStore.startCombat();
           treasureDiscovered.value = true;
           console.log('💰 Tesoro descubierto en', poi.position);
         } else if (poi.type === 'narrative') {
