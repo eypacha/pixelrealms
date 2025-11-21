@@ -18,6 +18,10 @@ import {
   ENCOUNTER_RATE_DAY,
   ENCOUNTER_RATE_NIGHT,
   ENEMY_PAUSE,
+  GOBLIN,
+  GOBLIN_HEALTH,
+  GOBLIN_STRENGTH,
+  GOBLIN_DEFENSE,
   ORC,
   ORC_HEALTH,
   ORC_STRENGTH,
@@ -127,10 +131,20 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
   function startCombat() {
-    enemyType.value = ORC;
-    enemyHealth.value = ORC_HEALTH;
-    enemyStrength.value = ORC_STRENGTH;
-    enemyDefense.value = ORC_DEFENSE;
+    // Probabilidad de goblin vs orc (por defecto 50/50, pero puedes cambiar goblinChance)
+    const goblinChance = 0.5; // Cambia este valor para ajustar la probabilidad
+    const roll = Math.random();
+    if (roll < goblinChance) {
+      enemyType.value = GOBLIN;
+      enemyHealth.value = GOBLIN_HEALTH;
+      enemyStrength.value = GOBLIN_STRENGTH;
+      enemyDefense.value = GOBLIN_DEFENSE;
+    } else {
+      enemyType.value = ORC;
+      enemyHealth.value = ORC_HEALTH;
+      enemyStrength.value = ORC_STRENGTH;
+      enemyDefense.value = ORC_DEFENSE;
+    }
     playerTurn.value = true;
     combatActive.value = true;
     combatMessage.value = t('combat.start');

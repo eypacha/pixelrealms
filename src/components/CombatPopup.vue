@@ -109,7 +109,7 @@ import { ref, onMounted, watch } from 'vue';
 import { usePlayerStore } from '../stores/player';
 
 import { useCombatDrawing } from '../composables/useCombatDrawing';
-import { DARK_KNIGHT, ORC } from '../constants/enemies';
+import { DARK_KNIGHT, GOBLIN, ORC } from '../constants/enemies';
 
 function freeze() {
   playerStore.freezeEnemy();
@@ -155,21 +155,27 @@ const combatLoot = ref({
 
 function setupCombatLoot() {
   if (playerStore.enemyDefeated && !playerStore.lootCollected) {
-    let coins = 0, potions = 0, scrollChance = 0;
+    let coins = 0, potions = 0, scrollFound = false;
     switch (playerStore.enemyType) {
       case DARK_KNIGHT:
         coins = Math.floor(Math.random() * 21) + 15; // 15-35
         potions = Math.random() < 0.5 ? 1 : 0; // 50% chance
-        scrollChance = 0.5; // 50%
+        scrollFound = Math.random() < 0.5; // 50%
+        break;
+      case GOBLIN:
+        coins = Math.floor(Math.random() * 5) + 1; // 1-5
+        scrollFound = false; // Goblins do not drop scrolls
         break;
       case ORC:
       default:
         coins = Math.floor(Math.random() * 10) + 1; // 1-10
+        potions = Math.random() < 0.05 ? 1 : 0; // 5% chance
+        scrollFound = Math.random() < 0.1; // 10% chance for ORC
         break;
     }
     combatLoot.value.coins = coins;
     combatLoot.value.potions = potions;
-    combatLoot.value.scrollFound = Math.random() < scrollChance;
+    combatLoot.value.scrollFound = scrollFound;
     combatLoot.value.coinsClaimed = false;
     combatLoot.value.potionsClaimed = false;
     combatLoot.value.scrollClaimed = false;

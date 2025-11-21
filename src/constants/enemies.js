@@ -8,6 +8,11 @@ export const ORC_HEALTH = 10;
 export const ORC_STRENGTH = 8;
 export const ORC_DEFENSE = 5;
 
+export const GOBLIN = 'goblin';
+export const GOBLIN_HEALTH = 5;
+export const GOBLIN_STRENGTH = 3;
+export const GOBLIN_DEFENSE = 3;
+
 export const DARK_KNIGHT = 'darkknight';
 export const DARK_KNIGHT_HEALTH = 20;
 export const DARK_KNIGHT_STRENGTH = 15;

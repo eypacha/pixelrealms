@@ -3,6 +3,7 @@ import { ref } from 'vue';
 export function useCombatDrawing() {
   const knightImg = ref(null);
   const enemyImg = ref(null);
+  const goblinImg = ref(null);
   const orcImg = ref(null);
   const darkknightImg = ref(null);
   const knightTint = ref(false);
@@ -45,10 +46,15 @@ export function useCombatDrawing() {
     };
     knightImg.value.src = 'images/knight.png';
 
-    // Prepare orc and darkknight images. We'll point `enemyImg` to the active one.
+    // Prepare goblin, orc and darkknight images. We'll point `enemyImg` to the active one.
+    goblinImg.value = new Image();
+    goblinImg.value.onload = () => {
+      if (enemyImg.value === goblinImg.value) drawEnemy(enemyCanvas);
+    };
+    goblinImg.value.src = 'images/goblin.png';
+
     orcImg.value = new Image();
     orcImg.value.onload = () => {
-      // only draw if currently selected
       if (enemyImg.value === orcImg.value) drawEnemy(enemyCanvas);
     };
     orcImg.value.src = 'images/orc.png';
@@ -61,7 +67,6 @@ export function useCombatDrawing() {
 
     // Default to orc until changed
     enemyImg.value = orcImg.value;
-    // Attempt initial draw (image may not be loaded yet)
     if (enemyImg.value && enemyCanvas.value) {
       enemyImg.value.onload = () => drawEnemy(enemyCanvas);
     }
@@ -69,7 +74,11 @@ export function useCombatDrawing() {
 
   // Switch the enemy image according to type and redraw
   function setEnemyType(type, enemyCanvas) {
-    if (type === 'darkknight') {
+    if (type === 'goblin') {
+      enemyImg.value = goblinImg.value || new Image();
+      if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas);
+      else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas);
+    } else if (type === 'darkknight') {
       enemyImg.value = darkknightImg.value || new Image();
       if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas);
       else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas);
@@ -83,6 +92,7 @@ export function useCombatDrawing() {
   return {
     knightImg,
     enemyImg,
+    goblinImg,
     knightTint,
     enemyTint,
     enemyFreezeTint,
