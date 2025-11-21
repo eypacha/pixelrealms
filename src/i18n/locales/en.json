@@ -1,11 +1,10 @@
 {
-  "app": {
-    "title": "Example Application",
-    "description": "This is a sample application to demonstrate internationalization.",
-    "welcome": "Welcome to our application"
-  },
   "footer": {
     "rights": "All rights reserved."
+  },
+  "topbar": {
+    "seed": "Seed",
+    "random": "Random"
   },
   "treasure": {
     "title": "You have found a treasure",

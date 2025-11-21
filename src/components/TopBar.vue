@@ -1,7 +1,7 @@
 <template>
   <div class="flex gap-2 items-center">
     <div>
-        <label for="seed" class="mr-2 font-bold">Seed</label>
+        <label for="seed" class="mr-2 font-bold">{{ $t('topbar.seed') }}</label>
         <input id="seed" v-model="seedLocal" type="text" class="border px-2 py-1" @change="handleSeedInputChange" @blur="handleSeedInputChange" />
         <button
         @click="handleRandomSeed"
@@ -9,8 +9,8 @@
         :disabled="isResetting"
         :class="isResetting ? 'opacity-50 pointer-events-none' : ''"
         >
-        Random
-    </button>
+        {{ $t('topbar.random') }}
+      </button>
     </div>
   </div>
 </template>

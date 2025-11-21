@@ -1,8 +1,7 @@
 {
-  "app": {
-    "title": "Aplicación de Ejemplo",
-    "description": "Esta es una aplicación de ejemplo para demostrar la internacionalización.",
-    "welcome": "Bienvenido a nuestra aplicación"
+  "topbar": {
+    "seed": "Semilla",
+    "random": "Aleatoria"
   },
   "footer": {
     "rights": "Todos los derechos reservados."
