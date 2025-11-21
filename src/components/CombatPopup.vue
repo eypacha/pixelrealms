@@ -169,7 +169,6 @@ function setupCombatLoot() {
       case ORC:
       default:
         coins = Math.floor(Math.random() * 10) + 1; // 1-10
-        potions = Math.random() < 0.05 ? 1 : 0; // 5% chance
         scrollFound = Math.random() < 0.1; // 10% chance for ORC
         break;
     }
