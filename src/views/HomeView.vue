@@ -2,9 +2,9 @@
   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
     <div class="mb-4 flex gap-2 items-center">
       <label for="seed" class="mr-2 font-bold">Seed:</label>
-      <input id="seed" v-model="seedInput" type="text" class="border px-2 py-1" />
+      <input id="seed" v-model="seedLocal" type="text" class="border px-2 py-1" @change="handleSeedInputChange" @blur="handleSeedInputChange" />
       <button
-        @click="resetGameWithRandomSeed"
+        @click="handleRandomSeed"
         class="ml-2 px-2 py-1 bg-blue-500 text-white"
         :disabled="isResetting"
         :class="isResetting ? 'opacity-50 pointer-events-none' : ''"
@@ -52,21 +52,7 @@
         <span class="inline-block transition-all duration-300" :class="{ 'scale-120': potionAnimating }">🧪 {{ potion }}</span>
         <span class="inline-block transition-all duration-300" :class="{ 'scale-120': manaAnimating }">🪬 {{ mana }}</span>
       </div>
-      <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2">
-          <label for="volume" class="mr-2 font-bold">
-            <span v-if="Number(soundStore.volume) === 0">🔇</span>
-            <span v-else>🔊</span>
-          </label>
-          <input id="volume" type="range" min="0" max="1" step="0.01" class="w-25" v-model="soundStore.volume" @input="soundStore.setVolume(Number(soundStore.volume))"/>
-        </div>
-        <div class="flex items-center gap-2">
-          <select id="lang" v-model="$i18n.locale" class="border px-2 py-1">
-            <option value="es">{{ $t('hud.spanish') }}</option>
-            <option value="en">{{ $t('hud.english') }}</option>
-          </select>
-        </div>
-      </div>
+      <SettingsBar />
     </div>
   </div>
 </template>
@@ -74,13 +60,12 @@
 
 
 <script setup>
-import { computed } from 'vue';
 import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 import { useTimeStore } from '../stores/time';
 const timeStore = useTimeStore();
 import { useSoundStore } from '../stores/sound';
 const soundStore = useSoundStore();
-import { onMounted, watch, ref } from 'vue';
+import { onMounted, watch, ref, computed } from 'vue';
 import { useTerrain } from '../composables/useTerrain';
 import { usePlayerStore } from '../stores/player';
 import { usePoiStore } from '../stores/poi';
@@ -93,8 +78,10 @@ import NarrativePopup from '../components/NarrativePopup.vue';
 import { useNarrativeEncounter } from '../composables/useNarrativeEncounter';
 import TreasurePopup from '../components/TreasurePopup.vue';
 import { storeToRefs } from 'pinia';
+import SettingsBar from '../components/SettingsBar.vue';
 
 const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep, randomizeSeed } = useTerrain();
+const seedLocal = ref(seedInput.value);
 const reactiveCanvas = ref(null);
 const playerStore = usePlayerStore();
 const poiStore = usePoiStore();
@@ -172,6 +159,28 @@ watch(mana, (newValue, oldValue) => {
     }, 300);
   }
 });
+
+async function resetGame(seed) {
+  isResetting.value = true;
+  await sleep(300);
+  isResetting.value = false;
+  playerStore.reset();
+  let terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seed);
+  poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seed);
+  drawAll(terrainCanvas, seedInput, null, null, null, worldOffset.value, { onlyTerrain: true });
+  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+}
+
+function handleRandomSeed() {
+  randomizeSeed();
+  seedLocal.value = seedInput.value;
+  resetGame(seedInput.value);
+}
+
+function handleSeedInputChange() {
+  seedInput.value = seedLocal.value;
+  resetGame(seedInput.value);
+}
 
 async function resetGameWithRandomSeed() {
   isResetting.value = true;
