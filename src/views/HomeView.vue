@@ -59,7 +59,6 @@ import { usePlayerMovement } from '../composables/usePlayerMovement';
 import { usePlayerStore } from '../stores/player';
 import { usePoiStore } from '../stores/poi';
 import { drawAll } from '../utilities/draw';
-import { PLAYER_SPEED } from '../constants/player';
 import CombatPopup from '../components/CombatPopup.vue';
 import GameOverPopup from '../components/GameOverPopup.vue';
 import WizardPopup from '../components/WizardPopup.vue';
@@ -108,23 +107,6 @@ function handleSeedInputChangeFromBar(newSeed) {
   seedLocal.value = newSeed;
   seedInput.value = newSeed;
   resetGame(newSeed);
-}
-
-async function resetGameWithRandomSeed() {
-  isResetting.value = true;
-  await sleep(300); // Espera 300ms para mostrar el botón deshabilitado
-  isResetting.value = false;
-
-  randomizeSeed();
-  // Resetear jugador y POIs
-  playerStore.reset();
-  // Regenerar POIs y defeatedGoblins solo con resetPois
-  let terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seedInput.value);
-  poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
-  // Dibuja solo el terreno en el canvas de fondo
-  drawAll(terrainCanvas, seedInput, null, null, null, worldOffset.value, { onlyTerrain: true });
-  // Dibuja los elementos reactivos en el canvas superior
-  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
 }
 
 function closeNarrative() {

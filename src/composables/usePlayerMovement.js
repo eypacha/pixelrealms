@@ -1,4 +1,4 @@
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { PLAYER_SPEED } from '../constants/player';
 import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 
