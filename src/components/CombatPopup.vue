@@ -79,7 +79,7 @@
             </button>
           </div>
           <div class="flex flex-col items-center">
-            <button @click="flee" class="px-4 py-2 cursor-pointer flex flex-col items-center">
+            <button @click="flee" class="px-4 py-2 cursor-pointer flex flex-col items-center" :class="{ 'opacity-50': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
               <span style="font-size:1.5em;">🏃</span>
               {{ $t('combat.run') }}
             </button>
