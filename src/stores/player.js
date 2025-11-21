@@ -10,7 +10,8 @@ import {
     COVER_AMOUNT,
     INITIAL_COINS,
     INITIAL_POTIONS,
-    PLAYER_HIT_CHANCE
+    PLAYER_HIT_CHANCE,
+    RECOVERY_STEPS,
   } from '../constants/player.js';
 
 import {
@@ -382,7 +383,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   function MoveTo(position) {
     steps.value += 1;
-    if (steps.value % 3 === 0) {
+    if (steps.value % RECOVERY_STEPS === 0) {
       health.value = Math.min(maxHealth.value, health.value + 1);
     }
     checkEncounter(position.value);
