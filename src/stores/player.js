@@ -17,13 +17,15 @@ import {
 import {
   ENCOUNTER_RATE_DAY,
   ENCOUNTER_RATE_NIGHT,
+  GOBLIN,
   GOBLIN_HEALTH,
   GOBLIN_STRENGTH,
   GOBLIN_DEFENSE,
+  DARK_KNIGHT,
   DARK_KNIGHT_HEALTH,
   DARK_KNIGHT_STRENGTH,
   DARK_KNIGHT_DEFENSE,
-  ENEMY_HIT_CHANCE
+  ENEMY_HIT_CHANCE,
 } from '../constants/enemies.js';
 
 import { useTimeStore } from './time.js';
@@ -54,7 +56,7 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyHealth = ref(GOBLIN_HEALTH);
   const enemyStrength = ref(GOBLIN_STRENGTH);
   const enemyDefense = ref(GOBLIN_DEFENSE);
-  const enemyType = ref('goblin');
+  const enemyType = ref(GOBLIN);
   const playerTurn = ref(true);
   const combatMessage = ref('');
   const combatMessageKey = ref('combat.start');
@@ -101,23 +103,22 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function startCombat() {
-    // default enemy (goblin)
-    enemyType.value = 'goblin';
+    enemyType.value = GOBLIN;
     enemyHealth.value = GOBLIN_HEALTH;
     enemyStrength.value = GOBLIN_STRENGTH;
     enemyDefense.value = GOBLIN_DEFENSE;
-      playerTurn.value = true;
-      combatActive.value = true;
-      combatMessage.value = t('combat.start');
-      combatMessageKey.value = 'combat.start';
-      combatMessageParams.value = {};
+    playerTurn.value = true;
+    combatActive.value = true;
+    combatMessage.value = t('combat.start');
+    combatMessageKey.value = 'combat.start';
+    combatMessageParams.value = {};
   }
 
   // Start combat with specific enemy type (e.g., { type: 'darkknight' })
   function startCombatWith(options = {}) {
-    const type = options.type || 'goblin';
+    const type = options.type || GOBLIN;
     enemyType.value = type;
-    if (type === 'darkknight') {
+    if (type === DARK_KNIGHT) {
       // Dificultad progresiva
       const scale = darkKnightDefeatedCount.value;
       enemyHealth.value = DARK_KNIGHT_HEALTH + scale * 2;
@@ -151,11 +152,11 @@ export const usePlayerStore = defineStore('player', () => {
         combatMessage.value = t('combat.enemyDefeated');
         console.log('Enemigo derrotado!');
         // Si era un darkknight, aumentar el contador
-        if (enemyType.value === 'darkknight') {
+        if (enemyType.value === DARK_KNIGHT) {
           darkKnightDefeatedCount.value++;
         }
         // Si era un goblin, agregarlo a defeatedGoblins
-        if (enemyType.value === 'goblin') {
+        if (enemyType.value === GOBLIN) {
           const poiStore = usePoiStore();
           // Usar el offset actual guardado en el store
           const wx = currentOffset.value.x;
@@ -305,7 +306,7 @@ export const usePlayerStore = defineStore('player', () => {
     }, 1000);
   }
 
-  function checkEncounter(pos) {
+  function checkEncounter() {
     const timeStore = useTimeStore();
     const rate = timeStore.isNight.value ? ENCOUNTER_RATE_NIGHT : ENCOUNTER_RATE_DAY;
     if (encounterRandom() < rate) {
