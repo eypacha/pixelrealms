@@ -1,17 +1,11 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-blue-100">
-    <div class="mb-4 flex gap-2 items-center">
-      <label for="seed" class="mr-2 font-bold">Seed:</label>
-      <input id="seed" v-model="seedLocal" type="text" class="border px-2 py-1" @change="handleSeedInputChange" @blur="handleSeedInputChange" />
-      <button
-        @click="handleRandomSeed"
-        class="ml-2 px-2 py-1 bg-blue-500 text-white"
-        :disabled="isResetting"
-        :class="isResetting ? 'opacity-50 pointer-events-none' : ''"
-      >
-        Random Seed
-      </button>
-    </div>
+    <TopBar
+      :seed="seedLocal"
+      :isResetting="isResetting"
+      @update:seed="handleSeedInputChangeFromBar"
+      @random-seed="handleRandomSeedFromBar"
+    />
     <div class="relative w-[800px] h-[600px]">
       <div class="absolute top-3 right-4 z-10 text-4xl pointer-events-none">
         <span v-if="!timeStore.isNight.value">☀️</span>
@@ -53,6 +47,7 @@
 
 
 <script setup>
+import TopBar from '../components/TopBar.vue';
 import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 import { useTimeStore } from '../stores/time';
 const timeStore = useTimeStore();
@@ -102,15 +97,16 @@ async function resetGame(seed) {
   drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
 }
 
-function handleRandomSeed() {
+function handleRandomSeedFromBar() {
   randomizeSeed();
   seedLocal.value = seedInput.value;
   resetGame(seedInput.value);
 }
 
-function handleSeedInputChange() {
-  seedInput.value = seedLocal.value;
-  resetGame(seedInput.value);
+function handleSeedInputChangeFromBar(newSeed) {
+  seedLocal.value = newSeed;
+  seedInput.value = newSeed;
+  resetGame(newSeed);
 }
 
 async function resetGameWithRandomSeed() {
