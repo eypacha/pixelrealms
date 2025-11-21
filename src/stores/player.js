@@ -171,7 +171,7 @@ export const usePlayerStore = defineStore('player', () => {
         playerTurn.value = false;
         setTimeout(() => {
           enemyAttack();
-        }, 1000);
+        }, ENEMY_PAUSE);
       }
     } else {
       console.log('Jugador falla el ataque!');
@@ -181,7 +181,7 @@ export const usePlayerStore = defineStore('player', () => {
       playerTurn.value = false;
       setTimeout(() => {
         enemyAttack();
-      }, 1000);
+      }, ENEMY_PAUSE);
     }
   }
 
@@ -222,7 +222,7 @@ export const usePlayerStore = defineStore('player', () => {
     playerTurn.value = false;
     setTimeout(() => {
       enemyAttack();
-    }, 1000);
+    }, ENEMY_PAUSE);
   }
 
   function enemyAttack() {
@@ -235,7 +235,6 @@ export const usePlayerStore = defineStore('player', () => {
       } else {
         enemyFrozen.value = false;
         combatMessage.value = t('combat.enemyTurn') + ' (Thawed!)';
-        // sigue con el ataque normal
       }
     }
     const combatRandom = createSeededRandom(seed.value + 'enemyCombat' + Date.now());
@@ -303,7 +302,7 @@ export const usePlayerStore = defineStore('player', () => {
     playerTurn.value = false;
     setTimeout(() => {
       enemyAttack();
-    }, 1000);
+    }, ENEMY_PAUSE);
   }
 
   function checkEncounter() {
@@ -316,7 +315,13 @@ export const usePlayerStore = defineStore('player', () => {
 
   function fleeCombat() {
     soundStore.playSound('whosh');
+
+    setTimeout(() => {
+      enemyAttack();
+    }, ENEMY_PAUSE);
+
     combatActive.value = false;
+    
     console.log('Huiste del combate');
   }
 
@@ -422,7 +427,7 @@ export const usePlayerStore = defineStore('player', () => {
         playerTurn.value = false;
         setTimeout(() => {
           enemyAttack();
-        }, 1000);
+        }, ENEMY_PAUSE);
       }
     } else {
       combatMessage.value = 'Fireball missed!';
@@ -431,7 +436,7 @@ export const usePlayerStore = defineStore('player', () => {
       playerTurn.value = false;
       setTimeout(() => {
         enemyAttack();
-      }, 1000);
+      }, ENEMY_PAUSE);
     }
     mana.value -= 1;
   }
