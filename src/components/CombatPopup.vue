@@ -68,8 +68,32 @@
           </div>
         </template>
         <template v-else>
-          <button @click="loot" :disabled="playerStore.lootCollected" class="px-4 py-2 cursor-pointer" :class="{ 'opacity-50': playerStore.lootCollected }">{{ playerStore.lootCollected ? $t('combat.looted') : $t('combat.loot') }}</button>
-          <button @click="continueCombat" class="px-4 py-2 cursor-pointer">{{ $t('combat.continue') }}</button>
+          <div class="flex flex-col gap-2 items-center w-full mt-2">
+            <button
+              @click="claimCombatCoins"
+              :disabled="combatLoot.coinsClaimed"
+              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.coinsClaimed ? 'opacity-50' : '']"
+            >
+              {{ $t('treasure.grabCoins', { coins: combatLoot.coins }) }} <span style="font-size:1.1em;">🪙</span>
+            </button>
+            <button
+              v-if="combatLoot.potions > 0"
+              @click="claimCombatPotions"
+              :disabled="combatLoot.potionsClaimed"
+              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.potionsClaimed ? 'opacity-50' : '']"
+            >
+              {{ $t('treasure.grabPotions', { potions: combatLoot.potions }) }} <span style="font-size:1.1em;">🧪</span>
+            </button>
+            <button
+              v-if="combatLoot.scrollFound"
+              @click="claimCombatScroll"
+              :disabled="combatLoot.scrollClaimed"
+              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.scrollClaimed ? 'opacity-50' : '']"
+            >
+              {{ $t('treasure.grabScroll') }} (<span style="font-size:1.1em;">+2 🪬</span>)
+            </button>
+          </div>
+          <button @click="continueCombat" class="px-4 py-2 w-full mt-4 cursor-pointer">{{ $t('treasure.continue') }}</button>
         </template>
       </div>
     </div>
@@ -77,12 +101,13 @@
 </template>
 
 <script setup>
-function freeze() {
-  playerStore.freezeEnemy();
-}
 import { ref, onMounted, watch } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
+
+function freeze() {
+  playerStore.freezeEnemy();
+}
 
 const playerStore = usePlayerStore();
 const { knightTint, enemyTint, enemyFreezeTint, drawKnight, drawEnemy, loadImages, setEnemyType } = useCombatDrawing();
@@ -101,7 +126,6 @@ function swordAttack() {
 }
 
 function cover() {
-  // Delegar la lógica al store para que el boost persista hasta el ataque enemigo
   playerStore.activateCover();
 }
 
@@ -109,47 +133,77 @@ function usePotion() {
   playerStore.usePotion();
 }
 
-
 function fireball() {
   playerStore.fireballAttack();
 }
 
-function loot() {
-  // collect loot only when enemyDefeated
-  const result = playerStore.collectLoot();
-  if (result && typeof result === 'object') {
-     let msg = $t('combat.looted', { coins: result.coins });
-     if (result.potion) msg += ' ' + $t('combat.lootedPotion');
-     playerStore.combatMessage = msg;
-  } else if (playerStore.lootCollected) {
-     playerStore.combatMessage = $t('combat.alreadyLooted');
+// Combat loot state and logic
+const combatLoot = ref({
+  coins: 0,
+  potions: 0,
+  scrollFound: false,
+  coinsClaimed: false,
+  potionsClaimed: false,
+  scrollClaimed: false
+});
+
+function setupCombatLoot() {
+  // Only setup loot once per combat
+  if (playerStore.enemyDefeated && !playerStore.lootCollected && combatLoot.value.coins === 0 && combatLoot.value.potions === 0 && !combatLoot.value.scrollFound) {
+    // Puedes personalizar la lógica de loot aquí
+    combatLoot.value.coins = Math.floor(Math.random() * 16) + 5; // 5-20
+    combatLoot.value.potions = Math.floor(Math.random() * 4); // 0-3
+    combatLoot.value.scrollFound = Math.random() < 0.5; // 50% scroll
+  }
+}
+
+function claimCombatCoins() {
+  if (!combatLoot.value.coinsClaimed) {
+    playerStore.coins += combatLoot.value.coins;
+    combatLoot.value.coinsClaimed = true;
+    playerStore.lootCollected = true;
+    playerStore.combatMessage = $t('combat.looted', { coins: combatLoot.value.coins });
+  }
+}
+
+function claimCombatPotions() {
+  if (!combatLoot.value.potionsClaimed) {
+    if (!playerStore.inventory.potion) playerStore.inventory.potion = 0;
+    playerStore.inventory.potion += combatLoot.value.potions;
+    combatLoot.value.potionsClaimed = true;
+    playerStore.lootCollected = true;
+    playerStore.combatMessage = $t('combat.lootedPotion');
+  }
+}
+
+function claimCombatScroll() {
+  if (!combatLoot.value.scrollClaimed && combatLoot.value.scrollFound) {
+    playerStore.mana += 2;
+    combatLoot.value.scrollClaimed = true;
+    playerStore.lootCollected = true;
+    playerStore.combatMessage = $t('combat.lootedScroll');
   }
 }
 
 function continueCombat() {
-  // end combat and close popup
   playerStore.endCombat();
 }
 
 onMounted(() => {
   loadImages(knightCanvas, enemyCanvas);
-  // set initial enemy image according to store (in case combat already started)
   if (playerStore.enemyType) {
     setEnemyType(playerStore.enemyType, enemyCanvas);
   }
-  // debug: log enemyDefeated changes
-  // Helpful to verify the store flag updates when enemy dies
   watch(() => playerStore.enemyDefeated, (v) => {
+    if (v) setupCombatLoot();
     console.log('DEBUG: enemyDefeated ->', v);
   });
 });
 
-// Watch for enemy type changes to switch sprite
 watch(() => playerStore.enemyType, (type) => {
   if (type) setEnemyType(type, enemyCanvas);
 });
 
-// Watch for health changes to apply red tint
 watch(() => playerStore.health, (newVal, oldVal) => {
   if (newVal < oldVal) {
     knightTint.value = true;
