@@ -4,9 +4,15 @@ import { usePlayerStore } from '../stores/player';
 export function useCombatDrawing() {
   const knightImg = ref(null);
   const enemyImg = ref(null);
-  const goblinImg = ref(null);
-  const orcImg = ref(null);
-  const darkknightImg = ref(null);
+  // Mapa para imágenes de enemigos
+  const enemyImgs = {};
+  // Definición de tipos y rutas
+  const enemyTypes = {
+    goblin: 'images/goblin.png',
+    orc: 'images/medium-orc.png',
+    darkknight: 'images/darkknight.png',
+    // Agrega aquí más enemigos fácilmente
+  };
   const knightTint = ref(false);
   const enemyTint = ref(false);
   const enemyFreezeTint = ref(false);
@@ -47,27 +53,18 @@ export function useCombatDrawing() {
     };
     knightImg.value.src = playerStore.image || 'images/blank.png';
 
-    // Prepare goblin, orc and darkknight images. We'll point `enemyImg` to the active one.
-    goblinImg.value = new Image();
-    goblinImg.value.onload = () => {
-      if (enemyImg.value === goblinImg.value) drawEnemy(enemyCanvas);
-    };
-    goblinImg.value.src = 'images/goblin.png';
+    // Cargar imágenes de enemigos de forma genérica
+    Object.entries(enemyTypes).forEach(([type, src]) => {
+      const img = new Image();
+      img.onload = () => {
+        if (enemyImg.value === img) drawEnemy(enemyCanvas);
+      };
+      img.src = src;
+      enemyImgs[type] = img;
+    });
 
-    orcImg.value = new Image();
-    orcImg.value.onload = () => {
-      if (enemyImg.value === orcImg.value) drawEnemy(enemyCanvas);
-    };
-    orcImg.value.src = 'images/medium-orc.png';
-
-    darkknightImg.value = new Image();
-    darkknightImg.value.onload = () => {
-      if (enemyImg.value === darkknightImg.value) drawEnemy(enemyCanvas);
-    };
-    darkknightImg.value.src = 'images/darkknight.png';
-
-    // Default to orc until changed
-    enemyImg.value = orcImg.value;
+    // Por defecto, selecciona el orc
+    enemyImg.value = enemyImgs.orc;
     if (enemyImg.value && enemyCanvas.value) {
       enemyImg.value.onload = () => drawEnemy(enemyCanvas);
     }
@@ -75,19 +72,9 @@ export function useCombatDrawing() {
 
   // Switch the enemy image according to type and redraw
   function setEnemyType(type, enemyCanvas) {
-    if (type === 'goblin') {
-      enemyImg.value = goblinImg.value || new Image();
-      if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas);
-      else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas);
-    } else if (type === 'darkknight') {
-      enemyImg.value = darkknightImg.value || new Image();
-      if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas);
-      else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas);
-    } else {
-      enemyImg.value = orcImg.value || new Image();
-      if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas);
-      else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas);
-    }
+    enemyImg.value = enemyImgs[type] || new Image();
+    if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas);
+    else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas);
   }
 
   return {
