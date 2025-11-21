@@ -460,7 +460,6 @@ export const usePlayerStore = defineStore('player', () => {
       enemyHealth.value -= 3;
       combatMessage.value = 'Fireball! -3';
         combatMessage.value = t('combat.fireballHit', { value: 3 });
-        combatMessage.value = t('combat.enemyDefeated');
       soundStore.playSound('fireball');
       if (enemyHealth.value <= 0) {
         combatMessage.value = 'Enemy defeated!';
