@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-4 flex gap-2 items-center">
+  <div class="flex gap-2 items-center">
     <div>
         <label for="seed" class="mr-2 font-bold">Seed</label>
         <input id="seed" v-model="seedLocal" type="text" class="border px-2 py-1" @change="handleSeedInputChange" @blur="handleSeedInputChange" />
