@@ -129,13 +129,13 @@ export const usePoiStore = defineStore('poi', () => {
     pois.value = poisByTile.value[key];
   }
 
-  function addDefeatedGoblin(position) {
+  function addDefeatedOrc(position) {
     // Recibe también el offset actual
     if (position.offsetX === undefined || position.offsetY === undefined) {
-      console.warn('addDefeatedGoblin: falta offsetX/offsetY');
+      console.warn('addDefeatedOrc: falta offsetX/offsetY');
     }
     defeatedOrcs.value.push({ x: position.x, y: position.y, offsetX: position.offsetX, offsetY: position.offsetY });
   }
 
-  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedOrcs, addDefeatedGoblin, treasureDiscovered, addNarrativePoi };
+  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedOrcs, addDefeatedOrc, treasureDiscovered, addNarrativePoi };
 });
