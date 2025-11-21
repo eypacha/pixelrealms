@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute bg-[#00000080] flex justify-center items-center w-full h-full    z-50">
+  <div class="absolute bg-[#00000080] outline-2 flex justify-center items-center w-full h-full    z-50">
     <div class="bg-white flex flex-col items-center justify-center w-full h-full p-8">
       <TopBar
         class="absolute bottom-5 left-5"
