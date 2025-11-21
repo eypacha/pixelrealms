@@ -37,17 +37,17 @@ function drawCell(ctx, heights2D, px, py, canvasWidth, canvasHeight, terrainSize
 }
 
 export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset = { x: 0, y: 0 }, options = {}) {
-  // Imagen de goblin
-  if (!drawAll.goblinImage) {
-    drawAll.goblinImage = new Image();
-    drawAll.goblinImage.src = 'images/goblin.png';
-    drawAll.goblinImage.onload = () => {
+  // Imagen de orc
+  if (!drawAll.orcImage) {
+    drawAll.orcImage = new Image();
+    drawAll.orcImage.src = 'images/orc.png';
+    drawAll.orcImage.onload = () => {
       if (terrainCanvas && terrainCanvas.value) {
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
       }
     };
   }
-  const goblinImg = drawAll.goblinImage;
+  const orcImg = drawAll.orcImage;
 
   // Imagen de wizard
   if (!drawAll.wizardImage) {
@@ -189,7 +189,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
           ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
         }
       });
-      if (goblinImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
+      if (orcImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
         const offsetX = Number(worldOffset.x) || 0;
         const offsetY = Number(worldOffset.y) || 0;
         poiStore.defeatedGoblins
@@ -197,7 +197,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
           .forEach(pos => {
             ctx.save();
             ctx.globalAlpha = 0.4;
-            ctx.drawImage(goblinImg, pos.x - 10, pos.y - 15, 20, 30);
+            ctx.drawImage(orcImg, pos.x - 10, pos.y - 15, 20, 30);
             ctx.restore();
           });
       }
@@ -263,7 +263,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
       }
     });
-    if (goblinImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
+    if (orcImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
       const offsetX = Number(worldOffset.x) || 0;
       const offsetY = Number(worldOffset.y) || 0;
       poiStore.defeatedGoblins
@@ -271,7 +271,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         .forEach(pos => {
           ctx.save();
           ctx.globalAlpha = 0.4;
-          ctx.drawImage(goblinImg, pos.x - 10, pos.y - 15, 20, 30);
+          ctx.drawImage(orcImg, pos.x - 10, pos.y - 15, 20, 30);
           ctx.restore();
         });
     }

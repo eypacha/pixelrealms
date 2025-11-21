@@ -103,13 +103,13 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 import { ref, onMounted, watch } from 'vue';
 import { usePlayerStore } from '../stores/player';
 
 import { useCombatDrawing } from '../composables/useCombatDrawing';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
-
+import { DARK_KNIGHT, ORC } from '../constants/enemies';
 
 function freeze() {
   playerStore.freezeEnemy();
@@ -157,12 +157,12 @@ function setupCombatLoot() {
   if (playerStore.enemyDefeated && !playerStore.lootCollected) {
     let coins = 0, potions = 0, scrollChance = 0;
     switch (playerStore.enemyType) {
-      case 'darkKnight':
+      case DARK_KNIGHT:
         coins = Math.floor(Math.random() * 21) + 15; // 15-35
         potions = Math.random() < 0.5 ? 1 : 0; // 50% chance
         scrollChance = 0.5; // 50%
         break;
-      case 'goblin':
+      case ORC:
       default:
         coins = Math.floor(Math.random() * 10) + 1; // 1-10
         break;

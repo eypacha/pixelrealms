@@ -18,10 +18,10 @@ import {
   ENCOUNTER_RATE_DAY,
   ENCOUNTER_RATE_NIGHT,
   ENEMY_PAUSE,
-  GOBLIN,
-  GOBLIN_HEALTH,
-  GOBLIN_STRENGTH,
-  GOBLIN_DEFENSE,
+  ORC,
+  ORC_HEALTH,
+  ORC_STRENGTH,
+  ORC_DEFENSE,
   DARK_KNIGHT,
   DARK_KNIGHT_HEALTH,
   DARK_KNIGHT_STRENGTH,
@@ -54,10 +54,10 @@ export const usePlayerStore = defineStore('player', () => {
   const combatActive = ref(false);
   const gameOver = ref(false);
   const wizardActive = ref(false); // Para mostrar el WizardPopup
-  const enemyHealth = ref(GOBLIN_HEALTH);
-  const enemyStrength = ref(GOBLIN_STRENGTH);
-  const enemyDefense = ref(GOBLIN_DEFENSE);
-  const enemyType = ref(GOBLIN);
+  const enemyHealth = ref(ORC_HEALTH);
+  const enemyStrength = ref(ORC_STRENGTH);
+  const enemyDefense = ref(ORC_DEFENSE);
+  const enemyType = ref(ORC);
   const playerTurn = ref(true);
   const combatMessage = ref('');
   const combatMessageKey = ref('combat.start');
@@ -116,7 +116,7 @@ export const usePlayerStore = defineStore('player', () => {
       enemyHealth.value = 10;
       enemyStrength.value = 5;
       enemyDefense.value = 2;
-      enemyType.value = GOBLIN;
+      enemyType.value = ORC;
       playerTurn.value = true;
       coverActive.value = false;
       enemyDefeated.value = false;
@@ -127,10 +127,10 @@ export const usePlayerStore = defineStore('player', () => {
     }
 
   function startCombat() {
-    enemyType.value = GOBLIN;
-    enemyHealth.value = GOBLIN_HEALTH;
-    enemyStrength.value = GOBLIN_STRENGTH;
-    enemyDefense.value = GOBLIN_DEFENSE;
+    enemyType.value = ORC;
+    enemyHealth.value = ORC_HEALTH;
+    enemyStrength.value = ORC_STRENGTH;
+    enemyDefense.value = ORC_DEFENSE;
     playerTurn.value = true;
     combatActive.value = true;
     combatMessage.value = t('combat.start');
@@ -140,7 +140,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   // Start combat with specific enemy type (e.g., { type: 'darkknight' })
   function startCombatWith(options = {}) {
-    const type = options.type || GOBLIN;
+    const type = options.type || ORC;
     enemyType.value = type;
     if (type === DARK_KNIGHT) {
       // Dificultad progresiva
@@ -149,10 +149,10 @@ export const usePlayerStore = defineStore('player', () => {
       enemyStrength.value = DARK_KNIGHT_STRENGTH + scale * 2;
       enemyDefense.value = DARK_KNIGHT_DEFENSE + scale * 2;
     } else {
-      // fallback to goblin-like stats
-      enemyHealth.value = GOBLIN_HEALTH;
-      enemyStrength.value = GOBLIN_STRENGTH;
-      enemyDefense.value = GOBLIN_DEFENSE;
+      // fallback to orc-like stats
+      enemyHealth.value = ORC_HEALTH;
+      enemyStrength.value = ORC_STRENGTH;
+      enemyDefense.value = ORC_DEFENSE;
     }
       playerTurn.value = true;
       combatActive.value = true;
@@ -179,8 +179,8 @@ export const usePlayerStore = defineStore('player', () => {
         if (enemyType.value === DARK_KNIGHT) {
           darkKnightDefeatedCount.value++;
         }
-        // Si era un goblin, agregarlo a defeatedGoblins
-        if (enemyType.value === GOBLIN) {
+        // Si era un orc, agregarlo a defeatedGoblins
+        if (enemyType.value === ORC) {
           const poiStore = usePoiStore();
           // Usar el offset actual guardado en el store
           const wx = currentOffset.value.x;
