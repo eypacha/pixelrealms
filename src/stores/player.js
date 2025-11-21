@@ -41,6 +41,10 @@ import { useSoundStore } from './sound.js';
 import { calculateDamage } from '../utilities/calculateDamage.js';
 
 export const usePlayerStore = defineStore('player', () => {
+
+  const soundStore = useSoundStore();
+  const timeStore = useTimeStore();
+
   // Recupera vida cada 3 pasos
   const { t } = useI18n();
   const position = ref({ x: 0, y: 0 });
@@ -80,8 +84,6 @@ export const usePlayerStore = defineStore('player', () => {
   let widthRef = 0;
   let heightRef = 0;
   let encounterRandom = null;
-
-  const soundStore = useSoundStore();
 
   function initialize(terrain, width, height, randomFn) {
     terrainRef = terrain;
@@ -350,8 +352,8 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   function checkEncounter() {
-    const timeStore = useTimeStore();
-    const rate = timeStore.isNight.value ? ENCOUNTER_RATE_NIGHT : ENCOUNTER_RATE_DAY;
+    console.log('Checking for encounter. isNight', timeStore.isNight);
+    const rate = timeStore.isNight ? ENCOUNTER_RATE_NIGHT : ENCOUNTER_RATE_DAY;
     if (encounterRandom() < rate) {
       startCombat();
     }
@@ -433,6 +435,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   function MoveTo(position) {
     steps.value += 1;
+    timeStore.registerMove();
     if (steps.value % RECOVERY_STEPS === 0) {
       health.value = Math.min(maxHealth.value, health.value + 1);
     }

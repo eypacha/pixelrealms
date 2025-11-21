@@ -61,7 +61,6 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
       if (typeof poiStore.ensureForTile === 'function') {
         poiStore.ensureForTile(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
       }
-      timeStore.registerMove();
       requestAnimationFrame(() => {
         poiStore.checkDiscovery(playerStore.position, playerStore);
         drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });

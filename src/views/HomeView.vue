@@ -9,7 +9,7 @@
       @random-seed="handleRandomSeedFromBar"
     />
       <div class="absolute top-3 right-4 z-10 text-4xl pointer-events-none">
-        <span v-if="!timeStore.isNight.value">☀️</span>
+        <span v-if="!isNight">☀️</span>
         <span v-else>🌙</span>
       </div>
       <canvas
@@ -17,14 +17,14 @@
         width="800"
         height="600"
         class="max-w-full border border-black border-2 bg-black transition-all absolute top-0 left-0 z-0"
-        :class="timeStore.isNight.value ? 'brightness-60' : 'brightness-100'"
+        :class="isNight ? 'brightness-60' : 'brightness-100'"
       ></canvas>
       <canvas
         ref="reactiveCanvas"
         width="800"
         height="600"
         class="max-w-full absolute top-0 left-0 z-10 pointer-events-none"
-        :class="timeStore.isNight.value ? 'brightness-60' : 'brightness-100'"
+        :class="isNight ? 'brightness-60' : 'brightness-100'"
       ></canvas>
       <CombatPopup v-if="playerStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
@@ -50,6 +50,7 @@
 import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 import { useTimeStore } from '../stores/time';
 const timeStore = useTimeStore();
+const { isNight } = storeToRefs(timeStore);
 import { useSoundStore } from '../stores/sound';
 const soundStore = useSoundStore();
 import { onMounted, watch, ref, computed } from 'vue';

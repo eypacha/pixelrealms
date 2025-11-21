@@ -1,7 +1,8 @@
+import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-// Store para ciclo día/noche
-export const useTimeStore = () => {
+// Pinia store para ciclo día/noche
+export const useTimeStore = defineStore('time', () => {
   const isNight = ref(false);
   const moveCount = ref(0);
 
@@ -18,4 +19,4 @@ export const useTimeStore = () => {
   }
 
   return { isNight, moveCount, registerMove, resetTime };
-};
+});
