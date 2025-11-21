@@ -164,7 +164,7 @@ function setupCombatLoot() {
         break;
       case GOBLIN:
         coins = Math.floor(Math.random() * 5) + 1; // 1-5
-        scrollFound = false; // Goblins do not drop scrolls
+        scrollFound = false; // Orcs do not drop scrolls
         break;
       case ORC:
       default:

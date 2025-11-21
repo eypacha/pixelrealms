@@ -193,7 +193,7 @@ export const usePlayerStore = defineStore('player', () => {
         if (enemyType.value === DARK_KNIGHT) {
           darkKnightDefeatedCount.value++;
         }
-        // Si era un orc, agregarlo a defeatedGoblins
+        // Si era un orc, agregarlo a defeatedOrcs
         if (enemyType.value === ORC) {
           const poiStore = usePoiStore();
           // Usar el offset actual guardado en el store

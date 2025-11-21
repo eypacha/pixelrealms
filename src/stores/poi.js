@@ -9,7 +9,7 @@ export const usePoiStore = defineStore('poi', () => {
   // Instancia de useTerrain para acceso a isValidTerrain
   const terrainUtils = useTerrain();
   // Array de { x, y, offsetX, offsetY }
-  const defeatedGoblins = ref([]);
+  const defeatedOrcs = ref([]);
   // Mapa de POIs por tile key 'offsetX,offsetY'
   const poisByTile = ref({});
   const pois = ref([]); // current tile pois
@@ -21,7 +21,7 @@ export const usePoiStore = defineStore('poi', () => {
   function resetPois(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
     poisByTile.value = {};
     pois.value = [];
-    defeatedGoblins.value = [];
+    defeatedOrcs.value = [];
     ensureForTile(offsetX, offsetY, terrain, width, height, seed, count);
   }
 
@@ -134,8 +134,8 @@ export const usePoiStore = defineStore('poi', () => {
     if (position.offsetX === undefined || position.offsetY === undefined) {
       console.warn('addDefeatedGoblin: falta offsetX/offsetY');
     }
-    defeatedGoblins.value.push({ x: position.x, y: position.y, offsetX: position.offsetX, offsetY: position.offsetY });
+    defeatedOrcs.value.push({ x: position.x, y: position.y, offsetX: position.offsetX, offsetY: position.offsetY });
   }
 
-  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedGoblins, addDefeatedGoblin, treasureDiscovered, addNarrativePoi };
+  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedOrcs, addDefeatedGoblin, treasureDiscovered, addNarrativePoi };
 });

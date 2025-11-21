@@ -189,10 +189,10 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
           ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
         }
       });
-      if (orcImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
+      if (orcImg.complete && Array.isArray(poiStore.defeatedOrcs)) {
         const offsetX = Number(worldOffset.x) || 0;
         const offsetY = Number(worldOffset.y) || 0;
-        poiStore.defeatedGoblins
+        poiStore.defeatedOrcs
           .filter(pos => Number(pos.offsetX) === offsetX && Number(pos.offsetY) === offsetY)
           .forEach(pos => {
             ctx.save();
@@ -263,10 +263,10 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);
       }
     });
-    if (orcImg.complete && Array.isArray(poiStore.defeatedGoblins)) {
+    if (orcImg.complete && Array.isArray(poiStore.defeatedOrcs)) {
       const offsetX = Number(worldOffset.x) || 0;
       const offsetY = Number(worldOffset.y) || 0;
-      poiStore.defeatedGoblins
+      poiStore.defeatedOrcs
         .filter(pos => Number(pos.offsetX) === offsetX && Number(pos.offsetY) === offsetY)
         .forEach(pos => {
           ctx.save();
