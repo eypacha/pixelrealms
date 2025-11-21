@@ -58,7 +58,7 @@ export function useCombatDrawing() {
     orcImg.value.onload = () => {
       if (enemyImg.value === orcImg.value) drawEnemy(enemyCanvas);
     };
-    orcImg.value.src = 'images/orc.png';
+    orcImg.value.src = 'images/medium-orc.png';
 
     darkknightImg.value = new Image();
     darkknightImg.value.onload = () => {

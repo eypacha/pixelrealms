@@ -40,7 +40,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   // Imagen de orc
   if (!drawAll.orcImage) {
     drawAll.orcImage = new Image();
-    drawAll.orcImage.src = 'images/orc.png';
+    drawAll.orcImage.src = 'images/medium-orc.png';
     drawAll.orcImage.onload = () => {
       if (terrainCanvas && terrainCanvas.value) {
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
