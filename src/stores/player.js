@@ -265,7 +265,11 @@ export const usePlayerStore = defineStore('player', () => {
       return;
     }
 
-    setTimeout(enemyAttack, ENEMY_PAUSE);
+    if(enemyFrozen.value) {
+      maybeResetEnemyFrozen();
+    } else {
+      setTimeout(enemyAttack, ENEMY_PAUSE);
+    }
   }
 
   // Cover: activa defensa extra para el próximo ataque enemigo
@@ -356,13 +360,14 @@ export const usePlayerStore = defineStore('player', () => {
     mana.value -= 2;
     enemyHealth.value -= 1;
     enemyFrozen.value = true;
-    combatMessage.value = t('combat.enemyFrozen');
+    combatMessage.value = t('combat.frozen');
     soundStore.playSound('freeze');
     playerTurn.value = true;
   }
 
   const maybeResetEnemyFrozen = () => {
 
+    console.log('❄️ Comprobando si el enemigo sigue congelado');
     enemyFrozen.value = Math.random() < 0.5 ? false : true;
 
     if(!enemyFrozen.value) {

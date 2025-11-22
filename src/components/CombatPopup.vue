@@ -137,7 +137,7 @@ const combatButtons = [
   { emoji: '🧪', label: t('combat.heal'), onClick: usePotion, disabled: () => !playerStore.playerTurn || playerStore.inventory.potion <= 0 },
   { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !playerStore.playerTurn || playerStore.mana < 2 },
   { emoji: '❄️', label: t('combat.freeze'), onClick: freeze, disabled: () => !playerStore.playerTurn || playerStore.mana < 2 },
-  { emoji: '🏃', label: t('combat.run'), onClick: flee, disabled: () => !playerStore.playerTurn }
+  { emoji: '🏃', label: t('combat.flee'), onClick: flee, disabled: () => !playerStore.playerTurn }
 ];
 
 const lootButtons = [

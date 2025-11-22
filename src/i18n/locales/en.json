@@ -40,13 +40,14 @@
     "heal": "Heal",
     "fireball": "Fireball",
     "freeze": "Freeze",
-    "run": "Run",
+    "flee": "Flee",
     "loot": "Loot",
     "lootedScroll": "Magic Scroll looted",
     "looted": "Looted",
     "continue": "Continue",
-    "frozen": "Enemy frozen!",
-    "frozenPlayer": "Player frozen!",
+    "frozen": "Enemy frozen! -1",
+    "enemyStillFrozen": "Enemy is still frozen!",
+    "frozenPlayer": "Player frozen! -1",
     "thawed": "Enemy thawed!"
   },
   "sections": {
