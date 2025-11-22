@@ -298,6 +298,7 @@ watch(() => playerStore.enemyHealth, (newVal, oldVal) => {
 });
 
 watch(() => playerStore.enemyFrozen, (isFrozen) => {
+  console.log('enemyFrozen changed:', isFrozen);
   if (isFrozen) {
     enemyTint.value = false;
     enemyFreezeTint.value = true;

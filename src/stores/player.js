@@ -291,16 +291,15 @@ export const usePlayerStore = defineStore('player', () => {
 
   const enemyAttack = () => {
     console.log('👹 Ataque del enemigo');
-        // Si el enemigo tiene freezeChance, puede intentar congelar al jugador
         const enemyData = ENEMIES[enemyType.value];
         if (enemyData && enemyData.freezeChance) {
-          if (Math.random() < enemyData.freezeChance) {
-            // Congela al jugador
+          if (!playerFrozen.value && Math.random() < enemyData.freezeChance) {
             console.log('❄️ El enemigo ha congelado al jugador!');
             freezePlayer();
             return;
           }
         }
+
         const result = performAttack(
           { attack: enemyDefense.value },
           { defense: defense.value }
@@ -335,6 +334,10 @@ export const usePlayerStore = defineStore('player', () => {
           return;
         }
 
+        if(playerFrozen.value) {
+          maybeResetPlayerFrozen();
+          return;
+        }
         playerTurn.value = true;
   }
 
@@ -383,7 +386,7 @@ export const usePlayerStore = defineStore('player', () => {
     playerFrozen.value = true;
     combatMessage.value = t('combat.playerFrozen');
     soundStore.playSound('freeze');
-    playerTurn.value = false;
+    setTimeout(enemyAttack, ENEMY_PAUSE);
   }
 
   const maybeResetEnemyFrozen = () => {
@@ -393,11 +396,27 @@ export const usePlayerStore = defineStore('player', () => {
 
     if(!enemyFrozen.value) {
       console.log('El enemigo se ha descongelado');
+    
       setTimeout(enemyAttack, ENEMY_PAUSE);
     } else {
       console.log('El enemigo sigue congelado');
       combatMessage.value += ' ' + t('combat.enemyStillFrozen');
       playerTurn.value = true;
+    }
+  }
+
+  const maybeResetPlayerFrozen = () => {
+    console.log('❄️ Comprobando si el jugador sigue congelado');
+    playerFrozen.value = Math.random() < 0.5 ? false : true;
+
+    if(!playerFrozen.value) {
+      console.log('El jugador se ha descongelado');
+    
+      playerTurn.value = true;
+    } else {
+      console.log('El jugador sigue congelado');
+      combatMessage.value += ' ' + t('combat.playerStillFrozen');
+      setTimeout(enemyAttack, ENEMY_PAUSE);
     }
   }
 
@@ -407,7 +426,12 @@ export const usePlayerStore = defineStore('player', () => {
       combatMessage.value = t('combat.healed', { value: 5 });
       soundStore.playSound('gulp');
       playerTurn.value = false;
-      setTimeout(enemyAttack, ENEMY_PAUSE); 
+
+      if(enemyFrozen.value) {
+        maybeResetEnemyFrozen();
+      } else {
+        setTimeout(enemyAttack, ENEMY_PAUSE);
+      }
   }
   const fleeCombat = () => {
     console.log('🏃 Huir del combate');
