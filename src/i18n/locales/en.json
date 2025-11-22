@@ -44,6 +44,7 @@
     "fleeing": "Fleeing from combat...",
     "loot": "Loot",
     "lootedScroll": "Magic Scroll looted",
+    "lootedPotion": "Potion looted",
     "looted": "Looted",
     "continue": "Continue",
     "frozen": "Enemy frozen! -1",
