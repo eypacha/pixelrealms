@@ -291,41 +291,51 @@ export const usePlayerStore = defineStore('player', () => {
 
   const enemyAttack = () => {
     console.log('👹 Ataque del enemigo');
-    const result = performAttack(
-      { attack: enemyDefense.value },
-      { defense: defense.value }
-    );
+        // Si el enemigo tiene freezeChance, puede intentar congelar al jugador
+        const enemyData = ENEMIES[enemyType.value];
+        if (enemyData && enemyData.freezeChance) {
+          if (Math.random() < enemyData.freezeChance) {
+            // Congela al jugador
+            console.log('❄️ El enemigo ha congelado al jugador!');
+            freezePlayer();
+            return;
+          }
+        }
+        const result = performAttack(
+          { attack: enemyDefense.value },
+          { defense: defense.value }
+        );
 
-    console.log('damage:', result.damage);
-    health.value -= result.damage;
-    if (result.missed) {
-      combatMessage.value = t('combat.miss');
-      soundStore.playSound('whosh');
-    } else {
-      soundStore.playSound('hammer');
-      if (result.isCritical) {
-        combatMessage.value = t('combat.critical', { value: result.damage });
-      } else {
-        combatMessage.value = t('combat.hit', { value: result.damage });
-      }
-    }
+        console.log('damage:', result.damage);
+        health.value -= result.damage;
+        if (result.missed) {
+          combatMessage.value = t('combat.miss');
+          soundStore.playSound('whosh');
+        } else {
+          soundStore.playSound('hammer');
+          if (result.isCritical) {
+            combatMessage.value = t('combat.critical', { value: result.damage });
+          } else {
+            combatMessage.value = t('combat.hit', { value: result.damage });
+          }
+        }
 
-    // Consumir el cover y restaurar defense
-    if (coverActive.value) {
-      defense.value -= 2;
-      coverActive.value = false;
-    }
+        // Consumir el cover y restaurar defense
+        if (coverActive.value) {
+          defense.value -= 2;
+          coverActive.value = false;
+        }
 
-    if (health.value <= 0) {
-      combatMessage.value = t('combat.playerDefeated');
-      setTimeout(() => {
-        combatActive.value = false;
-        gameOver.value = true;
-      }, 1000);
-      return;
-    }
+        if (health.value <= 0) {
+          combatMessage.value = t('combat.playerDefeated');
+          setTimeout(() => {
+            combatActive.value = false;
+            gameOver.value = true;
+          }, 1000);
+          return;
+        }
 
-    playerTurn.value = true;
+        playerTurn.value = true;
   }
 
 
@@ -367,6 +377,13 @@ export const usePlayerStore = defineStore('player', () => {
     combatMessage.value = t('combat.frozen');
     soundStore.playSound('freeze');
     playerTurn.value = true;
+  }
+
+  const freezePlayer = () => {
+    playerFrozen.value = true;
+    combatMessage.value = t('combat.playerFrozen');
+    soundStore.playSound('freeze');
+    playerTurn.value = false;
   }
 
   const maybeResetEnemyFrozen = () => {

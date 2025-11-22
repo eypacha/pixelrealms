@@ -95,7 +95,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     playerStore.heightRef = canvas.height;
     if (initializePlayer) {
       playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
-      console.log('Posición inicial jugador:', playerStore.position);
+      console.log('Posición inicial jugador:', playerStore.position.x, playerStore.position.y);
     }
     if (poiStore && typeof poiStore.ensureForTile === 'function') {
       poiStore.ensureForTile(worldOffset.x || 0, worldOffset.y || 0, heights2D, canvas.width, canvas.height, seedInput.value);
