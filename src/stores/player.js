@@ -342,16 +342,38 @@ export const usePlayerStore = defineStore('player', () => {
       combatMessage.value = t('combat.enemyDefeated');
       return;
     }
-    setTimeout(enemyAttack, ENEMY_PAUSE);
+
+    if(enemyFrozen.value) {
+      maybeResetEnemyFrozen();
+    } else {
+      setTimeout(enemyAttack, ENEMY_PAUSE);
+    }
   }
 
 
   const freezeEnemy = () => {
-    mana.value -= 1;
+    mana.value -= 2;
+    enemyHealth.value -= 1;
     enemyFrozen.value = true;
     combatMessage.value = t('combat.enemyFrozen');
     soundStore.playSound('freeze');
+    playerTurn.value = true;
   }
+
+  const maybeResetEnemyFrozen = () => {
+
+    enemyFrozen.value = Math.random() < 0.5 ? false : true;
+
+    if(!enemyFrozen.value) {
+      console.log('El enemigo se ha descongelado');
+      setTimeout(enemyAttack, ENEMY_PAUSE);
+    } else {
+      console.log('El enemigo sigue congelado');
+      combatMessage.value += ' ' + t('combat.enemyStillFrozen');
+      playerTurn.value = true;
+    }
+  }
+
   const usePotion = () => {
       inventory.value.potion -= 1;
       health.value = Math.min(maxHealth.value, health.value + 5);
