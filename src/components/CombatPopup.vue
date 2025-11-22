@@ -86,6 +86,31 @@
             </button>
           </div>
         </div>
+          <div v-else class="flex flex-col gap-2 items-center w-full mt-2">
+            <button
+              @click="claimCombatCoins"
+              :disabled="combatLoot.coinsClaimed"
+              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.coinsClaimed ? 'opacity-50' : '']"
+            >
+              {{ $t('treasure.grabCoins', { coins: combatLoot.coins }) }} <span style="font-size:1.1em;">🪙</span>
+            </button>
+            <button
+              v-if="combatLoot.potions > 0"
+              @click="claimCombatPotions"
+              :disabled="combatLoot.potionsClaimed"
+              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.potionsClaimed ? 'opacity-50' : '']"
+            >
+              {{ $t('treasure.grabPotions', { potions: combatLoot.potions }) }} <span style="font-size:1.1em;">🧪</span>
+            </button>
+            <button
+              v-if="combatLoot.scrolls > 0"
+              @click="claimCombatScroll"
+              :disabled="combatLoot.scrollClaimed"
+              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.scrollClaimed ? 'opacity-50' : '']"
+            >
+              {{ $t('treasure.grabScroll', { scrolls: combatLoot.scrolls }) }} (<span style="font-size:1.1em;">+{{ combatLoot.scrolls }} 🪬</span>)
+            </button>
+          </div>
       </div>
       </div>
     </div>
