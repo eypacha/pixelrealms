@@ -31,7 +31,7 @@ export const ENEMIES = {
 	  strength: 15,
 	  defense: 10,
 	  image: 'images/darkknight.png',
-	  chance: 0
+	  chance: 0.05
 	 },
 	 skeleton: {
 	  type: 'skeleton',
@@ -40,6 +40,6 @@ export const ENEMIES = {
 	  defense: 9,
 	  image: 'images/skeleton.png',
 	  chance: 0.2,
-	  freezeChance: 0.5
+	  freezeChance: 0.45
 	 }
 };
