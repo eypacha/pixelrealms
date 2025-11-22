@@ -296,6 +296,16 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   const endCombat = () => {
+    // Si el enemigo fue derrotado, márcalo en el mapa
+    if (enemyDefeated.value && typeof position.value.x === 'number' && typeof position.value.y === 'number' && enemyType.value) {
+      const poiStore = usePoiStore();
+      poiStore.addDefeatedEnemy({
+        x: position.value.x,
+        y: position.value.y,
+        offsetX: currentOffset.value.x,
+        offsetY: currentOffset.value.y
+      }, enemyType.value);
+    }
     combatActive.value = false;
     enemyDefeated.value = false;
     lootCollected.value = false;
