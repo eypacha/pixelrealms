@@ -51,10 +51,10 @@ export const usePlayerStore = defineStore('player', () => {
   const mana = ref(0);
 
   const combatActive = ref(false);
-  const enemyHealth = ref(ENEMIES.orc.health);
-  const enemyStrength = ref(ENEMIES.orc.strength);
-  const enemyDefense = ref(ENEMIES.orc.defense);
-  const enemyType = ref(ENEMIES.orc.type);
+  const enemyHealth = ref(undefined);
+  const enemyStrength = ref(undefined);
+  const enemyDefense = ref(undefined);
+  const enemyType = ref(undefined);
   const combatMessage = ref('');
   const coverActive = ref(false);
   const enemyDefeated = ref(false);
@@ -76,6 +76,7 @@ export const usePlayerStore = defineStore('player', () => {
   let widthRef = 0;
   let heightRef = 0;
   let encounterRandom = null;
+
   function initialize(terrain, width, height, randomFn) {
     terrainRef = terrain;
     widthRef = width;
@@ -109,10 +110,10 @@ export const usePlayerStore = defineStore('player', () => {
       coins.value = 10;
       inventory.value.potion = 2;
       mana.value = 0;
-      enemyHealth.value = ENEMIES.orc.health;
-      enemyStrength.value = ENEMIES.orc.strength;
-      enemyDefense.value = ENEMIES.orc.defense;
-      enemyType.value = ENEMIES.orc.type;
+      enemyHealth.value = undefined;
+      enemyStrength.value = undefined;
+      enemyDefense.value = undefined;
+      enemyType.value = undefined;
       currentOffset.value = { x: 0, y: 0 };
     }
 
@@ -203,8 +204,26 @@ export const usePlayerStore = defineStore('player', () => {
       startCombat();
     }
   }
+
   const startCombat = () => {
-    console.log('⚔️ Encuentro iniciado');
+    // Selección aleatoria de enemigo según su chance
+    const entries = Object.entries(ENEMIES);
+    const totalChance = entries.reduce((acc, [_, enemy]) => acc + (enemy.chance || 0), 0);
+    let rand = Math.random() * totalChance;
+    let selected = entries[0][1];
+    for (const [_, enemy] of entries) {
+      rand -= enemy.chance || 0;
+      if (rand <= 0) {
+        selected = enemy;
+        break;
+      }
+    }
+    enemyType.value = selected.type;
+    enemyHealth.value = selected.health;
+    enemyStrength.value = selected.strength;
+    enemyDefense.value = selected.defense;
+    // Iniciar combate
+    console.log('⚔️ Encuentro iniciado con', selected.type);
     combatActive.value = true;
     playerTurn.value = true;
     combatMessage.value = t('combat.start');
@@ -276,6 +295,18 @@ export const usePlayerStore = defineStore('player', () => {
 
   }
 
+  const endCombat = () => {
+    combatActive.value = false;
+    enemyDefeated.value = false;
+    lootCollected.value = false;
+    combatMessage.value = '';
+    // Reset enemy stats
+    enemyHealth.value = undefined;
+    enemyStrength.value = undefined;
+    enemyDefense.value = undefined;
+    enemyType.value = undefined;
+  }
+
   return {
     steps,
     position,
@@ -312,6 +343,7 @@ export const usePlayerStore = defineStore('player', () => {
     moveLeft,
     moveRight,
     startCombat,
+    endCombat,
     getTerrainColor,
     reset
   };

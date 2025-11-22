@@ -72,6 +72,12 @@
                 {{ btn.label() }} <span v-if="btn.emoji" style="font-size:1.1em;">{{ btn.emoji }}</span>
               </button>
             </div>
+            <button
+              class="px-4 py-2 w-full mt-4 cursor-pointer text-black transition font-bold"
+              @click="continueCombat"
+            >
+              {{ $t('combat.continue') }}
+            </button>
           </div>
       </div>
       </div>
