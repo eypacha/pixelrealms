@@ -39,7 +39,9 @@
       <TreasurePopup v-if="treasureDiscovered" />
     </div>
     <div class="mt-4 flex items-center gap-20 h-6">
-      <StatusBar v-if="!showCharacterSelect"/>
+      <Transition name="fade-status">
+        <StatusBar v-if="!showCharacterSelect"/>
+      </Transition>
     </div>
   </div>
 </template>
@@ -157,3 +159,15 @@ watch(seedInput, () => {
   drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
 });
 </script>
+
+<style>
+.fade-status-enter-active, .fade-status-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-status-enter-from, .fade-status-leave-to {
+  opacity: 0;
+}
+.fade-status-enter-to, .fade-status-leave-from {
+  opacity: 1;
+}
+</style>
