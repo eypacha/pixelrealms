@@ -335,7 +335,6 @@ export const usePlayerStore = defineStore('player', () => {
         }
 
         if (playerFleeing.value) {
-          combatMessage.value = t('combat.fleeing');
           console.log('🏃 El jugador ha huido del combate')
           endCombat();
         }
@@ -443,6 +442,7 @@ export const usePlayerStore = defineStore('player', () => {
         endCombat();
       } else {
         playerFleeing.value = true;
+        combatMessage.value = t('combat.fleeing');
         setTimeout(enemyAttack, ENEMY_PAUSE);
       }
   }
