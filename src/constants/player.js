@@ -14,7 +14,7 @@ export const CHARACTERS = [
   {
     key: 'knight',
     name: 'Knight',
-    img: 'images/yellowknight.png',
+    img: 'images/players/yellowknight.png',
     stats: {
       health: 10,
       strength: 10,
@@ -27,7 +27,7 @@ export const CHARACTERS = [
   {
     key: 'barbarian',
     name: 'Barbarian',
-    img: 'images/barbarian.png',
+    img: 'images/players/barbarian.png',
     stats: {
       health: 10,
       strength: 12,
@@ -40,7 +40,7 @@ export const CHARACTERS = [
   {
     key: 'elf',
     name: 'Elf',
-    img: 'images/elf.png',
+    img: 'images/players/elf.png',
     stats: {
       health: 12,
       strength: 9,
