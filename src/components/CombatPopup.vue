@@ -113,24 +113,27 @@ const knightCanvas = ref(null);
 const enemyCanvas = ref(null);
 
 function flee() {
+  if (!playerStore.playerTurn) return
   playerStore.fleeCombat();
 }
 
 function swordAttack() {
-  if (playerStore.playerTurn) {
-    playerStore.playerAttack(playerStore.strength);
-  }
+  if (!playerStore.playerTurn) return
+  playerStore.playerAttack();
 }
 
 function cover() {
+  if (!playerStore.playerTurn) return
   playerStore.activateCover();
 }
 
 function usePotion() {
+  if (!playerStore.playerTurn) return
   playerStore.usePotion();
 }
 
 function fireball() {
+  if (!playerStore.playerTurn) return
   playerStore.fireballAttack();
 }
 
