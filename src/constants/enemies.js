@@ -5,8 +5,8 @@ export const ENEMY_PAUSE = 1000;
 
 export const DARK_KNIGHT = 'darkknight';
 export const DARK_KNIGHT_HEALTH = 20;
-export const DARK_KNIGHT_STRENGTH = 15;
-export const DARK_KNIGHT_DEFENSE = 10;
+export const DARK_KNIGHT_STRENGTH = 20;
+export const DARK_KNIGHT_DEFENSE = 15;
 
 export const ENEMIES = {
 	 goblin: {
@@ -28,10 +28,11 @@ export const ENEMIES = {
 	 darkknight: {
 	  type: 'darkknight',
 	  health: 20,
-	  strength: 15,
-	  defense: 10,
+	  strength: 20,
+	  defense: 15,
 	  image: 'images/darkknight.png',
-	  chance: 0.02
+	  chance: 0.02,
+	  freezeChance: 0.1
 	 },
 	 skeleton: {
 	  type: 'skeleton',

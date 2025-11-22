@@ -8,10 +8,6 @@
       @update:seed="handleSeedInputChangeFromBar"
       @random-seed="handleRandomSeedFromBar"
     />
-      <div class="absolute top-3 right-4 z-10 text-4xl pointer-events-none">
-        <span v-if="!isNight">☀️</span>
-        <span v-else>🌙</span>
-      </div>
       <canvas
         ref="terrainCanvas"
         width="800"
