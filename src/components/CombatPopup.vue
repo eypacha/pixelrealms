@@ -166,16 +166,20 @@ function setupCombatLoot() {
   if (playerStore.enemyDefeated && !playerStore.lootCollected) {
     let coins = 0, potions = 0, scrollFound = false;
     switch (playerStore.enemyType) {
-      case ENEMIES.DARK_KNIGHT:
+      case 'darkknight':
         coins = Math.floor(Math.random() * 21) + 15; // 15-35
         potions = Math.random() < 0.5 ? 1 : 0; // 50% chance
         scrollFound = Math.random() < 0.5; // 50%
         break;
-      case ENEMIES.GOBLIN:
+      case 'goblin':
         coins = Math.floor(Math.random() * 5) + 1; // 1-5
         scrollFound = false; // Goblins do not drop scrolls
         break;
-      case ENEMIES.ORC:
+      case 'skeleton':
+        coins = Math.floor(Math.random() * 5) + 1; // 1-6
+        scrollFound = Math.random() < 0.4;
+        break;
+      case 'orc':
       default:
         coins = Math.floor(Math.random() * 10) + 1; // 1-10
         scrollFound = Math.random() < 0.1; // 10% chance for ORC
