@@ -64,7 +64,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   // Imagen de wizard
   if (!drawAll.wizardImage) {
     drawAll.wizardImage = new Image();
-    drawAll.wizardImage.src = 'images/wizard.png';
+    drawAll.wizardImage.src = 'images/allies/wizard.png';
     drawAll.wizardImage.onload = () => {
       if (terrainCanvas && terrainCanvas.value) {
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);

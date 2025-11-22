@@ -17,7 +17,6 @@ import {
   ENCOUNTER_RATE_NIGHT,
   ENEMY_PAUSE,
   ENEMIES,
-  ENEMY_HIT_CHANCE,
 } from '../constants/enemies.js';
 
 import { useTimeStore } from './time.js';
@@ -65,6 +64,7 @@ export const usePlayerStore = defineStore('player', () => {
   const darkKnightDefeatedCount = ref(0);
   const enemyFrozen = ref(false);
   const playerFrozen = ref(false);
+  const playerFleeing = ref(false);
   
   // Offset actual del tile
   const currentOffset = ref({ x: 0, y: 0 });
@@ -333,7 +333,15 @@ export const usePlayerStore = defineStore('player', () => {
           maybeResetPlayerFrozen();
           return;
         }
-        playerTurn.value = true;
+
+        if (playerFleeing.value) {
+          combatMessage.value = t('combat.fleeing');
+          console.log('🏃 El jugador ha huido del combate')
+          endCombat();
+        }
+          
+         playerTurn.value = true;
+
   }
 
 
@@ -434,6 +442,7 @@ export const usePlayerStore = defineStore('player', () => {
      if(enemyFrozen.value) {
         endCombat();
       } else {
+        playerFleeing.value = true;
         setTimeout(enemyAttack, ENEMY_PAUSE);
       }
   }
@@ -453,6 +462,7 @@ export const usePlayerStore = defineStore('player', () => {
     combatActive.value = false;
     enemyDefeated.value = false;
     lootCollected.value = false;
+    playerTurn.value = false;
     combatMessage.value = '';
     // Reset enemy stats
     enemyHealth.value = undefined;
