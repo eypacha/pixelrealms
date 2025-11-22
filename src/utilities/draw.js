@@ -40,7 +40,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   // Imagen de orc
   if (!drawAll.orcImage) {
     drawAll.orcImage = new Image();
-    drawAll.orcImage.src = 'images/medium-orc.png';
+    drawAll.orcImage.src = 'images/enemies/medium-orc.png';
     drawAll.orcImage.onload = () => {
       if (terrainCanvas && terrainCanvas.value) {
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
@@ -52,7 +52,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   // Imagen de goblin
   if (!drawAll.goblinImage) {
     drawAll.goblinImage = new Image();
-    drawAll.goblinImage.src = 'images/goblin.png';
+    drawAll.goblinImage.src = 'images/enemies/goblin.png';
     drawAll.goblinImage.onload = () => {
       if (terrainCanvas && terrainCanvas.value) {
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
@@ -154,7 +154,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     if (poiStore && Array.isArray(poiStore.pois)) {
       if (!drawAll.darkKnightImage) {
         drawAll.darkKnightImage = new Image();
-        drawAll.darkKnightImage.src = 'images/darkknight.png';
+        drawAll.darkKnightImage.src = 'images/enemies/darkknight.png';
         drawAll.darkKnightImage.onload = () => {
           if (terrainCanvas && terrainCanvas.value) {
             drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
@@ -239,7 +239,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   if (poiStore && Array.isArray(poiStore.pois)) {
     if (!drawAll.darkKnightImage) {
       drawAll.darkKnightImage = new Image();
-      drawAll.darkKnightImage.src = 'images/darkknight.png';
+      drawAll.darkKnightImage.src = 'images/enemies/darkknight.png';
       drawAll.darkKnightImage.onload = () => {
         if (terrainCanvas && terrainCanvas.value) {
           drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
@@ -263,7 +263,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
       }
     });
     poiStore.pois.forEach(poi => {
-      if (poi.type === 'darkKnight') {
+      if (poi.type === 'darkknight') {
         if (darkKnightImg.complete) {
           ctx.save();
           if (poi.discovered) {
@@ -273,7 +273,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
           ctx.restore();
         }
       } else if (poi.type === 'wizard') {
-        if (wizardImg.complete) {
+        if (wizardImg && wizardImg.complete) {
           ctx.save();
           if (poi.discovered) {
             ctx.globalAlpha = 0.4;

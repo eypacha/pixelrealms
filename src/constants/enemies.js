@@ -9,7 +9,7 @@ export const ENEMIES = {
 	  health: 5,
 	  strength: 3,
 	  defense: 3,
-	  image: 'images/goblin.png',
+	  image: 'images/enemies/goblin.png',
 	  chance: 0.4
 	 },
 	 orc: {
@@ -17,7 +17,7 @@ export const ENEMIES = {
 	  health: 10,
 	  strength: 8,
 	  defense: 5,
-	  image: 'images/medium-orc.png',
+	  image: 'images/enemies/medium-orc.png',
 	  chance: 0.4
 	 },
 	 darkknight: {
@@ -25,7 +25,16 @@ export const ENEMIES = {
 	  health: 20,
 	  strength: 20,
 	  defense: 15,
-	  image: 'images/darkknight.png',
+	  image: 'images/enemies/darkknight.png',
+	  chance: 0,
+	  freezeChance: 0.1
+	 },
+	 knight: {
+	  type: 'knight',
+	  health: 20,
+	  strength: 20,
+	  defense: 15,
+	  image: 'images/enemies/knight.png',
 	  chance: 0.02,
 	  freezeChance: 0.1
 	 },
@@ -34,7 +43,7 @@ export const ENEMIES = {
 	  health: 8,
 	  strength: 11,
 	  defense: 9,
-	  image: 'images/skeleton.png',
+	  image: 'images/enemies/skeleton.png',
 	  chance: 0.18,
 	  freezeChance: 0.5
 	 }

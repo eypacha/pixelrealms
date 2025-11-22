@@ -7,10 +7,10 @@ export function useCombatDrawing() {
   const enemyImgs = {};
   // Definición de tipos y rutas
   const enemyTypes = {
-    goblin: 'images/goblin.png',
-    orc: 'images/medium-orc.png',
-    darkknight: 'images/darkknight.png',
-    skeleton: 'images/skeleton.png', // Nuevo enemigo
+    goblin: 'images/enemies/goblin.png',
+    orc: 'images/enemies/medium-orc.png',
+    darkknight: 'images/enemies/darkknight.png',
+    skeleton: 'images/enemies/skeleton.png', // Nuevo enemigo
     // Agrega aquí más enemigos fácilmente
   };
   const knightTint = ref(false);
