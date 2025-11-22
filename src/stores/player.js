@@ -7,10 +7,8 @@ import {
     INITIAL_HEALTH,
     INITIAL_STRENGTH,
     INITIAL_DEFENSE,
-    COVER_AMOUNT,
     INITIAL_COINS,
     INITIAL_POTIONS,
-    PLAYER_HIT_CHANCE,
     RECOVERY_STEPS,
   } from '../constants/player.js';
 
@@ -230,9 +228,6 @@ export const usePlayerStore = defineStore('player', () => {
       enemyDefense.value = selected.defense;
       // Resetear congelación visual y lógica
       enemyFrozen.value = false;
-      if (typeof window !== 'undefined' && window.enemyFreezeTint !== undefined) {
-        window.enemyFreezeTint = false;
-      }
       // Iniciar combate
       console.log('⚔️ Encuentro iniciado con', selected.type);
       combatActive.value = true;

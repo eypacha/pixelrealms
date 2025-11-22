@@ -47,6 +47,7 @@
     "continue": "Continue",
     "frozen": "Enemy frozen! -1",
     "enemyStillFrozen": "Enemy is still frozen!",
+    "playerStillFrozen": "Player is still frozen!",
     "frozenPlayer": "Player frozen! -1",
     "thawed": "Enemy thawed!"
   },
