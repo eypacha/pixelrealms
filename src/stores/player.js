@@ -345,6 +345,13 @@ export const usePlayerStore = defineStore('player', () => {
     setTimeout(enemyAttack, ENEMY_PAUSE);
   }
 
+
+  const freezeEnemy = () => {
+    mana.value -= 1;
+    enemyFrozen.value = true;
+    combatMessage.value = t('combat.enemyFrozen');
+    soundStore.playSound('freeze');
+  }
   const usePotion = () => {
       inventory.value.potion -= 1;
       health.value = Math.min(maxHealth.value, health.value + 5);
@@ -392,6 +399,7 @@ export const usePlayerStore = defineStore('player', () => {
     playerAttack,
     activateCover,
     fireballAttack,
+    freezeEnemy,
     gameOver,
     wizardActive,
     enemyHealth,

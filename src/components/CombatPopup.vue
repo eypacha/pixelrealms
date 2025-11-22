@@ -20,7 +20,7 @@
             </div>
           </h2>
           <div
-            class="flex justify-center space-x-4 mb-4 border-b-4 pt-4"
+            class="flex justify-center space-x-4 border-b-4 pt-4"
             :style="{ borderBottomColor: playerStore.getTerrainColor() }"
           >
             <div class="flex gap-2">
