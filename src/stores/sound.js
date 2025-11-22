@@ -9,7 +9,6 @@ export const useSoundStore = defineStore('sound', () => {
   const sounds = {
     footstep: new Howl({ src: ['sounds/footstep.wav'], volume: volume.value }),
     hammer: new Howl({ src: ['sounds/hammer.wav'], volume: volume.value }),
-    hammer: new Howl({ src: ['sounds/hammer.wav'], volume: volume.value }),
     kling: new Howl({ src: ['sounds/kling.wav'], volume: volume.value }),
     whosh: new Howl({ src: ['sounds/whosh.wav'], volume: volume.value }),
     coin: new Howl({ src: ['sounds/coin.mp3'], volume: volume.value }),

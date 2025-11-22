@@ -27,18 +27,19 @@ import { useTimeStore } from './time.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { getColorForHeight } from '../utilities/draw.js';
 import { useSoundStore } from './sound.js';
-import { calculateDamage } from '../utilities/calculateDamage.js';
+import { performAttack } from '../utilities/combatCalcs.js';
 
 export const usePlayerStore = defineStore('player', () => {
 
   const soundStore = useSoundStore();
   const timeStore = useTimeStore();
 
-  // Recupera vida cada 3 pasos
   const { t } = useI18n();
+
+  const seed = ref(Date.now());
+
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
-  const seed = ref(Date.now());
   const health = ref(INITIAL_HEALTH);
   const maxHealth = ref(INITIAL_HEALTH);
   const strength = ref(INITIAL_STRENGTH);
@@ -48,21 +49,20 @@ export const usePlayerStore = defineStore('player', () => {
 
   const steps = ref(0);
   const mana = ref(0);
-  // Solo datos para mostrar el popup de encuentro
+
+  const combatActive = ref(false);
   const enemyHealth = ref(ENEMIES.orc.health);
   const enemyStrength = ref(ENEMIES.orc.strength);
   const enemyDefense = ref(ENEMIES.orc.defense);
   const enemyType = ref(ENEMIES.orc.type);
-  const combatActive = ref(false);
-  const gameOver = ref(false);
-  const wizardActive = ref(false);
-  const playerTurn = ref(true);
   const combatMessage = ref('');
-  const combatMessageKey = ref('');
-  const combatMessageParams = ref({});
   const coverActive = ref(false);
   const enemyDefeated = ref(false);
   const lootCollected = ref(false);
+  const gameOver = ref(false);
+
+  const wizardActive = ref(false);
+  const playerTurn = ref(true);
   const lastDirection = ref('down');
   const darkKnightDefeatedCount = ref(0);
   const enemyFrozen = ref(false);
@@ -208,8 +208,72 @@ export const usePlayerStore = defineStore('player', () => {
     combatActive.value = true;
     playerTurn.value = true;
     combatMessage.value = t('combat.start');
-    combatMessageKey.value = 'combat.start';
-    combatMessageParams.value = {};
+  }
+  const playerAttack = () => {
+    console.log('🗡️ Ataque del jugador');
+    // Lógica de ataque del jugador
+    const result = performAttack(
+      { attack: strength.value },
+      { defense: enemyDefense.value }
+    );
+
+    console.log('damage:', result.damage);
+    enemyHealth.value -= result.damage;
+
+    if (result.missed) {
+      combatMessage.value = t('combat.player_missed');
+      soundStore.playSound('whosh');
+    } else {
+      soundStore.playSound('kling');
+      if (result.isCritical) {
+        combatMessage.value = t('combat.player_critical') + ' -' + result.damage;
+      } else {
+        combatMessage.value = t('combat.player_hit') + ' -' + result.damage ;
+      }
+    }
+
+    playerTurn.value = false;
+    if( enemyHealth.value <= 0 ){
+      enemyDefeated.value = true;
+      combatMessage.value = t('combat.enemy_defeated');
+      return;
+    }
+
+    setTimeout(enemyAttack, ENEMY_PAUSE);
+    
+  }
+
+  const enemyAttack = () => {
+    console.log('👹 Ataque del enemigo')
+     const result = performAttack(
+      { attack: enemyDefense.value },
+      { defense: strength.value })
+
+      console.log('damage:', result.damage);
+      health.value -= result.damage
+      if( result.missed ){
+        combatMessage.value = t('combat.enemy_missed');
+        soundStore.playSound('whosh');
+      } else {
+        soundStore.playSound('hammer');
+        if( result.isCritical ){
+          combatMessage.value = t('combat.enemy_critical') + ' -' + result.damage;
+        } else {
+          combatMessage.value = t('combat.enemy_hit') + ' -' + result.damage ;
+        }
+      }
+
+      if(health.value <= 0 ){
+        combatMessage.value = t('combat.player_defeated');
+        setTimeout(() => {
+          combatActive.value = false;
+          gameOver.value = true;
+        }, 1000);
+        return
+      }
+
+    playerTurn.value = true;
+
   }
 
   return {
@@ -225,6 +289,7 @@ export const usePlayerStore = defineStore('player', () => {
     coins,
     inventory,
     combatActive,
+    playerAttack,
     gameOver,
     wizardActive,
     enemyHealth,
@@ -233,8 +298,6 @@ export const usePlayerStore = defineStore('player', () => {
     enemyType,
     playerTurn,
     combatMessage,
-    combatMessageKey,
-    combatMessageParams,
     coverActive,
     enemyDefeated,
     lootCollected,

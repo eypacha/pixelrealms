@@ -48,39 +48,39 @@
         <div>
           <p class="p-2 h-15">{{ playerStore.combatMessage }}</p>
         </div>
-        <div class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
+        <div v-if="!playerStore.enemyDefeated" class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
           <div class="flex flex-col items-center">
-              <button @click="swordAttack" class="px-4 py-1 flex flex-col items-center cursor-pointer">
+              <button @click="swordAttack" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
               <span style="font-size:1.5em;">🗡️</span>
               {{ $t('combat.attack') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
-              <button @click="cover" class="px-4 py-1 flex flex-col items-center cursor-pointer">
+              <button @click="cover" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
               <span style="font-size:1.5em;">🛡️</span>
               {{ $t('combat.cover') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
-              <button @click="usePotion" class="px-4 py-1 flex flex-col items-center cursor-pointer">
+              <button @click="usePotion" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
               <span style="font-size:1.5em;">🧪</span>
               {{ $t('combat.heal') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
-              <button @click="fireball" class="px-4 py-1 flex flex-col items-center cursor-pointer">
+              <button @click="fireball" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
               <span style="font-size:1.5em;">🔥</span>
               {{ $t('combat.fireball') }}
             </button>
           </div>
           <div class="flex flex-col items-center">
-              <button @click="freeze" class="px-4 py-1 flex flex-col items-center cursor-pointer">
+              <button @click="freeze" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
               <span style="font-size:1.5em; color: #00bfff;">❄️</span>
               Freeze
             </button>
           </div>
           <div class="flex flex-col items-center">
-              <button @click="flee" class="px-4 py-2 flex flex-col items-center cursor-pointer">
+              <button @click="flee" class="px-4 py-2 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
               <span style="font-size:1.5em;">🏃</span>
               {{ $t('combat.run') }}
             </button>
