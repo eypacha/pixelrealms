@@ -13,7 +13,7 @@
         <h2 class="text-lg font-bold mb-6">{{ $t('characterSelect.choose') }}</h2>
       <div class="flex gap-8 justify-center items-center mb-8">
         <div
-          v-for="char in characters"
+          v-for="char in CHARACTERS"
           @click="selectCharacter(char)"
           :key="char.key"
           :class="[
@@ -50,6 +50,7 @@ import { ref } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import SettingsBar from './SettingsBar.vue';
 import TopBar from './TopBar.vue';
+import { CHARACTERS } from '../constants/player';
 
 const playerStore = usePlayerStore();
 const selected = ref(null);
@@ -66,48 +67,6 @@ function onUpdateSeed(newSeed) {
 function onRandomSeed() {
   emit('random-seed');
 }
-
-const characters = [
-  {
-    key: 'knight',
-    name: 'Knight',
-    img: 'images/yellowknight.png',
-    stats: {
-      health: 10,
-      strength: 10,
-      defense: 10,
-      coins: 10,
-      potion: 2,
-      mana: 0
-    }
-  },
-  {
-    key: 'barbarian',
-    name: 'Barbarian',
-    img: 'images/barbarian.png',
-    stats: {
-      health: 10,
-      strength: 12,
-      defense: 8,
-      coins: 10,
-      potion: 2,
-      mana: 0
-    }
-  },
-  {
-    key: 'elf',
-    name: 'Elf',
-    img: 'images/elf.png',
-    stats: {
-      health: 12,
-      strength: 9,
-      defense: 9,
-      coins: 10,
-      potion: 0,
-      mana: 3,
-    }
-  }
-];
 
 function selectCharacter(char) {
   selected.value = char;
