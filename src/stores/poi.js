@@ -45,7 +45,7 @@ export const usePoiStore = defineStore('poi', () => {
         y = Math.floor(rand() * height);
         if (terrainUtils.isValidTerrain(x, y, width, height, terrain)) {
           const loot = Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN;
-          arr.push({ id: 'darkKnight-' + i, type: 'darkKnight', position: { x, y }, discovered: false, loot });
+          arr.push({ id: 'darkknight-' + i, type: 'darkknight', position: { x, y }, discovered: false, loot });
           placed = true;
         }
         attempts++;
@@ -92,10 +92,9 @@ export const usePoiStore = defineStore('poi', () => {
         || (!poi.discovered && Math.abs(poi.position.x - playerPosition.x) < 10 && Math.abs(poi.position.y - playerPosition.y) < 10)
       ) {
         if (poi.type !== 'narrative') poi.discovered = true;
-        if (poi.type === 'darkKnight') {
+        if (poi.type === 'darkknight') {
           console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
           playerStore.startCombat('darkknight');
-
         } else if (poi.type === 'wizard') {
           // Abrir WizardPopup
           playerStore.wizardActive = true;
@@ -129,6 +128,7 @@ export const usePoiStore = defineStore('poi', () => {
 
   // Agrega un enemigo derrotado de cualquier tipo
   function addDefeatedEnemy(position, type) {
+    // Unificado: acepta cualquier tipo de enemigo
     if (position.offsetX === undefined || position.offsetY === undefined) {
       console.warn('addDefeatedEnemy: falta offsetX/offsetY');
     }

@@ -178,7 +178,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         }
       });
       poiStore.pois.forEach(poi => {
-        if (poi.type === 'darkKnight') {
+        if (poi.type === 'darkknight') {
           if (darkKnightImg.complete) {
             ctx.save();
             if (poi.discovered) {

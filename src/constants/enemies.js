@@ -3,11 +3,6 @@ export const ENCOUNTER_RATE_NIGHT = 0.3;
 export const ENEMY_HIT_CHANCE = 0.7;
 export const ENEMY_PAUSE = 1000;
 
-export const DARK_KNIGHT = 'darkknight';
-export const DARK_KNIGHT_HEALTH = 20;
-export const DARK_KNIGHT_STRENGTH = 20;
-export const DARK_KNIGHT_DEFENSE = 15;
-
 export const ENEMIES = {
 	 goblin: {
 	  type: 'goblin',
