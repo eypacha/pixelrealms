@@ -204,6 +204,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
   const startCombat = () => {
+    console.log('⚔️ Encuentro iniciado');
     combatActive.value = true;
     playerTurn.value = true;
     combatMessage.value = t('combat.start');

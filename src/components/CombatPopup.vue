@@ -4,9 +4,21 @@
       class="absolute inset-0 flex justify-center items-center z-50 bg-[#00000040]"
     >
     <div class="flex flex-col bg-white w-100 h-100 p-5 text-center">
-      <div class="flex-1 flex flex-col gap-14">
+      <div class="flex-1 flex flex-col">
         <div :class="timeStore.isNight ? 'bg-blue-950 text-white' : 'bg-blue-100'">
-          <h2 class="pt-4">{{ $t('characterSelect.characters.' + playerStore.character) }} {{ $t('combat.vs') }} {{ $t('enemy.' + playerStore.enemyType) }}</h2>
+          <h2 class="pt-4 flex align-center justify-center gap-3">
+            <div class="w-32 text-right">
+              <span v-if="playerStore.playerTurn">👉</span>
+              {{ $t('characterSelect.characters.' + playerStore.character) }}
+            </div>
+            <div>
+              {{ $t('combat.vs') }}
+            </div>
+            <div class="w-32 text-left">
+              {{ $t('enemy.' + playerStore.enemyType) }}
+                <span v-if="!playerStore.playerTurn">👈</span>
+            </div>
+          </h2>
           <div
             class="flex justify-center space-x-4 mb-4 border-b-4 pt-4"
             :style="{ borderBottomColor: playerStore.getTerrainColor() }"
@@ -32,6 +44,9 @@
               </div>
             </div>
           </div>
+        </div>
+        <div>
+          <p class="p-2 h-15">{{ playerStore.combatMessage }}</p>
         </div>
         <div class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
           <div class="flex flex-col items-center">
