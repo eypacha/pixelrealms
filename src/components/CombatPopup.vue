@@ -6,7 +6,7 @@
     <div class="flex flex-col bg-white w-100 h-100 p-5 text-center">
       <div class="flex-1">
         <div :class="timeStore.isNight ? 'bg-blue-950 text-white' : 'bg-blue-100'">
-          <h2>{{ $t('characterSelect.characters.' + (playerStore.character || 'knight')) }} {{ $t('combat.vs') }} {{ $t('enemy.' + (playerStore.enemyType || 'orc')) }}</h2>
+          <h2 class="pt-4">{{ $t('characterSelect.characters.' + playerStore.character) }} {{ $t('combat.vs') }} {{ $t('enemy.' + playerStore.enemyType) }}</h2>
           <div
             class="flex justify-center space-x-4 mb-4 border-b-4 pt-4"
             :style="{ borderBottomColor: playerStore.getTerrainColor() }"
@@ -96,9 +96,9 @@
               :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.potionsClaimed ? 'opacity-50' : '']">
               {{ $t('treasure.grabPotions', { potions: combatLoot.potions }) }} <span style="font-size:1.1em;">🧪</span>
             </button>
-            <button v-if="combatLoot.scrollFound" @click="claimCombatScroll" :disabled="combatLoot.scrollClaimed"
+            <button v-if="combatLoot.scrolls > 0" @click="claimCombatScroll" :disabled="combatLoot.scrollClaimed"
               :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.scrollClaimed ? 'opacity-50' : '']">
-              {{ $t('treasure.grabScroll') }} (<span style="font-size:1.1em;">+1 🪬</span>)
+              {{ $t('treasure.grabScroll', { scrolls: combatLoot.scrolls }) }} (<span style="font-size:1.1em;">+{{ combatLoot.scrolls }} 🪬</span>)
             </button>
           </div>
           <button @click="continueCombat" class="px-4 py-2 w-full mt-4 cursor-pointer">{{ $t('treasure.continue')
@@ -164,30 +164,33 @@ const combatLoot = ref({
 
 function setupCombatLoot() {
   if (playerStore.enemyDefeated && !playerStore.lootCollected) {
-    let coins = 0, potions = 0, scrollFound = false;
+    let coins = 0, potions = 0, scrolls = false;
     switch (playerStore.enemyType) {
       case 'darkknight':
-        coins = Math.floor(Math.random() * 21) + 15; // 15-35
-        potions = Math.random() < 0.5 ? 1 : 0; // 50% chance
-        scrollFound = Math.random() < 0.5; // 50%
+        coins = Math.floor(Math.random() * 31) + 30; // 30-60
+        potions = Math.floor(Math.random() * 3); // 0-2
+        scrolls = 1; // 50%
         break;
       case 'goblin':
-        coins = Math.floor(Math.random() * 5) + 1; // 1-5
-        scrollFound = false; // Goblins do not drop scrolls
+        coins = Math.floor(Math.random() * 10) + 1; // 1-10
+        scrolls = 0; // 0
+        potions = 1;
         break;
       case 'skeleton':
-        coins = Math.floor(Math.random() * 5) + 1; // 1-6
-        scrollFound = Math.random() < 0.4;
+        coins = Math.floor(Math.random() * 40) + 20; // 20- 0
+        potions = Math.floor(Math.random() * 5); // 0-4
+        scrolls = Math.floor(Math.random() * 3) + 2; // 1-3
         break;
       case 'orc':
       default:
-        coins = Math.floor(Math.random() * 10) + 1; // 1-10
-        scrollFound = Math.random() < 0.1; // 10% chance for ORC
+        coins = Math.floor(Math.random() * 10) + 5; // 5-14
+        potions = Math.floor(Math.random() * 3); // 0-2
+        scrolls = 0; // 0
         break;
     }
     combatLoot.value.coins = coins;
     combatLoot.value.potions = potions;
-    combatLoot.value.scrollFound = scrollFound;
+    combatLoot.value.scrolls = scrolls;
     combatLoot.value.coinsClaimed = false;
     combatLoot.value.potionsClaimed = false;
     combatLoot.value.scrollClaimed = false;
@@ -214,11 +217,11 @@ function claimCombatPotions() {
 }
 
 function claimCombatScroll() {
-  if (!combatLoot.value.scrollClaimed && combatLoot.value.scrollFound) {
-    playerStore.mana += 1;
+  if (!combatLoot.value.scrollClaimed && combatLoot.value.scrolls > 0) {
+    playerStore.mana += combatLoot.value.scrolls;
     combatLoot.value.scrollClaimed = true;
     playerStore.lootCollected = true;
-    playerStore.combatMessage = t('combat.lootedScroll');
+    playerStore.combatMessage = t('combat.lootedScroll', { scrolls: combatLoot.value.scrolls });
   }
 }
 
