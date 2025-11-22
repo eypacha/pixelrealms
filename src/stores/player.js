@@ -392,6 +392,10 @@ export const usePlayerStore = defineStore('player', () => {
       playerTurn.value = false;
       setTimeout(enemyAttack, ENEMY_PAUSE); 
   }
+  const fleeCombat = () => {
+    console.log('🏃 Huir del combate');
+    setTimeout(enemyAttack, ENEMY_PAUSE); 
+  }
 
   const endCombat = () => {
     console.log('🏳️ Fin del combate');
@@ -455,6 +459,7 @@ export const usePlayerStore = defineStore('player', () => {
     moveLeft,
     moveRight,
     startCombat,
+    fleeCombat,
     usePotion,
     endCombat,
     getTerrainColor,

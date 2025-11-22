@@ -38,8 +38,8 @@
       />
       <TreasurePopup v-if="treasureDiscovered" />
     </div>
-    <div class="mt-4 flex items-center gap-20">
-      <StatusBar />
+    <div class="mt-4 flex items-center gap-20 h-60">
+      <StatusBar v-if="!showCharacterSelect"/>
     </div>
   </div>
 </template>

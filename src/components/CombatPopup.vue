@@ -20,14 +20,23 @@
             </div>
           </h2>
           <div
-            class="flex justify-center space-x-4 border-b-4 pt-4"
+            class="flex justify-center space-x-4 border-b-10 pt-4"
             :style="{ borderBottomColor: playerStore.getTerrainColor() }"
           >
             <div class="flex gap-2">
-              <div>
-                <div>❤️ {{ playerStore.health }}</div>
-                <div>🗡️ {{ playerStore.strength }}</div>
-                <div>🛡️ {{ playerStore.defense }}</div>
+                <div class="mr-2">
+                  <div class=" flex justify-between gap-1">
+                    <span>❤️</span>
+                    <span>{{ playerStore.health }}</span>
+                  </div>
+                  <div class=" flex justify-between gap-1">
+                    <span>🗡️</span>
+                    <span>{{ playerStore.strength }}</span>
+                  </div>
+                  <div class=" flex justify-between gap-1">
+                    <span>🛡️</span>
+                    <span>{{ playerStore.defense }}</span>
+                  </div>
               </div>
               <div class="relative">
                 <canvas ref="knightCanvas" width="60" height="80"></canvas>
@@ -37,16 +46,25 @@
               <div class="relative">
                 <canvas ref="enemyCanvas" width="60" height="80"></canvas>
               </div>
-              <div>
-                <div>❤️ {{ playerStore.enemyHealth }}</div>
-                <div>🗡️ {{ playerStore.enemyStrength }}</div>
-                <div>🛡️ {{ playerStore.enemyDefense }}</div>
+              <div class="mr-2">
+                  <div class=" flex justify-between gap-1">
+                    <span>❤️</span>
+                    <span>{{ playerStore.enemyHealth }}</span>
+                  </div>
+                  <div class=" flex justify-between gap-1">
+                    <span>🗡️</span>
+                    <span>{{ playerStore.enemyStrength }}</span>
+                  </div>
+                  <div class=" flex justify-between gap-1">
+                    <span>🛡️</span>
+                    <span>{{ playerStore.enemyDefense }}</span>
+                  </div>
               </div>
             </div>
           </div>
         </div>
         <div>
-          <p class="p-2 h-15">{{ playerStore.combatMessage }}</p>
+          <p class="p-2 mt-2 h-15">{{ playerStore.combatMessage }}</p>
         </div>
         <div v-if="!playerStore.enemyDefeated" class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
           <div v-for="btn in combatButtons" :key="btn.label" class="flex flex-col items-center">
