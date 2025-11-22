@@ -19,12 +19,12 @@
             {{ $t('treasure.grabPotions', { potions }) }} <span style="font-size:1.1em;">🧪</span>
           </button>
         <button
-            v-if="scrollFound"
+            v-if="scrolls > 0"
             @click="claimScroll"
             :disabled="scrollClaimed"
             :class="['px-4 w-full mt-2 cursor-pointer text-black transition', scrollClaimed ? 'opacity-50' : '']"
           >
-            {{ $t('treasure.grabScroll') }} (<span style="font-size:1.1em;">+2 🪬</span>)
+            {{ $t('treasure.grabScroll', { scrolls }) }} (<span style="font-size:1.1em;">+{{ scrolls }} 🪬</span>)
           </button>
       </div>
       <div class="flex flex-col gap-2 items-center w-full mt-4">
@@ -49,14 +49,14 @@ const potions = ref(0);
 const coinsClaimed = ref(false);
 const potionsClaimed = ref(false);
 
-// Magic scroll
-const scrollFound = ref(false);
+// Magic scrolls
+const scrolls = ref(0);
 const scrollClaimed = ref(false);
 
 onMounted(() => {
   coins.value = Math.floor(Math.random() * 16) + 5; // 5-20
-  potions.value = Math.floor(Math.random() * 4); // 0-3
-  scrollFound.value = Math.random() < 0.5; // 50% probabilidad de scroll mágico
+  potions.value = Math.floor(Math.random() * 4) + 2; // 2-5
+  scrolls.value = Math.floor(Math.random() * 10) + 1; // 1-10 scrolls siempre
 });
 
 function claimCoins() {
@@ -78,8 +78,8 @@ function claimPotions() {
 }
 
 function claimScroll() {
-  if (!scrollClaimed.value && scrollFound.value) {
-    playerStore.mana += 2;
+  if (!scrollClaimed.value && scrolls.value > 0) {
+    playerStore.mana += scrolls.value;
     scrollClaimed.value = true;
     soundStore.playSound('magic'); // Usa un sonido apropiado si existe
   }
