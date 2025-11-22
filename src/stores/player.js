@@ -224,15 +224,20 @@ export const usePlayerStore = defineStore('player', () => {
         }
       }
     }
-    enemyType.value = selected.type;
-    enemyHealth.value = selected.health;
-    enemyStrength.value = selected.strength;
-    enemyDefense.value = selected.defense;
-    // Iniciar combate
-    console.log('⚔️ Encuentro iniciado con', selected.type);
-    combatActive.value = true;
-    playerTurn.value = true;
-    combatMessage.value = t('combat.start');
+      enemyType.value = selected.type;
+      enemyHealth.value = selected.health;
+      enemyStrength.value = selected.strength;
+      enemyDefense.value = selected.defense;
+      // Resetear congelación visual y lógica
+      enemyFrozen.value = false;
+      if (typeof window !== 'undefined' && window.enemyFreezeTint !== undefined) {
+        window.enemyFreezeTint = false;
+      }
+      // Iniciar combate
+      console.log('⚔️ Encuentro iniciado con', selected.type);
+      combatActive.value = true;
+      playerTurn.value = true;
+      combatMessage.value = t('combat.start');
   }
   const playerAttack = () => {
     console.log('🗡️ Ataque del jugador');
@@ -261,7 +266,6 @@ export const usePlayerStore = defineStore('player', () => {
     if (enemyHealth.value <= 0) {
       enemyDefeated.value = true;
       combatMessage.value = t('combat.enemyDefeated');
-      endCombat();
       return;
     }
 
