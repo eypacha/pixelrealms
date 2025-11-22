@@ -205,17 +205,23 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  const startCombat = () => {
-    // Selección aleatoria de enemigo según su chance
-    const entries = Object.entries(ENEMIES);
-    const totalChance = entries.reduce((acc, [_, enemy]) => acc + (enemy.chance || 0), 0);
-    let rand = Math.random() * totalChance;
-    let selected = entries[0][1];
-    for (const [_, enemy] of entries) {
-      rand -= enemy.chance || 0;
-      if (rand <= 0) {
-        selected = enemy;
-        break;
+  // Permite pasar el tipo de enemigo como parámetro
+  const startCombat = (forcedType) => {
+    let selected;
+    if (forcedType && ENEMIES[forcedType]) {
+      selected = ENEMIES[forcedType];
+    } else {
+      // Selección aleatoria de enemigo según su chance
+      const entries = Object.entries(ENEMIES);
+      const totalChance = entries.reduce((acc, [_, enemy]) => acc + (enemy.chance || 0), 0);
+      let rand = Math.random() * totalChance;
+      selected = entries[0][1];
+      for (const [_, enemy] of entries) {
+        rand -= enemy.chance || 0;
+        if (rand <= 0) {
+          selected = enemy;
+          break;
+        }
       }
     }
     enemyType.value = selected.type;
@@ -239,22 +245,22 @@ export const usePlayerStore = defineStore('player', () => {
     console.log('damage:', result.damage);
     enemyHealth.value -= result.damage;
 
-    if (result.missed) {
-      combatMessage.value = t('combat.player_missed');
-      soundStore.playSound('whosh');
-    } else {
-      soundStore.playSound('kling');
-      if (result.isCritical) {
-        combatMessage.value = t('combat.player_critical') + ' -' + result.damage;
-      } else {
-        combatMessage.value = t('combat.player_hit') + ' -' + result.damage ;
-      }
-    }
+        if (result.missed) {
+          combatMessage.value = t('combat.miss');
+          soundStore.playSound('whosh');
+        } else {
+          soundStore.playSound('kling');
+          if (result.isCritical) {
+            combatMessage.value = t('combat.critical', { value: result.damage });
+          } else {
+            combatMessage.value = t('combat.hit', { value: result.damage });
+          }
+        }
 
     playerTurn.value = false;
     if( enemyHealth.value <= 0 ){
       enemyDefeated.value = true;
-      combatMessage.value = t('combat.enemy_defeated');
+          combatMessage.value = t('combat.enemyDefeated');
       return;
     }
 
@@ -270,20 +276,20 @@ export const usePlayerStore = defineStore('player', () => {
 
       console.log('damage:', result.damage);
       health.value -= result.damage
-      if( result.missed ){
-        combatMessage.value = t('combat.enemy_missed');
-        soundStore.playSound('whosh');
-      } else {
-        soundStore.playSound('hammer');
-        if( result.isCritical ){
-          combatMessage.value = t('combat.enemy_critical') + ' -' + result.damage;
+        if( result.missed ){
+          combatMessage.value = t('combat.miss');
+          soundStore.playSound('whosh');
         } else {
-          combatMessage.value = t('combat.enemy_hit') + ' -' + result.damage ;
+          soundStore.playSound('hammer');
+          if( result.isCritical ){
+            combatMessage.value = t('combat.critical', { value: result.damage });
+          } else {
+            combatMessage.value = t('combat.hit', { value: result.damage });
+          }
         }
-      }
 
       if(health.value <= 0 ){
-        combatMessage.value = t('combat.player_defeated');
+          combatMessage.value = t('combat.playerDefeated');
         setTimeout(() => {
           combatActive.value = false;
           gameOver.value = true;

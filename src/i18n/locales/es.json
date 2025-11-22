@@ -90,6 +90,7 @@
     }
   },
   "enemy": {
+    "darkknight": "Caballero Oscuro",
     "orc": "Orco",
     "goblin": "Goblin",
     "skeleton": "Esqueleto"

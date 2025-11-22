@@ -94,17 +94,13 @@ export const usePoiStore = defineStore('poi', () => {
         if (poi.type !== 'narrative') poi.discovered = true;
         if (poi.type === 'darkKnight') {
           console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
-          if (typeof playerStore.startCombatWith === 'function') {
-            playerStore.startCombatWith({ type: 'darkknight' });
-          } else {
-            playerStore.startCombat();
-          }
+          playerStore.startCombat('darkknight');
+
         } else if (poi.type === 'wizard') {
           // Abrir WizardPopup
           playerStore.wizardActive = true;
           console.log('🧙‍♂️ Descubierto wizard en', poi.position);
         } else if (poi.type === 'treasure') {
-          playerStore.startCombat();
           treasureDiscovered.value = true;
           console.log('💰 Tesoro descubierto en', poi.position);
         } else if (poi.type === 'narrative') {
