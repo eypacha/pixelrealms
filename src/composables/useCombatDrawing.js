@@ -1,5 +1,4 @@
 import { ref } from 'vue';
-import { usePlayerStore } from '../stores/player';
 
 export function useCombatDrawing() {
   const knightImg = ref(null);
