@@ -435,7 +435,12 @@ export const usePlayerStore = defineStore('player', () => {
   }
   const fleeCombat = () => {
     console.log('🏃 Huir del combate');
-    setTimeout(enemyAttack, ENEMY_PAUSE); 
+    
+     if(enemyFrozen.value) {
+        endCombat();
+      } else {
+        setTimeout(enemyAttack, ENEMY_PAUSE);
+      }
   }
 
   const endCombat = () => {
