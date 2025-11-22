@@ -245,60 +245,78 @@ export const usePlayerStore = defineStore('player', () => {
     console.log('damage:', result.damage);
     enemyHealth.value -= result.damage;
 
-        if (result.missed) {
-          combatMessage.value = t('combat.miss');
-          soundStore.playSound('whosh');
-        } else {
-          soundStore.playSound('kling');
-          if (result.isCritical) {
-            combatMessage.value = t('combat.critical', { value: result.damage });
-          } else {
-            combatMessage.value = t('combat.hit', { value: result.damage });
-          }
-        }
+    if (result.missed) {
+      combatMessage.value = t('combat.miss');
+      soundStore.playSound('whosh');
+    } else {
+      soundStore.playSound('kling');
+      if (result.isCritical) {
+        combatMessage.value = t('combat.critical', { value: result.damage });
+      } else {
+        combatMessage.value = t('combat.hit', { value: result.damage });
+      }
+    }
 
     playerTurn.value = false;
-    if( enemyHealth.value <= 0 ){
+    if (enemyHealth.value <= 0) {
       enemyDefeated.value = true;
-          combatMessage.value = t('combat.enemyDefeated');
+      combatMessage.value = t('combat.enemyDefeated');
       return;
     }
 
     setTimeout(enemyAttack, ENEMY_PAUSE);
-    
+  }
+
+  // Cover: activa defensa extra para el próximo ataque enemigo
+  const activateCover = () => {
+    if (!playerTurn.value) return;
+    if (!coverActive.value) {
+      defense.value += 2;
+      coverActive.value = true;
+    }
+    combatMessage.value = t('combat.cover') + ' (+2 🛡️)';
+    soundStore.playSound('hammer');
+    playerTurn.value = false;
+    setTimeout(enemyAttack, ENEMY_PAUSE);
   }
 
   const enemyAttack = () => {
-    console.log('👹 Ataque del enemigo')
-     const result = performAttack(
+    console.log('👹 Ataque del enemigo');
+    const result = performAttack(
       { attack: enemyDefense.value },
-      { defense: strength.value })
+      { defense: defense.value }
+    );
 
-      console.log('damage:', result.damage);
-      health.value -= result.damage
-        if( result.missed ){
-          combatMessage.value = t('combat.miss');
-          soundStore.playSound('whosh');
-        } else {
-          soundStore.playSound('hammer');
-          if( result.isCritical ){
-            combatMessage.value = t('combat.critical', { value: result.damage });
-          } else {
-            combatMessage.value = t('combat.hit', { value: result.damage });
-          }
-        }
-
-      if(health.value <= 0 ){
-          combatMessage.value = t('combat.playerDefeated');
-        setTimeout(() => {
-          combatActive.value = false;
-          gameOver.value = true;
-        }, 1000);
-        return
+    console.log('damage:', result.damage);
+    health.value -= result.damage;
+    if (result.missed) {
+      combatMessage.value = t('combat.miss');
+      soundStore.playSound('whosh');
+    } else {
+      soundStore.playSound('hammer');
+      if (result.isCritical) {
+        combatMessage.value = t('combat.critical', { value: result.damage });
+      } else {
+        combatMessage.value = t('combat.hit', { value: result.damage });
       }
+    }
+
+    // Consumir el cover y restaurar defense
+    if (coverActive.value) {
+      defense.value -= 2;
+      coverActive.value = false;
+    }
+
+    if (health.value <= 0) {
+      combatMessage.value = t('combat.playerDefeated');
+      setTimeout(() => {
+        combatActive.value = false;
+        gameOver.value = true;
+      }, 1000);
+      return;
+    }
 
     playerTurn.value = true;
-
   }
 
   const usePotion = () => {
@@ -346,6 +364,7 @@ export const usePlayerStore = defineStore('player', () => {
     inventory,
     combatActive,
     playerAttack,
+    activateCover,
     gameOver,
     wizardActive,
     enemyHealth,
