@@ -52,9 +52,9 @@
           <div v-for="btn in combatButtons" :key="btn.label" class="flex flex-col items-center">
             <button
               @click="btn.onClick"
-              :disabled="!playerStore.playerTurn"
-              class="px-4 py-1 flex flex-col items-center cursor-pointer"
-              :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }"
+              :disabled="btn.disabled ? btn.disabled() : false"
+              class="px-4 py-1 flex flex-col items-center"
+              :class="[btn.disabled && btn.disabled() ? 'opacity-50 cursor-default' : 'cursor-pointer']"
             >
               <span style="font-size:1.5em;">{{ btn.emoji }}</span>
               {{ btn.label }}
@@ -132,12 +132,12 @@ function fireball() {
 
 // Botones de combate para el template
 const combatButtons = [
-  { emoji: '🗡️', label: t('combat.attack'), onClick: swordAttack },
-  { emoji: '🛡️', label: t('combat.cover'), onClick: cover },
-  { emoji: '🧪', label: t('combat.heal'), onClick: usePotion },
-  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball },
-  { emoji: '❄️', label: 'Freeze', onClick: freeze },
-  { emoji: '🏃', label: t('combat.run'), onClick: flee }
+  { emoji: '🗡️', label: t('combat.attack'), onClick: swordAttack, disabled: () => !playerStore.playerTurn },
+  { emoji: '🛡️', label: t('combat.cover'), onClick: cover, disabled: () => !playerStore.playerTurn },
+  { emoji: '🧪', label: t('combat.heal'), onClick: usePotion, disabled: () => !playerStore.playerTurn || playerStore.inventory.potion <= 0 },
+  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !playerStore.playerTurn },
+  { emoji: '❄️', label: 'Freeze', onClick: freeze, disabled: () => !playerStore.playerTurn },
+  { emoji: '🏃', label: t('combat.run'), onClick: flee, disabled: () => !playerStore.playerTurn }
 ];
 
 const lootButtons = [
@@ -239,7 +239,7 @@ function claimCombatScroll() {
 }
 
 function continueCombat() {
-  playerStore.endCombat();
+  playerStore.in();
 }
 
 onMounted(() => {

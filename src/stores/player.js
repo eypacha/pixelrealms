@@ -301,6 +301,15 @@ export const usePlayerStore = defineStore('player', () => {
 
   }
 
+  const usePotion = () => {
+      inventory.value.potion -= 1;
+      health.value = Math.min(maxHealth.value, health.value + 5);
+      combatMessage.value = t('combat.healed', { value: 5 });
+      soundStore.playSound('gulp');
+      playerTurn.value = false;
+      setTimeout(enemyAttack, ENEMY_PAUSE); 
+  }
+
   const endCombat = () => {
     // Si el enemigo fue derrotado, márcalo en el mapa
     if (enemyDefeated.value && typeof position.value.x === 'number' && typeof position.value.y === 'number' && enemyType.value) {
@@ -359,6 +368,7 @@ export const usePlayerStore = defineStore('player', () => {
     moveLeft,
     moveRight,
     startCombat,
+    usePotion,
     endCombat,
     getTerrainColor,
     reset
