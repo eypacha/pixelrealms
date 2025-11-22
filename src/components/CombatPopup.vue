@@ -239,7 +239,7 @@ function claimCombatScroll() {
 }
 
 function continueJourney() {
-  playerStore.combatActive = false;
+  playerStore.endCombat();
 }
 
 onMounted(() => {

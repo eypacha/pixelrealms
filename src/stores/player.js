@@ -261,6 +261,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (enemyHealth.value <= 0) {
       enemyDefeated.value = true;
       combatMessage.value = t('combat.enemyDefeated');
+      endCombat();
       return;
     }
 
@@ -384,6 +385,7 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   const endCombat = () => {
+    console.log('🏳️ Fin del combate');
     // Si el enemigo fue derrotado, márcalo en el mapa
     if (enemyDefeated.value && typeof position.value.x === 'number' && typeof position.value.y === 'number' && enemyType.value) {
       const poiStore = usePoiStore();
