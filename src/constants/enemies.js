@@ -1,5 +1,5 @@
-export const ENCOUNTER_RATE_DAY = 0.1;
-export const ENCOUNTER_RATE_NIGHT = 0.4;
+export const ENCOUNTER_RATE_DAY = 0.05;
+export const ENCOUNTER_RATE_NIGHT = 0.3;
 export const ENEMY_HIT_CHANCE = 0.7;
 export const ENEMY_PAUSE = 1000;
 
@@ -31,7 +31,7 @@ export const ENEMIES = {
 	  strength: 15,
 	  defense: 10,
 	  image: 'images/darkknight.png',
-	  chance: 0.05
+	  chance: 0.02
 	 },
 	 skeleton: {
 	  type: 'skeleton',
@@ -39,7 +39,7 @@ export const ENEMIES = {
 	  strength: 11,
 	  defense: 9,
 	  image: 'images/skeleton.png',
-	  chance: 0.2,
-	  freezeChance: 0.45
+	  chance: 0.18,
+	  freezeChance: 0.50
 	 }
 };
