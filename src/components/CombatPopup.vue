@@ -74,7 +74,7 @@
             </div>
             <button
               class="px-4 py-2 w-full mt-4 cursor-pointer text-black transition font-bold"
-              @click="continueCombat"
+              @click="continueJourney()"
             >
               {{ $t('combat.continue') }}
             </button>
@@ -135,7 +135,7 @@ const combatButtons = [
   { emoji: '🗡️', label: t('combat.attack'), onClick: swordAttack, disabled: () => !playerStore.playerTurn },
   { emoji: '🛡️', label: t('combat.cover'), onClick: cover, disabled: () => !playerStore.playerTurn },
   { emoji: '🧪', label: t('combat.heal'), onClick: usePotion, disabled: () => !playerStore.playerTurn || playerStore.inventory.potion <= 0 },
-  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !playerStore.playerTurn },
+  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !playerStore.playerTurn || playerStore.mana < 2 },
   { emoji: '❄️', label: 'Freeze', onClick: freeze, disabled: () => !playerStore.playerTurn },
   { emoji: '🏃', label: t('combat.run'), onClick: flee, disabled: () => !playerStore.playerTurn }
 ];
@@ -238,8 +238,8 @@ function claimCombatScroll() {
   }
 }
 
-function continueCombat() {
-  playerStore.in();
+function continueJourney() {
+  playerStore.combatActive = false;
 }
 
 onMounted(() => {

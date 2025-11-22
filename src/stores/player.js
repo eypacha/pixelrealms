@@ -319,6 +319,32 @@ export const usePlayerStore = defineStore('player', () => {
     playerTurn.value = true;
   }
 
+
+  // Fireball: ataque especial con +3 a strength, consume 2 mana
+  const fireballAttack = () => {
+    mana.value -= 2;
+    // Ataque con fuerza aumentada
+    const result = performAttack(
+      { attack: strength.value },
+      { defense: enemyDefense.value - 5}
+    );
+    if (result.missed) {
+      combatMessage.value = t('combat.fireballMissed');
+      soundStore.playSound('whosh');
+    } else {
+      enemyHealth.value -= result.damage;
+      combatMessage.value = t('combat.fireballHit', { value: result.damage });
+      soundStore.playSound('fireball');
+    }
+    playerTurn.value = false;
+    if (enemyHealth.value <= 0) {
+      enemyDefeated.value = true;
+      combatMessage.value = t('combat.enemyDefeated');
+      return;
+    }
+    setTimeout(enemyAttack, ENEMY_PAUSE);
+  }
+
   const usePotion = () => {
       inventory.value.potion -= 1;
       health.value = Math.min(maxHealth.value, health.value + 5);
@@ -365,6 +391,7 @@ export const usePlayerStore = defineStore('player', () => {
     combatActive,
     playerAttack,
     activateCover,
+    fireballAttack,
     gameOver,
     wizardActive,
     enemyHealth,

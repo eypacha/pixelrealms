@@ -47,7 +47,7 @@ export const CHARACTERS = [
       defense: 9,
       coins: 10,
       potion: 0,
-      mana: 3,
+      mana: 6,
     }
   }
 ];
