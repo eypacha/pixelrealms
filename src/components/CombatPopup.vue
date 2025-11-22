@@ -5,30 +5,31 @@
     >
     <div class="flex flex-col bg-white w-100 h-100 p-5 text-center">
       <div class="flex-1">
-        <h2>{{ $t('combat.vs') }}</h2>
-        <div
-          class="flex justify-center space-x-4 mb-4 border-b-4 pt-4"
-          :class="timeStore.isNight ? 'bg-blue-950 text-white' : 'bg-blue-100'"
-          :style="{ borderBottomColor: playerStore.getTerrainColor() }"
-        >
-          <div class="flex gap-2">
-            <div>
-              <div>❤️ {{ playerStore.health }}</div>
-              <div>🗡️ {{ playerStore.strength }}</div>
-              <div>🛡️ {{ playerStore.defense }}</div>
+        <div :class="timeStore.isNight ? 'bg-blue-950 text-white' : 'bg-blue-100'">
+          <h2>{{ $t('characterSelect.characters.' + (playerStore.character || 'knight')) }} {{ $t('combat.vs') }} {{ $t('enemy.' + (playerStore.enemyType || 'orc')) }}</h2>
+          <div
+            class="flex justify-center space-x-4 mb-4 border-b-4 pt-4"
+            :style="{ borderBottomColor: playerStore.getTerrainColor() }"
+          >
+            <div class="flex gap-2">
+              <div>
+                <div>❤️ {{ playerStore.health }}</div>
+                <div>🗡️ {{ playerStore.strength }}</div>
+                <div>🛡️ {{ playerStore.defense }}</div>
+              </div>
+              <div class="relative">
+                <canvas ref="knightCanvas" width="60" height="80"></canvas>
+              </div>
             </div>
-            <div class="relative">
-              <canvas ref="knightCanvas" width="60" height="80"></canvas>
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <div class="relative">
-              <canvas ref="enemyCanvas" width="60" height="80"></canvas>
-            </div>
-            <div>
-              <div>❤️ {{ playerStore.enemyHealth }}</div>
-              <div>🗡️ {{ playerStore.enemyStrength }}</div>
-              <div>🛡️ {{ playerStore.enemyDefense }}</div>
+            <div class="flex gap-2">
+              <div class="relative">
+                <canvas ref="enemyCanvas" width="60" height="80"></canvas>
+              </div>
+              <div>
+                <div>❤️ {{ playerStore.enemyHealth }}</div>
+                <div>🗡️ {{ playerStore.enemyStrength }}</div>
+                <div>🛡️ {{ playerStore.enemyDefense }}</div>
+              </div>
             </div>
           </div>
         </div>

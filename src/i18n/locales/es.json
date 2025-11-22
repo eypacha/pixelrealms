@@ -48,11 +48,10 @@
     "thawed": "¡Enemigo descongelado!"
   },
   "title": "Has encontrado un tesoro",
-    "grabCoins": "Recoge monedas (+{coins})",
-    "grabPotions": "Recoge pociones (+{potions})",
-    "grabScroll": "Recoge Pergamino Mágico",
-    "continue": "Continúa el viaje"
-  ,
+  "grabCoins": "Recoge monedas (+{coins})",
+  "grabPotions": "Recoge pociones (+{potions})",
+  "grabScroll": "Recoge Pergamino Mágico",
+  "continue": "Continúa el viaje",
   "sections": {
     "section1": {
       "title": "Sección 1",
@@ -71,8 +70,7 @@
     "language": "Idioma",
     "spanish": "Español",
     "english": "Inglés"
-  }
-  ,
+  },
   "characterSelect": {
     "title": "Pixel Realms",
     "choose": "Elige tu personaje",
@@ -90,5 +88,10 @@
       "potions": "Pociones",
       "mana": "Maná"
     }
+  },
+  "enemy": {
+    "orc": "Orco",
+    "goblin": "Goblin",
+    "skeleton": "Esqueleto"
   }
 }

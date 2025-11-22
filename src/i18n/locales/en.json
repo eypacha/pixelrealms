@@ -85,5 +85,10 @@
       "potions": "Potions",
       "mana": "Mana"
     }
+  },
+  "enemy": {
+      "orc": "Orc",
+      "goblin": "Goblin",
+      "skeleton": "Skeleton"
   }
 }
