@@ -27,7 +27,7 @@ export const ENEMIES = {
 	  defense: 15,
 	  image: 'images/enemies/darkknight.png',
 	  chance: 0,
-	  freezeChance: 0.1
+	  freezeChance: 0.2
 	 },
 	 knight: {
 	  type: 'knight',

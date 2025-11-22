@@ -9,6 +9,7 @@ export function useCombatDrawing() {
   const enemyTypes = {
     goblin: 'images/enemies/goblin.png',
     orc: 'images/enemies/medium-orc.png',
+    knight: 'images/enemies/knight.png',
     darkknight: 'images/enemies/darkknight.png',
     skeleton: 'images/enemies/skeleton.png', // Nuevo enemigo
     // Agrega aquí más enemigos fácilmente
