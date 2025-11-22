@@ -48,21 +48,22 @@ export const usePlayerStore = defineStore('player', () => {
 
   const steps = ref(0);
   const mana = ref(0);
-  const combatActive = ref(false);
-  const gameOver = ref(false);
-  const wizardActive = ref(false); // Para mostrar el WizardPopup
+  // Solo datos para mostrar el popup de encuentro
   const enemyHealth = ref(ENEMIES.orc.health);
   const enemyStrength = ref(ENEMIES.orc.strength);
   const enemyDefense = ref(ENEMIES.orc.defense);
   const enemyType = ref(ENEMIES.orc.type);
+  const combatActive = ref(false);
+  const gameOver = ref(false);
+  const wizardActive = ref(false);
   const playerTurn = ref(true);
   const combatMessage = ref('');
-  const combatMessageKey = ref('combat.start');
+  const combatMessageKey = ref('');
   const combatMessageParams = ref({});
   const coverActive = ref(false);
   const enemyDefeated = ref(false);
   const lootCollected = ref(false);
-  const lastDirection = ref('right');
+  const lastDirection = ref('down');
   const darkKnightDefeatedCount = ref(0);
   const enemyFrozen = ref(false);
   const playerFrozen = ref(false);
@@ -75,7 +76,6 @@ export const usePlayerStore = defineStore('player', () => {
   let widthRef = 0;
   let heightRef = 0;
   let encounterRandom = null;
-
   function initialize(terrain, width, height, randomFn) {
     terrainRef = terrain;
     widthRef = width;
@@ -100,286 +100,21 @@ export const usePlayerStore = defineStore('player', () => {
     oldPosition.value = { ...position.value };
   }
 
+  // ...existing code...
+
   function reset() {
       health.value = maxHealth.value;
       strength.value = 10;
-      playerFrozen.value = false;
       defense.value = 10;
       coins.value = 10;
       inventory.value.potion = 2;
       mana.value = 0;
-      combatActive.value = false;
-      gameOver.value = false;
-      wizardActive.value = false;
       enemyHealth.value = ENEMIES.orc.health;
       enemyStrength.value = ENEMIES.orc.strength;
       enemyDefense.value = ENEMIES.orc.defense;
       enemyType.value = ENEMIES.orc.type;
-      playerTurn.value = true;
-      coverActive.value = false;
-      enemyDefeated.value = false;
-      lootCollected.value = false;
-      lastDirection.value = 'right';
-      darkKnightDefeatedCount.value = 0;
       currentOffset.value = { x: 0, y: 0 };
     }
-
-  function startCombat() {
-  // Selección aleatoria de enemigo usando probabilidades normalizadas (0-1)
-  const enemyEntries = Object.entries(ENEMIES).filter(([_, enemy]) => enemy.chance > 0);
-  let rand = Math.random();
-  let acc = 0;
-  let selected = enemyEntries[0][1];
-  for (const [_, enemy] of enemyEntries) {
-    acc += enemy.chance;
-    if (rand < acc) {
-      selected = enemy;
-      break;
-    }
-  }
-  enemyType.value = selected.type;
-  enemyHealth.value = selected.health;
-  enemyStrength.value = selected.strength;
-  enemyDefense.value = selected.defense;
-  playerTurn.value = true;
-  combatActive.value = true;
-  combatMessage.value = t('combat.start');
-  combatMessageKey.value = 'combat.start';
-  combatMessageParams.value = {};
-}
-
-  // Start combat with specific enemy type (e.g., { type: 'darkknight' })
-  function startCombatWith(options = {}) {
-    const type = options.type || ENEMIES.orc.type;
-    enemyType.value = type;
-    
-    if (type === ENEMIES.darkknight.type) {
-      // Dificultad progresiva
-      const scale = darkKnightDefeatedCount.value;
-      enemyHealth.value = ENEMIES.darkknight.health + scale * 2;
-      enemyStrength.value = ENEMIES.darkknight.strength + scale * 2;
-      enemyDefense.value = ENEMIES.darkknight.defense + scale * 2;
-    } else {
-      // fallback to orc-like stats
-      enemyHealth.value = ENEMIES.orc.health;
-      enemyStrength.value = ENEMIES.orc.strength;
-      enemyDefense.value = ENEMIES.orc.defense;
-    }
-      playerTurn.value = true;
-      combatActive.value = true;
-      combatMessage.value = t('combat.start');
-      combatMessageKey.value = 'combat.start';
-      combatMessageParams.value = {};
-  }
-
-  function playerAttack(damage) {
-    const combatRandom = createSeededRandom(seed.value + 'combat' + Date.now());
-    const hitChance = PLAYER_HIT_CHANCE;
-    if (combatRandom() < hitChance) {
-      const { damage: actualDamage, isCritical } = calculateDamage(damage, enemyDefense.value);
-      combatMessage.value = isCritical
-        ? t('combat.critical', { value: actualDamage })
-        : t('combat.hit', { value: actualDamage });
-      enemyHealth.value -= actualDamage;
-      soundStore.playSound(isCritical ? 'critical' : 'kling');
-      console.log(`Jugador ataca: ${actualDamage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud enemigo: ${enemyHealth.value}`);
-      if (enemyHealth.value <= 0) {
-        combatMessage.value = t('combat.enemyDefeated');
-        console.log('Enemigo derrotado!');
-        // Si era un darkknight, aumentar el contador
-        if (enemyType.value === ENEMIES.darkknight.type) {
-          darkKnightDefeatedCount.value++;
-        }
-        // Si era un orc, agregarlo a defeatedOrcs
-        if (enemyType.value === ENEMIES.orc.type) {
-          const poiStore = usePoiStore();
-          // Usar el offset actual guardado en el store
-          const wx = currentOffset.value.x;
-          const wy = currentOffset.value.y;
-          poiStore.addDefeatedEnemy({ x: position.value.x, y: position.value.y, offsetX: wx, offsetY: wy }, 'orc');
-        }
-        if (enemyType.value === ENEMIES.goblin.type) {
-          const poiStore = usePoiStore();
-          const wx = currentOffset.value.x;
-          const wy = currentOffset.value.y;
-          poiStore.addDefeatedEnemy({ x: position.value.x, y: position.value.y, offsetX: wx, offsetY: wy }, 'goblin');
-        }
-        // Mark enemy as defeated and wait for player to loot or continue
-        enemyDefeated.value = true;
-        playerTurn.value = false;
-        lootCollected.value = false;
-      } else {
-        playerTurn.value = false;
-        setTimeout(() => {
-          enemyAttack();
-        }, ENEMY_PAUSE);
-      }
-    } else {
-      console.log('Jugador falla el ataque!');
-      soundStore.playSound('whosh');
-      combatMessage.value = t('combat.miss');
-        combatMessage.value = t('combat.miss');
-      playerTurn.value = false;
-      setTimeout(() => {
-        enemyAttack();
-      }, ENEMY_PAUSE);
-    }
-  }
-
-  function collectLoot() {
-    if (!enemyDefeated.value) return 0;
-    if (lootCollected.value) return 0;
-    const combatRandom = createSeededRandom(seed.value + 'loot' + Date.now());
-    // Random coins between 1 and 10
-    const reward = Math.floor(combatRandom() * 10) + 1;
-    // Separate roll for potion chance
-    const potionRoll = combatRandom();
-    const potionGiven = potionRoll < 0.2; // 20% chance
-    coins.value += reward;
-    if (potionGiven) {
-      // Ensure inventory.potion exists
-      if (!inventory.value.potion) inventory.value.potion = 0;
-      inventory.value.potion += 1;
-    }
-    lootCollected.value = true;
-    // play coin sound
-    soundStore.playSound('coin');
-    return { coins: reward, potion: potionGiven };
-  }
-
-  function endCombat() {
-    // Close combat and reset defeated flags
-    combatActive.value = false;
-    enemyDefeated.value = false;
-    lootCollected.value = false;
-  }
-
-  function activateCover() {
-    if (!playerTurn.value) return;
-    // Increase defense and mark cover active until enemy finishes its attack
-    defense.value += COVER_AMOUNT;
-    coverActive.value = true;
-    combatMessage.value = 'Cover';
-    playerTurn.value = false;
-    setTimeout(() => {
-      enemyAttack();
-    }, ENEMY_PAUSE);
-  }
-
-  function enemyAttack() {
-
-    if (gameOver.value || health.value <= 0) return;
-    
-    const enemyFreezeChance = ENEMIES[enemyType.value]?.freezeChance || 0;
-    if (enemyFreezeChance > 0 && !playerFrozen.value) {
-      console.log('❄️ Intentando congelar al jugador');
-      if (Math.random() < enemyFreezeChance) {
-        freezePlayer();
-        return;
-      }
-    }
-
-    const combatRandom = createSeededRandom(seed.value + 'enemyCombat' + Date.now());
-    const hitChance = ENEMY_HIT_CHANCE;
-
-    if (combatRandom() < hitChance) {
-      const { damage, isCritical } = calculateDamage(enemyStrength.value, defense.value);
-      combatMessage.value = isCritical
-        ? t('combat.critical', { value: damage })
-        : t('combat.hit', { value: damage });
-      health.value -= damage;
-      soundStore.playSound('hammer');
-      console.log(`👾  Enemy hits the player! ${damage} daño${isCritical ? ' (CRÍTICO)' : ''}. Salud jugador: ${health.value}`);
-      if (health.value <= 0) {
-        combatMessage.value = 'Player defeated!';
-        combatMessage.value = t('combat.playerDefeated');
-        combatMessage.value = t('combat.miss');
-        console.log('Jugador derrotado!');
-        setTimeout(() => {
-          combatActive.value = false;
-          gameOver.value = true;
-        }, 2000);
-        return; // Evita más ataques
-      } else {
-        // clear cover after enemy finished its attack
-        if (coverActive.value) {
-          defense.value -= COVER_AMOUNT;
-          coverActive.value = false;
-        }
-      }
-    } else {
-      console.log('👾 Enemy misses the player!');
-      soundStore.playSound('whosh');
-      combatMessage.value = t('combat.miss');
-      // clear cover even if enemy misses
-      if (coverActive.value) {
-        defense.value -= COVER_AMOUNT;
-        coverActive.value = false;
-      }
-    }
-
-    if (playerFrozen.value) {
-      if (Math.random() < 0.5) {
-        console.log('❄️ Player is frozen, skipping turn');
-        playerTurn.value = false;
-        setTimeout(() => {
-          enemyAttack();
-        }, ENEMY_PAUSE);
-        return;
-      } else {
-        console.log('❄️ Player thaws and can act');
-        playerFrozen.value = false;
-      }
-    }
-    playerTurn.value = true;
-  }
-
-  // Heal the player by amount (not exceeding maxHealth)
-  function heal(amount) {
-    const before = health.value;
-    health.value = Math.min(maxHealth.value, health.value + amount);
-    const healed = health.value - before;
-    if (healed > 0) {
-      combatMessage.value = `Healed +${healed}`;
-      combatMessage.value = t('combat.healed', { value: healed });
-    }
-  }
-
-  // Use a potion in combat: consumes player's turn and triggers enemy attack
-  function usePotion() {
-    if (!combatActive.value) return;
-    if (!playerTurn.value) return;
-    if (!inventory.value.potion || inventory.value.potion <= 0) return;
-    inventory.value.potion -= 1;
-    // heal 5 HP (tunable)
-    heal(5);
-    // play gulp sound when potion is consumed
-    soundStore.playSound('gulp');
-    // after using potion, enemy takes its turn
-    playerTurn.value = false;
-    setTimeout(() => {
-      enemyAttack();
-    }, ENEMY_PAUSE);
-  }
-
-  function checkEncounter() {
-    const rate = timeStore.isNight ? ENCOUNTER_RATE_NIGHT : ENCOUNTER_RATE_DAY;
-    if (encounterRandom() < rate) {
-      startCombat();
-    }
-  }
-
-  function fleeCombat() {
-    soundStore.playSound('whosh');
-
-    setTimeout(() => {
-      enemyAttack();
-    }, ENEMY_PAUSE);
-
-    combatActive.value = false;
-    
-    console.log('Huiste del combate');
-  }
 
   function canMoveTo(x, y) {
     if (x < 0 || y < 0 || x >= widthRef || y >= heightRef) return false;
@@ -461,77 +196,20 @@ export const usePlayerStore = defineStore('player', () => {
     return getColorForHeight(h);
   }
 
-  function fireballAttack() {
-    if (!combatActive.value || !playerTurn.value) return;
-    if (mana.value < 1) {
-      combatMessage.value = 'Not enough mana!';
-        combatMessage.value = t('combat.notEnoughMana');
-      return;
+  function checkEncounter(pos) {
+    const encounterRate = timeStore.isNight ? ENCOUNTER_RATE_NIGHT : ENCOUNTER_RATE_DAY;
+    const roll = encounterRandom();
+    if (roll < encounterRate) {
+      startCombat();
     }
-    const combatRandom = Math.random(); // No seed, para simpleza
-    if (combatRandom < 0.9) {
-      enemyHealth.value -= 3;
-      combatMessage.value = 'Fireball! -3';
-        combatMessage.value = t('combat.fireballHit', { value: 3 });
-      soundStore.playSound('fireball');
-      if (enemyHealth.value <= 0) {
-        combatMessage.value = 'Enemy defeated!';
-        enemyDefeated.value = true;
-        playerTurn.value = false;
-        lootCollected.value = false;
-      } else {
-        playerTurn.value = false;
-        setTimeout(() => {
-          enemyAttack();
-        }, ENEMY_PAUSE);
-      }
-    } else {
-      combatMessage.value = 'Fireball missed!';
-        combatMessage.value = t('combat.fireballMissed');
-      soundStore.playSound('whosh');
-      playerTurn.value = false;
-      setTimeout(() => {
-        enemyAttack();
-      }, ENEMY_PAUSE);
-    }
-    mana.value -= 1;
   }
-
-  
-  function freezePlayer() {
-      console.log('❄️ Jugador Congelado');
-
-      playerFrozen.value = true;
-      soundStore.playSound('freeze');
-      combatMessage.value = t('combat.frozenPlayer');
-
-      setTimeout(() => {
-        enemyAttack()
-      }, ENEMY_PAUSE);
-
-      
-
-      
-
-      // if (!combatActive.value || !playerTurn.value) return;
-      // console.log('freezePlayer set playerFrozen:', playerFrozen.value);
-      // playerTurn.value = false;
-      // combatMessage.value = t('combat.frozenPlayer');
-      // soundStore.playSound('freeze');
-    }
-
-  function freezeEnemy() {
-    if (!combatActive.value || !playerTurn.value || mana.value < 2) return;
-    enemyFrozen.value = true;
-    combatMessage.value = t('combat.frozen');
-    mana.value -= 2;
-    soundStore.playSound('freeze');
-    playerTurn.value = false;
-    setTimeout(() => {
-      playerTurn.value = true;
-    }, 500);
+  const startCombat = () => {
+    combatActive.value = true;
+    playerTurn.value = true;
+    combatMessage.value = t('combat.start');
+    combatMessageKey.value = 'combat.start';
+    combatMessageParams.value = {};
   }
-
 
   return {
     steps,
@@ -570,18 +248,7 @@ export const usePlayerStore = defineStore('player', () => {
     moveLeft,
     moveRight,
     startCombat,
-    startCombatWith,
-    playerAttack,
-    enemyAttack,
-    activateCover,
-    fleeCombat,
-    collectLoot,
-    endCombat,
-    heal,
-    usePotion,
     getTerrainColor,
-    fireballAttack,
-    freezeEnemy,
     reset
   };
 });
