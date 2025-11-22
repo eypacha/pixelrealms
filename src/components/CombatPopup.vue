@@ -49,67 +49,29 @@
           <p class="p-2 h-15">{{ playerStore.combatMessage }}</p>
         </div>
         <div v-if="!playerStore.enemyDefeated" class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
-          <div class="flex flex-col items-center">
-              <button @click="swordAttack" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
-              <span style="font-size:1.5em;">🗡️</span>
-              {{ $t('combat.attack') }}
-            </button>
-          </div>
-          <div class="flex flex-col items-center">
-              <button @click="cover" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
-              <span style="font-size:1.5em;">🛡️</span>
-              {{ $t('combat.cover') }}
-            </button>
-          </div>
-          <div class="flex flex-col items-center">
-              <button @click="usePotion" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
-              <span style="font-size:1.5em;">🧪</span>
-              {{ $t('combat.heal') }}
-            </button>
-          </div>
-          <div class="flex flex-col items-center">
-              <button @click="fireball" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
-              <span style="font-size:1.5em;">🔥</span>
-              {{ $t('combat.fireball') }}
-            </button>
-          </div>
-          <div class="flex flex-col items-center">
-              <button @click="freeze" class="px-4 py-1 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
-              <span style="font-size:1.5em; color: #00bfff;">❄️</span>
-              Freeze
-            </button>
-          </div>
-          <div class="flex flex-col items-center">
-              <button @click="flee" class="px-4 py-2 flex flex-col items-center cursor-pointer" :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }" :disabled="!playerStore.playerTurn">
-              <span style="font-size:1.5em;">🏃</span>
-              {{ $t('combat.run') }}
+          <div v-for="btn in combatButtons" :key="btn.label" class="flex flex-col items-center">
+            <button
+              @click="btn.onClick"
+              :disabled="!playerStore.playerTurn"
+              class="px-4 py-1 flex flex-col items-center cursor-pointer"
+              :class="{ 'opacity-50 cursor-not-allowed': !playerStore.playerTurn }"
+            >
+              <span style="font-size:1.5em;">{{ btn.emoji }}</span>
+              {{ btn.label }}
             </button>
           </div>
         </div>
           <div v-else class="flex flex-col gap-2 items-center w-full mt-2">
-            <button
-              @click="claimCombatCoins"
-              :disabled="combatLoot.coinsClaimed"
-              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.coinsClaimed ? 'opacity-50' : '']"
-            >
-              {{ $t('treasure.grabCoins', { coins: combatLoot.coins }) }} <span style="font-size:1.1em;">🪙</span>
-            </button>
-            <button
-              v-if="combatLoot.potions > 0"
-              @click="claimCombatPotions"
-              :disabled="combatLoot.potionsClaimed"
-              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.potionsClaimed ? 'opacity-50' : '']"
-            >
-              {{ $t('treasure.grabPotions', { potions: combatLoot.potions }) }} <span style="font-size:1.1em;">🧪</span>
-            </button>
-            <button
-              v-if="combatLoot.scrolls > 0"
-              @click="claimCombatScroll"
-              :disabled="combatLoot.scrollClaimed"
-              :class="['px-4 w-full mt-2 cursor-pointer text-black transition', combatLoot.scrollClaimed ? 'opacity-50' : '']"
-            >
-              {{ $t('treasure.grabScroll', { scrolls: combatLoot.scrolls }) }} (<span style="font-size:1.1em;">+{{ combatLoot.scrolls }} 🪬</span>)
-            </button>
+            <div v-for="btn in lootButtons" :key="btn.key">
+              <button
+                v-if="btn.show()"
+                @click="btn.onClick"
+                :disabled="btn.claimed()"
+                :class="['px-4 w-full mt-2 cursor-pointer text-black transition', btn.claimed() ? 'opacity-50' : '']"
+              >
+                {{ btn.label() }} <span v-if="btn.emoji" style="font-size:1.1em;">{{ btn.emoji }}</span>
+              </button>
+            </div>
           </div>
       </div>
       </div>
@@ -162,7 +124,42 @@ function fireball() {
   playerStore.fireballAttack();
 }
 
-// Combat loot state and logic
+// Botones de combate para el template
+const combatButtons = [
+  { emoji: '🗡️', label: t('combat.attack'), onClick: swordAttack },
+  { emoji: '🛡️', label: t('combat.cover'), onClick: cover },
+  { emoji: '🧪', label: t('combat.heal'), onClick: usePotion },
+  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball },
+  { emoji: '❄️', label: 'Freeze', onClick: freeze },
+  { emoji: '🏃', label: t('combat.run'), onClick: flee }
+];
+
+const lootButtons = [
+  {
+    key: 'coins',
+    show: () => true,
+    label: () => t('treasure.grabCoins', { coins: combatLoot.value.coins }),
+    emoji: '🪙',
+    claimed: () => combatLoot.value.coinsClaimed,
+    onClick: claimCombatCoins
+  },
+  {
+    key: 'potions',
+    show: () => combatLoot.value.potions > 0,
+    label: () => t('treasure.grabPotions', { potions: combatLoot.value.potions }),
+    emoji: '🧪',
+    claimed: () => combatLoot.value.potionsClaimed,
+    onClick: claimCombatPotions
+  },
+  {
+    key: 'scrolls',
+    show: () => combatLoot.value.scrolls > 0,
+    label: () => t('treasure.grabScroll', { scrolls: combatLoot.value.scrolls }) + ` (+${combatLoot.value.scrolls} 🪬)`,
+    emoji: '',
+    claimed: () => combatLoot.value.scrollClaimed,
+    onClick: claimCombatScroll
+  }
+];
 const combatLoot = ref({
   coins: 0,
   potions: 0,
