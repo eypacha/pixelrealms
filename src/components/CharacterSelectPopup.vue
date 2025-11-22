@@ -9,7 +9,7 @@
         @random-seed="onRandomSeed"
       />
       <SettingsBar class="absolute bottom-5 right-5" />
-        <h1 class="text-2xl font-bold mb-6">{{ $t('characterSelect.title') }}</h1>
+        <h1 class="text-3xl font-bold mb-20">{{ $t('characterSelect.title') }}</h1>
         <h2 class="text-lg font-bold mb-6">{{ $t('characterSelect.choose') }}</h2>
       <div class="flex gap-8 justify-center items-center mb-8">
         <div
