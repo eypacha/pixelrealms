@@ -49,12 +49,22 @@ export const ENEMIES = {
 	 skeleton: {
 	  type: 'skeleton',
 	  health: 13,
-	  strength: 13,
-	  defense: 13,
+	  strength: 10,
+	  defense: 10,
 	  image: 'images/enemies/skeleton.png',
 	  width: 60,
 	  height: 80,
 	  chance: 0.18,
 	  freezeChance: 0.5
+	 },
+	 dragon: {
+	  type: 'dragon',
+	  health: 10,
+	  strength: 10,
+	  defense: 10,
+	  image: 'images/enemies/dragon.png',
+	  width: 90,
+	  height: 80,
+	  chance: 0
 	 }
 };
