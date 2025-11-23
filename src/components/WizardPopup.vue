@@ -1,7 +1,10 @@
 <template>
   <div class="absolute inset-0 bg-[#00000040] flex justify-center items-center z-50">
     <div class="bg-white p-5 text-center shadow-lg w-100 h-100">
-      <div class="flex justify-center gap-8 mb-4">
+      <div
+        class="flex justify-center gap-8 mb-4 pt-4 border-b-10"
+        :class="timeStore.isNight ? 'bg-blue-950 text-white' : 'bg-blue-100'"
+        :style="{ borderBottomColor: playerStore.getTerrainColor() }">
         <div>
           <canvas ref="playerCanvas" width="60" height="80"></canvas>
         </div>
@@ -25,23 +28,26 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import { usePlayerStore } from '../stores/player';
+import { useSoundStore } from '../stores/sound';
+import { useTimeStore } from '../stores/time';
+import { POTION_COST, ENCHANT_COST, ENCHANT_CHANCE } from '../constants/poi';
+
+const playerStore = usePlayerStore();
+const soundStore = useSoundStore();
+const timeStore = useTimeStore();
+const playerCanvas = ref(null);
+const wizardCanvas = ref(null);
+const message = ref('Hi, traveler! How can I help you?');
+const wizardOptions = ref([]);
+
 const allWizardOptions = [
   { key: 'scroll', label: 'Buy Magic Scroll' },
   { key: 'potion', label: 'Buy Potion' },
   { key: 'sword', label: 'Enchant Sword' },
   { key: 'shield', label: 'Enchant Shield' }
 ];
-const wizardOptions = ref([]);
-import { ref, onMounted } from 'vue';
-import { usePlayerStore } from '../stores/player';
-import { useSoundStore } from '../stores/sound';
-import { POTION_COST, ENCHANT_COST, ENCHANT_CHANCE } from '../constants/poi';
-
-const playerStore = usePlayerStore();
-const soundStore = useSoundStore();
-const playerCanvas = ref(null);
-const wizardCanvas = ref(null);
-const message = ref('Hi, traveler! How can I help you?');
 
 function usePotion() {
   if (playerStore.coins < POTION_COST) {
@@ -125,7 +131,7 @@ onMounted(() => {
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(img, 0, 0, 60, 80);
     };
-    img.src = 'images/wizard.png';
+    img.src = 'images/allies/wizard.png';
   }
 });
 </script>
