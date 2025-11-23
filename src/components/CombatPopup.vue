@@ -44,7 +44,12 @@
             </div>
             <div class="flex gap-2">
               <div class="relative">
-                <canvas ref="enemyCanvas" width="60" height="80"></canvas>
+                <canvas
+                  ref="enemyCanvas"
+                  :width="enemyWidth"
+                  :height="enemyHeight"
+                  style="display:block;"
+                ></canvas>
               </div>
               <div class="mr-2">
                   <div class=" flex justify-between gap-1">
@@ -103,14 +108,23 @@
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import { useTimeStore } from '../stores/time';
-
+import { useI18n } from 'vue-i18n';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
 import { ENEMIES } from '../constants/enemies';
+
+const enemyWidth = computed(() => {
+  const enemy = ENEMIES[playerStore.enemyType];
+  return enemy && enemy.width ? enemy.width : 60;
+});
+const enemyHeight = computed(() => {
+  const enemy = ENEMIES[playerStore.enemyType];
+  return enemy && enemy.height ? enemy.height : 80;
+});
+
+const { t } = useI18n();
 
 function freeze() {
   playerStore.freezeEnemy();

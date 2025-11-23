@@ -1,7 +1,7 @@
 
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT, WIZARD_COUNT } from '../constants/poi.js';
+import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT, WIZARD_COUNT, DRAGON_COUNT} from '../constants/poi.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { useTerrain } from '../composables/useTerrain.js';
 
@@ -35,52 +35,60 @@ export const usePoiStore = defineStore('poi', () => {
     }
     const rand = createSeededRandom(String(seed) + ':poi:' + key);
     const arr = [];
-    
-    // Dark Knights
-    for (let i = 0; i < count; i++) {
-      let x, y, attempts = 0;
-      let placed = false;
-      while (attempts < 1000 && !placed) {
-        x = Math.floor(rand() * width);
-        y = Math.floor(rand() * height);
-        if (terrainUtils.isValidTerrain(x, y, width, height, terrain)) {
-          const loot = Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN;
-          arr.push({ id: 'darkknight-' + i, type: 'darkknight', position: { x, y }, discovered: false, loot });
-          placed = true;
-        }
-        attempts++;
+
+    // Configuración de tipos de POI
+    const poiConfigs = [
+      {
+        type: 'darkknight',
+        count,
+        isValid: (x, y) => terrainUtils.isValidTerrain(x, y, width, height, terrain),
+        extra: () => ({ loot: Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN })
+      },
+      {
+        type: 'wizard',
+        count: WIZARD_COUNT,
+        isValid: (x, y) => terrainUtils.isValidTerrain(x, y, width, height, terrain),
+        extra: () => ({})
+      },
+      {
+        type: 'treasure',
+        count: TREASURE_COUNT,
+        isValid: (x, y) => {
+          const tx = Math.floor(x * (terrain.length - 1) / (width - 1));
+          const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
+          return terrain[ty]?.[tx] > -0.05;
+        },
+        extra: () => ({})
+      },
+      {
+        type: 'dragon',
+        count: DRAGON_COUNT,
+        isValid: (x, y) => terrainUtils.isValidTerrain(x, y, width, height, terrain),
+        extra: () => ({ loot: Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN })
       }
-    }
-    // Wizards (por ejemplo, 3 por tile)
-    for (let i = 0; i < WIZARD_COUNT; i++) {
-      let x, y, attempts = 0;
-      let placed = false;
-      while (attempts < 1000 && !placed) {
-        x = Math.floor(rand() * width);
-        y = Math.floor(rand() * height);
-        if (terrainUtils.isValidTerrain(x, y, width, height, terrain)) {
-          arr.push({ id: 'wizard-' + i, type: 'wizard', position: { x, y }, discovered: false });
-          placed = true;
+    ];
+
+    poiConfigs.forEach(config => {
+      for (let i = 0; i < config.count; i++) {
+        let x, y, attempts = 0;
+        let placed = false;
+        while (attempts < 1000 && !placed) {
+          x = Math.floor(rand() * width);
+          y = Math.floor(rand() * height);
+          if (config.isValid(x, y)) {
+            arr.push({
+              id: `${config.type}-${i}`,
+              type: config.type,
+              position: { x, y },
+              discovered: false,
+              ...config.extra()
+            });
+            placed = true;
+          }
+          attempts++;
         }
-        attempts++;
       }
-    }
-    // Tesoros (por ejemplo, 1 por tile, posición completamente aleatoria)
-    for (let i = 0; i < TREASURE_COUNT; i++) {
-      let x, y, attempts = 0;
-      let placed = false;
-      while (attempts < 1000 && !placed) {
-        x = Math.floor(rand() * width);
-        y = Math.floor(rand() * height);
-        const tx = Math.floor(x * (terrain.length - 1) / (width - 1));
-        const ty = Math.floor(y * (terrain.length - 1) / (height - 1));
-        if (terrain[ty]?.[tx] > -0.05) {
-          arr.push({ id: 'treasure-' + i, type: 'treasure', position: { x, y }, discovered: false });
-          placed = true;
-        }
-        attempts++;
-      }
-    }
+    });
     poisByTile.value[key] = arr;
     pois.value = arr;
   }
@@ -95,6 +103,9 @@ export const usePoiStore = defineStore('poi', () => {
         if (poi.type === 'darkknight') {
           console.log('🏰 Entrando al castillo, iniciando combate con Dark Knight en', poi.position);
           playerStore.startCombat('darkknight');
+        } else if (poi.type === 'dragon') {
+          console.log('🐉 Entrando en combate con Dragón en', poi.position);
+          playerStore.startCombat('dragon');
         } else if (poi.type === 'wizard') {
           // Abrir WizardPopup
           playerStore.wizardActive = true;

@@ -16,10 +16,10 @@ export function useCombatDrawing() {
   const enemyTint = ref(false);
   const enemyFreezeTint = ref(false);
 
-  function drawCharacter(canvas, img, tintType) {
+  function drawCharacter(canvas, img, tintType, width = 60, height = 80) {
     if (canvas.value && img.value) {
       const ctx = canvas.value.getContext('2d');
-      ctx.clearRect(0, 0, 60, 80);
+      ctx.clearRect(0, 0, width, height);
       ctx.imageSmoothingEnabled = false;
       let filter = 'none';
       if (tintType === 'hit') {
@@ -28,7 +28,7 @@ export function useCombatDrawing() {
         filter = 'sepia(1) hue-rotate(170deg) saturate(2) brightness(2)'; // azul
       }
       ctx.filter = filter;
-      ctx.drawImage(img.value, 0, 0, 60, 80);
+      ctx.drawImage(img.value, 0, 0, width, height);
       ctx.filter = 'none';
     }
   }
@@ -40,11 +40,14 @@ export function useCombatDrawing() {
     drawCharacter(knightCanvas, knightImg, tintType);
   }
 
-  function drawEnemy(enemyCanvas) {
+  function drawEnemy(enemyCanvas, enemyType = 'orc') {
     let tintType = null;
     if (enemyFreezeTint.value) tintType = 'freeze';
     else if (enemyTint.value) tintType = 'hit';
-    drawCharacter(enemyCanvas, enemyImg, tintType);
+    const enemy = ENEMIES[enemyType] || ENEMIES.orc;
+    const width = enemy.width || 60;
+    const height = enemy.height || 80;
+    drawCharacter(enemyCanvas, enemyImg, tintType, width, height);
   }
 
   function loadImages(knightCanvas, enemyCanvas, playerStore) {
@@ -75,8 +78,8 @@ export function useCombatDrawing() {
   // Switch the enemy image according to type and redraw
   function setEnemyType(type, enemyCanvas) {
     enemyImg.value = enemyImgs[type] || new Image();
-    if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas);
-    else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas);
+    if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas, type);
+    else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas, type);
   }
 
   return {

@@ -182,12 +182,22 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
             ctx.restore();
           }
         } else if (poi.type === 'wizard') {
-          if (wizardImg.complete) {
+          if (wizardImg && wizardImg.complete) {
             ctx.save();
             if (poi.discovered) {
               ctx.globalAlpha = 0.4;
             }
             ctx.drawImage(wizardImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
+            ctx.restore();
+          }
+        } else if (poi.type === 'dragon') {
+          const dragonImg = enemyImages.dragon;
+          if (dragonImg && dragonImg.complete) {
+            ctx.save();
+            if (poi.discovered) {
+              ctx.globalAlpha = 0.4;
+            }
+            ctx.drawImage(dragonImg, poi.position.x - 22, poi.position.y - 20, 44, 40);
             ctx.restore();
           }
         } else if (poi.type !== 'treasure') {
