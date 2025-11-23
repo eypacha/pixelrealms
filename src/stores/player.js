@@ -462,6 +462,7 @@ export const usePlayerStore = defineStore('player', () => {
     combatActive.value = false;
     enemyDefeated.value = false;
     lootCollected.value = false;
+    playerFleeing.value = false;
     playerTurn.value = false;
     combatMessage.value = '';
     // Reset enemy stats
