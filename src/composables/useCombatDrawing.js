@@ -1,19 +1,16 @@
+
 import { ref } from 'vue';
+import { ENEMIES } from '../constants/enemies.js';
 
 export function useCombatDrawing() {
   const knightImg = ref(null);
   const enemyImg = ref(null);
   // Mapa para imágenes de enemigos
   const enemyImgs = {};
-  // Definición de tipos y rutas
-  const enemyTypes = {
-    goblin: 'images/enemies/goblin.png',
-    orc: 'images/enemies/medium-orc.png',
-    knight: 'images/enemies/knight.png',
-    darkknight: 'images/enemies/darkknight.png',
-    skeleton: 'images/enemies/skeleton.png', // Nuevo enemigo
-    // Agrega aquí más enemigos fácilmente
-  };
+  // Construir el objeto de tipos y rutas dinámicamente
+  const enemyTypes = Object.fromEntries(
+    Object.entries(ENEMIES).map(([key, val]) => [key, val.image])
+  );
   const knightTint = ref(false);
   const knightFreezeTint = ref(false);
   const enemyTint = ref(false);

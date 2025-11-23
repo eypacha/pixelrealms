@@ -1,6 +1,7 @@
 // src/utilities/draw.js
 import { createSeededRandom } from './randomWithSeed';
 import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
+import { ENEMIES } from '../constants/enemies.js';
 
 export function drawPlayer(ctx, position, image, facingLeft = false) {
   if (!image || !image.complete) return;
@@ -37,41 +38,34 @@ function drawCell(ctx, heights2D, px, py, canvasWidth, canvasHeight, terrainSize
 }
 
 export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset = { x: 0, y: 0 }, options = {}) {
-  // Imagen de orc
-  if (!drawAll.orcImage) {
-    drawAll.orcImage = new Image();
-    drawAll.orcImage.src = 'images/enemies/medium-orc.png';
-    drawAll.orcImage.onload = () => {
+  // Cargar imágenes de enemigos dinámicamente desde ENEMIES
+  if (!drawAll.enemyImages) {
+    drawAll.enemyImages = {};
+    Object.entries(ENEMIES).forEach(([type, data]) => {
+      const img = new Image();
+      img.src = data.image;
+      img.onload = () => {
+        if (terrainCanvas && terrainCanvas.value) {
+          drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+        }
+      };
+      drawAll.enemyImages[type] = img;
+    });
+    // Wizard es especial, no está en ENEMIES
+    const wizardImg = new Image();
+    wizardImg.src = 'images/allies/wizard.png';
+    wizardImg.onload = () => {
       if (terrainCanvas && terrainCanvas.value) {
         drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
       }
     };
+    drawAll.enemyImages['wizard'] = wizardImg;
   }
-  const orcImg = drawAll.orcImage;
-
-  // Imagen de goblin
-  if (!drawAll.goblinImage) {
-    drawAll.goblinImage = new Image();
-    drawAll.goblinImage.src = 'images/enemies/goblin.png';
-    drawAll.goblinImage.onload = () => {
-      if (terrainCanvas && terrainCanvas.value) {
-        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
-      }
-    };
-  }
-  const goblinImg = drawAll.goblinImage;
-
-  // Imagen de wizard
-  if (!drawAll.wizardImage) {
-    drawAll.wizardImage = new Image();
-    drawAll.wizardImage.src = 'images/allies/wizard.png';
-    drawAll.wizardImage.onload = () => {
-      if (terrainCanvas && terrainCanvas.value) {
-        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
-      }
-    };
-  }
-  const wizardImg = drawAll.wizardImage;
+  const enemyImages = drawAll.enemyImages;
+  const orcImg = enemyImages.orc;
+  const goblinImg = enemyImages.goblin;
+  const wizardImg = enemyImages.wizard;
+  const darkKnightImg = enemyImages.darkknight;
   
   const { initializePlayer = false, redrawTerrain = initializePlayer, onlyTerrain = false, onlyReactive = false } = options;
   // Regenerar alturas si inicializamos el jugador o si explicitamente pedimos redrawTerrain
