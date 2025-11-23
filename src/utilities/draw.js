@@ -204,16 +204,19 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
           .forEach(pos => {
             ctx.save();
             ctx.globalAlpha = 0.4;
-            let img = null;
-            if (pos.type === 'orc' && orcImg.complete) img = orcImg;
-            if (pos.type === 'goblin' && goblinImg.complete) img = goblinImg;
-            // Puedes agregar más tipos aquí
-            if (img) {
-              ctx.drawImage(img, pos.x - 10, pos.y - 15, 20, 30);
+            let img = enemyImages[pos.type];
+            let enemyData = ENEMIES[pos.type];
+            let h = 15;
+            let w = 15;
+            if (enemyData && enemyData.width && enemyData.height) {
+              w = Math.round(h * (enemyData.width / enemyData.height));
+            }
+            if (img && img.complete) {
+              ctx.drawImage(img, pos.x - w/2, pos.y - h/2, w, h);
             } else {
-              // Si no hay imagen, dibuja un cuadrado gris
+              // Si no hay imagen, dibuja un cuadrado gris proporcional
               ctx.fillStyle = 'gray';
-              ctx.fillRect(pos.x - 5, pos.y - 5, 10, 10);
+              ctx.fillRect(pos.x - w/2, pos.y - h/2, w, h);
             }
             ctx.restore();
           });

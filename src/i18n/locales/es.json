@@ -96,6 +96,7 @@
   },
   "enemy": {
     "knight": "Caballero",
+    "dragon": "Dragón",
     "darkknight": "Caballero Oscuro",
     "orc": "Orco",
     "goblin": "Goblin",
