@@ -15,8 +15,8 @@ export const ENEMIES = {
 	 orc: {
 	  type: 'orc',
 	  health: 10,
-	  strength: 8,
-	  defense: 5,
+	  strength: 10,
+	  defense: 9,
 	  image: 'images/enemies/medium-orc.png',
 	  chance: 0.4
 	 },
@@ -40,9 +40,9 @@ export const ENEMIES = {
 	 },
 	 skeleton: {
 	  type: 'skeleton',
-	  health: 8,
-	  strength: 11,
-	  defense: 9,
+	  health: 13,
+	  strength: 13,
+	  defense: 13,
 	  image: 'images/enemies/skeleton.png',
 	  chance: 0.18,
 	  freezeChance: 0.5

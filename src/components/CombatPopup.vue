@@ -208,9 +208,9 @@ function setupCombatLoot() {
         potions = 1;
         break;
       case 'skeleton':
-        coins = Math.floor(Math.random() * 40) + 20; // 20- 0
+        coins = Math.floor(Math.random() * 20); // 0-19
         potions = Math.floor(Math.random() * 5); // 0-4
-        scrolls = Math.floor(Math.random() * 3) + 2; // 1-3
+        scrolls = Math.floor(Math.random() * 3) + 2; // 2-4
         break;
       case 'orc':
       default:
