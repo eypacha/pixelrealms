@@ -81,6 +81,7 @@ export const usePoiStore = defineStore('poi', () => {
               type: config.type,
               position: { x, y },
               discovered: false,
+              revealed: false,
               ...config.extra()
             });
             placed = true;
@@ -89,10 +90,22 @@ export const usePoiStore = defineStore('poi', () => {
         }
       }
     });
+
     poisByTile.value[key] = arr;
     pois.value = arr;
   }
 
+  // Revela los POIs dentro de un radio del jugador
+  function revealPoi(playerPosition) {
+    pois.value.forEach(poi => {
+      const dx = poi.position.x - playerPosition.x;
+      const dy = poi.position.y - playerPosition.y;
+      if (Math.sqrt(dx*dx + dy*dy) <=100) {
+        poi.revealed = true;
+      }
+    });
+  }
+    
   function checkDiscovery(playerPosition, playerStore) {
     pois.value.forEach(poi => {
       if (
@@ -152,5 +165,5 @@ export const usePoiStore = defineStore('poi', () => {
     });
   }
 
-  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi };
+  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi, revealPoi };
 });

@@ -157,6 +157,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
       }
       const darkKnightImg = drawAll.darkKnightImage;
       poiStore.pois.forEach(poi => {
+        if (!poi.revealed) return;
         if (poi.type === 'treasure') {
           const length = 5;
           ctx.save();
@@ -172,6 +173,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         }
       });
       poiStore.pois.forEach(poi => {
+        if (!poi.revealed) return;
         if (poi.type === 'darkknight') {
           if (darkKnightImg.complete) {
             ctx.save();
@@ -255,6 +257,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     }
     const darkKnightImg = drawAll.darkKnightImage;
     poiStore.pois.forEach(poi => {
+      if (!poi.revealed) return;
       if (poi.type === 'treasure') {
         const length = 5;
         ctx.save();
@@ -270,6 +273,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
       }
     });
     poiStore.pois.forEach(poi => {
+      if (!poi.revealed) return;
       if (poi.type === 'darkknight') {
         if (darkKnightImg.complete) {
           ctx.save();
