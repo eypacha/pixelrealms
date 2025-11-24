@@ -303,10 +303,10 @@ watch(() => playerStore.health, (newVal, oldVal) => {
 watch(() => playerStore.enemyHealth, (newVal, oldVal) => {
   if (newVal < oldVal) {
     enemyTint.value = true;
-    drawEnemy(enemyCanvas);
+    drawEnemy(enemyCanvas, playerStore.enemyType);
     setTimeout(() => {
       enemyTint.value = false;
-      drawEnemy(enemyCanvas);
+      drawEnemy(enemyCanvas, playerStore.enemyType);
     }, 100);
   }
 });
@@ -316,10 +316,10 @@ watch(() => playerStore.enemyFrozen, (isFrozen) => {
   if (isFrozen) {
     enemyTint.value = false;
     enemyFreezeTint.value = true;
-    drawEnemy(enemyCanvas);
+    drawEnemy(enemyCanvas, playerStore.enemyType);
   } else {
     enemyFreezeTint.value = false;
-    drawEnemy(enemyCanvas);
+    drawEnemy(enemyCanvas, playerStore.enemyType);
   }
 });
 
