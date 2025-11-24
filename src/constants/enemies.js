@@ -54,7 +54,7 @@ export const ENEMIES = {
 	  width: 60,
 	  height: 80,
 	  chance: 0.18,
-	  freezeChance: 0.5
+	  freezeChance: 0.3
 	 },
 	 dragon: {
 	  type: 'dragon',
