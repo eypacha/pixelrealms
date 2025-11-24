@@ -41,10 +41,11 @@ export function useCombatDrawing() {
   }
 
   function drawEnemy(enemyCanvas, enemyType = 'orc') {
+    
     let tintType = null;
     if (enemyFreezeTint.value) tintType = 'freeze';
     else if (enemyTint.value) tintType = 'hit';
-    const enemy = ENEMIES[enemyType] || ENEMIES.orc;
+    const enemy = ENEMIES[enemyType];
     const width = enemy.width || 60;
     const height = enemy.height || 80;
     drawCharacter(enemyCanvas, enemyImg, tintType, width, height);
@@ -62,17 +63,17 @@ export function useCombatDrawing() {
     Object.entries(enemyTypes).forEach(([type, src]) => {
       const img = new Image();
       img.onload = () => {
-        if (enemyImg.value === img) drawEnemy(enemyCanvas);
+        // Solo dibuja si el tipo es el actual
+        if (playerStore.enemyType === type && enemyCanvas.value) {
+          enemyImg.value = img;
+          drawEnemy(enemyCanvas, type);
+        }
       };
       img.src = src;
       enemyImgs[type] = img;
     });
 
-    // Por defecto, selecciona el orc
-    enemyImg.value = enemyImgs.orc;
-    if (enemyImg.value && enemyCanvas.value) {
-      enemyImg.value.onload = () => drawEnemy(enemyCanvas);
-    }
+    enemyImg.value = undefined;
   }
 
   // Switch the enemy image according to type and redraw
