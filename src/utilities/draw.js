@@ -175,11 +175,11 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         if (poi.type === 'darkknight') {
           if (darkKnightImg.complete) {
             ctx.save();
-            if (poi.discovered) {
-              ctx.globalAlpha = 0.4;
+            if (!poi.discovered) {
+              ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
+              ctx.restore();
             }
-            ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
-            ctx.restore();
+            
           }
         } else if (poi.type === 'wizard') {
           if (wizardImg && wizardImg.complete) {
@@ -194,11 +194,11 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
           const dragonImg = enemyImages.dragon;
           if (dragonImg && dragonImg.complete) {
             ctx.save();
-            if (poi.discovered) {
-              ctx.globalAlpha = 0.4;
+            if (!poi.discovered) {
+              ctx.drawImage(dragonImg, poi.position.x - 22, poi.position.y - 20, 44, 40);
+              ctx.restore();
             }
-            ctx.drawImage(dragonImg, poi.position.x - 22, poi.position.y - 20, 44, 40);
-            ctx.restore();
+            
           }
         } else if (poi.type !== 'treasure') {
           ctx.fillStyle = poi.discovered ? 'gray' : 'white';
