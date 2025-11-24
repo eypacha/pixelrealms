@@ -93,9 +93,7 @@ export const usePlayerStore = defineStore('player', () => {
         position.value = { x, y };
         oldPosition.value = { ...position.value };
         // Revelar POIs cercanos al jugador al iniciar
-        if (poiStore && typeof poiStore.revealPoi === 'function') {
-          poiStore.revealPoi(position.value, 60); // radio ajustable
-        }
+        poiStore.revealPoi(position.value)
         return;
       }
       attempts++;
@@ -103,9 +101,9 @@ export const usePlayerStore = defineStore('player', () => {
     // Si no encuentra tierra, dejar en (0,0)
     position.value = { x: 0, y: 0 };
     oldPosition.value = { ...position.value };
-    if (poiStore && typeof poiStore.revealPoi === 'function') {
-      poiStore.revealPoi(position.value, 60);
-    }
+    
+    poiStore.revealPoi(position.value);
+
   }
 
   // ...existing code...
@@ -192,7 +190,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (steps.value % RECOVERY_STEPS === 0) {
       health.value = Math.min(maxHealth.value, health.value + 1);
     }
-    poiStore.revealPoi(position.value); // radio ajustable
+    poiStore.revealPoi(position.value); 
     
     checkEncounter(position.value);
   }
