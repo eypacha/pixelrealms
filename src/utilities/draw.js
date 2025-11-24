@@ -216,8 +216,8 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
             ctx.globalAlpha = 0.4;
             let img = enemyImages[pos.type];
             let enemyData = ENEMIES[pos.type];
-            let h = 15;
-            let w = 15;
+            let h = 30;
+            let w = 30;
             if (enemyData && enemyData.width && enemyData.height) {
               w = Math.round(h * (enemyData.width / enemyData.height));
             }
