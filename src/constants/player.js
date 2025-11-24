@@ -40,9 +40,9 @@ export const CHARACTERS = [
   {
     key: 'elf',
     name: 'Elf',
-    img: 'images/players/elf.png',
+    img: 'images/players/elfa.png',
     stats: {
-      health: 12,
+      health: 10,
       strength: 9,
       defense: 9,
       coins: 10,
