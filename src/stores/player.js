@@ -4,11 +4,6 @@ import { usePoiStore } from './poi.js';
 import { ref } from 'vue';
 import {
     PLAYER_SPEED,
-    INITIAL_HEALTH,
-    INITIAL_STRENGTH,
-    INITIAL_DEFENSE,
-    INITIAL_COINS,
-    INITIAL_POTIONS,
     RECOVERY_STEPS,
   } from '../constants/player.js';
 
@@ -39,12 +34,12 @@ export const usePlayerStore = defineStore('player', () => {
 
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
-  const health = ref(INITIAL_HEALTH);
-  const maxHealth = ref(INITIAL_HEALTH);
-  const strength = ref(INITIAL_STRENGTH);
-  const defense = ref(INITIAL_DEFENSE);
-  const coins = ref(INITIAL_COINS);
-  const inventory = ref({ potion: INITIAL_POTIONS });
+  const health = ref(null);
+  const maxHealth = ref(null);
+  const strength = ref(null);
+  const defense = ref(null);
+  const coins = ref(null);
+  const inventory = ref({ potion: 0 });
 
   const steps = ref(0);
   const mana = ref(0);
