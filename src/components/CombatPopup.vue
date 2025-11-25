@@ -210,33 +210,11 @@ const combatLoot = ref({
 
 function setupCombatLoot() {
   if (playerStore.enemyDefeated && !playerStore.lootCollected) {
-    let coins = 0, potions = 0, scrolls = false;
-    switch (playerStore.enemyType) {
-      case 'darkknight':
-        coins = Math.floor(Math.random() * 31) + 30; // 30-60
-        potions = Math.floor(Math.random() * 3); // 0-2
-        scrolls = 1; // 50%
-        break;
-      case 'goblin':
-        coins = Math.floor(Math.random() * 10) + 1; // 1-10
-        scrolls = 0; // 0
-        potions = 1;
-        break;
-      case 'skeleton':
-        coins = Math.floor(Math.random() * 20); // 0-19
-        potions = Math.floor(Math.random() * 5); // 0-4
-        scrolls = Math.floor(Math.random() * 3) + 2; // 2-4
-        break;
-      case 'orc':
-      default:
-        coins = Math.floor(Math.random() * 10) + 5; // 5-14
-        potions = Math.floor(Math.random() * 3); // 0-2
-        scrolls = 0; // 0
-        break;
-    }
-    combatLoot.value.coins = coins;
-    combatLoot.value.potions = potions;
-    combatLoot.value.scrolls = scrolls;
+    const lootFn = ENEMIES[playerStore.enemyType]?.loot;
+    const loot = lootFn ? lootFn() : { coins: 0, potions: 0, scrolls: 0 };
+    combatLoot.value.coins = loot.coins;
+    combatLoot.value.potions = loot.potions;
+    combatLoot.value.scrolls = loot.scrolls;
     combatLoot.value.coinsClaimed = false;
     combatLoot.value.potionsClaimed = false;
     combatLoot.value.scrollClaimed = false;
