@@ -69,25 +69,19 @@ export const usePoiStore = defineStore('poi', () => {
     ];
 
     poiConfigs.forEach(config => {
-      for (let i = 0; i < config.count; i++) {
-        let x, y, attempts = 0;
-        let placed = false;
-        while (attempts < 1000 && !placed) {
-          x = Math.floor(rand() * width);
-          y = Math.floor(rand() * height);
+        for (let i = 0; i < config.count; i++) {
+          const x = Math.floor(rand() * width);
+          const y = Math.floor(rand() * height);
           if (config.isValid(x, y)) {
             arr.push({
               id: `${config.type}-${i}`,
               type: config.type,
               position: { x, y },
               discovered: false,
-              revealed: false,
+              revealed: true,
               ...config.extra()
             });
-            placed = true;
           }
-          attempts++;
-        }
       }
     });
 
