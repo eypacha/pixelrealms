@@ -9,7 +9,7 @@ export function generatePoisForTile({ terrainUtils, rand, width, height, terrain
       type: 'darkknight',
       count,
       isValid: (x, y) => terrainUtils.isValidTerrain(x, y, width, height, terrain),
-      extra: () => ({ loot: Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN })
+      extra: () => ({})
     },
     {
       type: 'wizard',
@@ -31,7 +31,7 @@ export function generatePoisForTile({ terrainUtils, rand, width, height, terrain
       type: 'dragon',
       count: DRAGON_COUNT,
       isValid: (x, y) => terrainUtils.isValidTerrain(x, y, width, height, terrain),
-      extra: () => ({ loot: Math.floor(rand() * (LOOT_MAX - LOOT_MIN + 1)) + LOOT_MIN })
+      extra: () => ({})
     }
   ];
 
@@ -45,8 +45,7 @@ export function generatePoisForTile({ terrainUtils, rand, width, height, terrain
           type: config.type,
           position: { x, y },
           discovered: false,
-          revealed: false,
-          ...config.extra()
+          revealed: false
         });
       }
     }
