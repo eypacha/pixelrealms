@@ -176,7 +176,7 @@ const combatButtons = [
 const lootButtons = [
   {
     key: 'coins',
-    show: () => true,
+    show: () => combatLoot.value.coins > 0,
     label: () => t('treasure.grabCoins', { coins: combatLoot.value.coins }),
     emoji: '🪙',
     claimed: () => combatLoot.value.coinsClaimed,
