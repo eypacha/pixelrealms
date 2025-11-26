@@ -66,6 +66,7 @@ import TreasurePopup from '../components/TreasurePopup.vue';
 import { storeToRefs } from 'pinia';
 import StatusBar from '../components/StatusBar.vue';
 import CharacterSelectPopup from '../components/CharacterSelectPopup.vue';
+import { useKonamiCode } from '../composables/useKonamiCode';
 
 const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep, randomizeSeed } = useTerrain();
 const seedLocal = ref(seedInput.value);
@@ -80,6 +81,7 @@ const currentAnecdote = ref({ index: null, lang: 'en' });
 const { maybeTriggerEncounter } = useNarrativeEncounter();
 const isResetting = ref(false);
 const showCharacterSelect = computed(() => !playerStore.characterSelected);
+const { konamiActivated } = useKonamiCode(playerStore);
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
