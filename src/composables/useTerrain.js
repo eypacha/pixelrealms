@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 import { createSeededRandom } from '../utilities/randomWithSeed';
 
-export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = '14567890') {
+export function useTerrain(terrainSize = 257, roughness = 0.7, initialSeed = Math.floor(Math.random() * 100000000).toString()) {
   const terrainCanvas = ref(null);
   const seedInput = ref(initialSeed);
   // worldOffset in units of the generator grid (indices). Move by (terrainSize - 1) to shift one tile.
