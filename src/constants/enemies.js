@@ -11,7 +11,7 @@ export const ENEMIES = {
 		image: 'images/enemies/goblin.png',
 		width: 60,
 		height: 80,
-		chance: 0.4,
+		chance: 0.6,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 10) + 1,
 			potions: 1,
@@ -26,7 +26,7 @@ export const ENEMIES = {
 		image: 'images/enemies/medium-orc.png',
 		width: 60,
 		height: 80,
-		chance: 0.4,
+		chance: 0.2,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 10) + 5,
 			potions: Math.floor(Math.random() * 3),
@@ -57,7 +57,7 @@ export const ENEMIES = {
 		image: 'images/enemies/knight.png',
 		width: 60,
 		height: 80,
-		chance: 0.02,
+		chance: 0.1,
 		freezeChance: 0.1,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 20) + 10,
@@ -67,13 +67,13 @@ export const ENEMIES = {
 	 },
 	 skeleton: {
 		type: 'skeleton',
-		health: 13,
+		health: 10,
 		strength: 10,
 		defense: 10,
 		image: 'images/enemies/skeleton.png',
 		width: 60,
 		height: 80,
-		chance: 0.18,
+		chance: 0.1,
 		freezeChance: 0.3,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 20),
