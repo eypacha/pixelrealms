@@ -63,6 +63,7 @@ export const usePlayerStore = defineStore('player', () => {
   const playerTurn = ref(true);
   const lastDirection = ref('down');
   const darkKnightDefeatedCount = ref(0);
+  const defeatedEnemiesCount = ref(0); // Nuevo contador total
   const enemyFrozen = ref(false);
   const playerFrozen = ref(false);
   const playerFleeing = ref(false);
@@ -269,6 +270,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (enemyHealth.value <= 0) {
       enemyDefeated.value = true;
       combatMessage.value = t('combat.enemyDefeated');
+      defeatedEnemiesCount.value++;
       return;
     }
 
@@ -376,6 +378,7 @@ export const usePlayerStore = defineStore('player', () => {
     if (enemyHealth.value <= 0) {
       enemyDefeated.value = true;
       combatMessage.value = t('combat.enemyDefeated');
+      defeatedEnemiesCount.value++;
       return;
     }
 
@@ -461,7 +464,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   const endCombat = () => {
     console.log('🏳️ Fin del combate');
-    // Si el enemigo fue derrotado, márcalo en el mapa
+    // Si el enemigo fue derrotado, márcalo en el mapa y suma al contador total
     if (enemyDefeated.value && typeof position.value.x === 'number' && typeof position.value.y === 'number' && enemyType.value) {
       const poiStore = usePoiStore();
       poiStore.addDefeatedEnemy({
@@ -470,6 +473,7 @@ export const usePlayerStore = defineStore('player', () => {
         offsetX: currentOffset.value.x,
         offsetY: currentOffset.value.y
       }, enemyType.value);
+      defeatedEnemiesCount.value++;
     }
     combatActive.value = false;
     enemyDefeated.value = false;
@@ -520,6 +524,7 @@ export const usePlayerStore = defineStore('player', () => {
     lootCollected,
     lastDirection,
     darkKnightDefeatedCount,
+    defeatedEnemiesCount,
     enemyFrozen,
     playerFrozen,
     currentOffset,
