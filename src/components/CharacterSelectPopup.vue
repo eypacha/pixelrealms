@@ -53,7 +53,9 @@ import TopBar from './TopBar.vue';
 import { CHARACTERS } from '../constants/player';
 
 const playerStore = usePlayerStore();
-const selected = ref(null);
+// Selecciona el personaje del medio al iniciar
+const middleIndex = Math.floor(CHARACTERS.length / 2);
+const selected = ref(CHARACTERS[middleIndex] || null);
 
 // Props y eventos para TopBar
 const props = defineProps({
