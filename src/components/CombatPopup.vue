@@ -27,15 +27,15 @@
                 <div class="mr-2">
                   <div class=" flex justify-between gap-1">
                     <span>🗡️</span>
-                    <span>{{ playerStore.strength }}</span>
+                    <span>{{ Math.floor(playerStore.strength) }}</span>
                   </div>
                   <div class=" flex justify-between gap-1">
                     <span>🛡️</span>
-                    <span>{{ playerStore.defense }}</span>
+                    <span>{{ Math.floor(playerStore.defense) }}</span>
                   </div>
                   <div class=" flex justify-between gap-1">
                     <span>❤️</span>
-                    <span>{{ playerStore.health }}</span>
+                    <span>{{ Math.floor(playerStore.health) }}</span>
                   </div>
               </div>
               <div class="relative">
@@ -54,16 +54,16 @@
               <div class="mr-2">
                   <div class=" flex justify-between gap-1">
                     <span>🗡️</span>
-                    <span>{{ playerStore.enemyStrength }}</span>
+                    <span>{{ Math.floor(playerStore.enemyStrength) }}</span>
                   </div>
                   
                   <div class=" flex justify-between gap-1">
                     <span>🛡️</span>
-                    <span>{{ playerStore.enemyDefense }}</span>
+                    <span>{{ Math.floor(playerStore.enemyDefense) }}</span>
                   </div>
                   <div class=" flex justify-between gap-1">
                     <span>❤️</span>
-                    <span>{{ playerStore.enemyHealth }}</span>
+                    <span>{{ Math.floor(playerStore.enemyHealth) }}</span>
                   </div>
               </div>
             </div>

@@ -22,12 +22,12 @@ const coinsAnimating = ref(false);
 const potionAnimating = ref(false);
 const manaAnimating = ref(false);
 
-const health = computed(() => playerStore.health);
-const strength = computed(() => playerStore.strength);
-const defense = computed(() => playerStore.defense);
-const coins = computed(() => playerStore.coins);
-const potion = computed(() => playerStore.inventory.potion);
-const mana = computed(() => playerStore.mana);
+const health = computed(() => Math.floor(playerStore.health));
+const strength = computed(() => Math.floor(playerStore.strength));
+const defense = computed(() => Math.floor(playerStore.defense));
+const coins = computed(() => Math.floor(playerStore.coins));
+const potion = computed(() => Math.floor(playerStore.inventory.potion));
+const mana = computed(() => Math.floor(playerStore.mana));
 
 watch(health, (newValue, oldValue) => {
   if (oldValue !== undefined && newValue !== oldValue) {
