@@ -6,7 +6,7 @@
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': coinsAnimating }">🪙{{ coins }}</span>
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': potionAnimating }">🧪{{ potion }}</span>
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': manaAnimating }">🪬{{ mana }}</span>
-    <span class="inline-block transition-all duration-300">💀{{ defeatedEnemies }}</span>
+    <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': defeatedEnemiesAnimating }">💀{{ defeatedEnemies }}</span>
   </div>
 </template>
 
@@ -22,6 +22,7 @@ const defenseAnimating = ref(false);
 const coinsAnimating = ref(false);
 const potionAnimating = ref(false);
 const manaAnimating = ref(false);
+const defeatedEnemiesAnimating = ref(false);
 
 const health = computed(() => Math.floor(playerStore.health));
 const strength = computed(() => Math.floor(playerStore.strength));
@@ -79,4 +80,13 @@ watch(mana, (newValue, oldValue) => {
     }, 300);
   }
 });
+watch(defeatedEnemies, (newValue, oldValue) => {
+  if (oldValue !== undefined && newValue !== oldValue) {
+    defeatedEnemiesAnimating.value = true;
+    setTimeout(() => {
+      defeatedEnemiesAnimating.value = false;
+    }, 300);
+  }
+});
+
 </script>
