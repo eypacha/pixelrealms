@@ -190,8 +190,9 @@ export const usePlayerStore = defineStore('player', () => {
     if (steps.value % RECOVERY_STEPS === 0) {
       health.value = Math.min(maxHealth.value, health.value + 1);
     }
+    // Guardar la posición visitada como POI tipo 'step'
+    poiStore.addStepPoi(position.value);
     poiStore.revealPoi(position.value); 
-    
     checkEncounter(position.value);
   }
 

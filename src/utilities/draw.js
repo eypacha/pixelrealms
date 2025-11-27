@@ -4,7 +4,7 @@ import { generateMidpointDisplacement2D } from './midpointDisplacement2D';
 import { ENEMIES } from '../constants/enemies.js';
 
 export function drawPlayer(ctx, position, image, facingLeft = false) {
-  if (!image || !image.complete) return;
+  if (!image || !image.complete || image.naturalWidth === 0) return;
   const w = 20;
   const h = 30;
   const drawX = position.x - w / 2;
@@ -161,7 +161,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
         if (poi.type === 'treasure') {
           const length = 5;
           ctx.save();
-          ctx.strokeStyle = poi.discovered ? 'gray' : 'red';
+          ctx.strokeStyle = poi.discovered ? 'black' : 'red';
           ctx.lineWidth = 3;
           ctx.beginPath();
           ctx.moveTo(poi.position.x - length, poi.position.y - length);
@@ -181,7 +181,6 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
               ctx.drawImage(darkKnightImg, poi.position.x - 10, poi.position.y - 15, 20, 30);
               ctx.restore();
             }
-            
           }
         } else if (poi.type === 'wizard') {
           if (wizardImg && wizardImg.complete) {
@@ -200,8 +199,13 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
               ctx.drawImage(dragonImg, poi.position.x - 22, poi.position.y - 20, 44, 40);
               ctx.restore();
             }
-            
           }
+        } else if (poi.type === 'step') {
+          // Dibuja punto blanco de 2x2 píxeles para cada paso visitado
+          ctx.save();
+          ctx.fillStyle = 'white';
+          ctx.fillRect(poi.position.x - 1, poi.position.y - 1, 2, 2);
+          ctx.restore();
         } else if (poi.type !== 'treasure') {
           ctx.fillStyle = poi.discovered ? 'gray' : 'white';
           ctx.fillRect(poi.position.x - 5, poi.position.y - 5, 10, 10);

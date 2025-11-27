@@ -1,7 +1,7 @@
 
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT, WIZARD_COUNT, DRAGON_COUNT} from '../constants/poi.js';
+import { DARK_KNIGHT_COUNT, LOOT_MIN, LOOT_MAX, TREASURE_COUNT, WIZARD_COUNT, DRAGON_COUNT } from '../constants/poi.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { useTerrain } from '../composables/useTerrain.js';
 import { generatePoisForTile } from '../utilities/poiGenerator.js';
@@ -20,6 +20,17 @@ export const usePoiStore = defineStore('poi', () => {
 
   // Reactive property for treasure popup
   const treasureDiscovered = ref(false);
+
+  // Guarda cada posición visitada por el jugador como un POI de tipo 'step'
+  function addStepPoi(position) {
+    // Evita duplicados: solo agrega si no existe ya un step en esa posición
+    if (!pois.value.some(p => p.type === 'step' && p.position?.x === position.x && p.position?.y === position.y)) {
+      pois.value.push({
+        type: 'step',
+        position: { x: position.x, y: position.y }
+      });
+    }
+  }
 
   // Limpia todos los POIs de todos los tiles y genera los del tile actual
   function resetPois(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
@@ -47,7 +58,7 @@ export const usePoiStore = defineStore('poi', () => {
   function revealPoi(playerPosition) {
     revealPois(pois.value, playerPosition, 100);
   }
-    
+
   function checkDiscovery(playerPosition, playerStore) {
     checkPoisDiscovery(pois.value, playerPosition, playerStore, treasureDiscovered);
   }
@@ -71,5 +82,5 @@ export const usePoiStore = defineStore('poi', () => {
     addDefeatedEnemyUtil(defeatedEnemies.value, position, type);
   }
 
-  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi, revealPoi };
+  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi, revealPoi, addStepPoi };
 });
