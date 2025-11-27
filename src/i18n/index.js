@@ -8,10 +8,14 @@ const messages = {
 
 const getDefaultLocale = () => {
   const supportedLocales = ['es', 'en']
-  
-  const savedLocale = localStorage.getItem('locale')
+  // Guardar idioma en localStorage si no existe
+  let savedLocale = localStorage.getItem('locale');
+  if (!savedLocale) {
+    localStorage.setItem('locale', 'es');
+    savedLocale = 'es';
+  }
   if (savedLocale && supportedLocales.includes(savedLocale)) {
-    return savedLocale
+    return savedLocale;
   }
   
   const browserLocale = navigator.language || navigator.languages[0]

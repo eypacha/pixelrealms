@@ -4,7 +4,8 @@ import { ref } from 'vue';
 
 export const useSoundStore = defineStore('sound', () => {
   // Global volume (0.0 - 1.0)
-  const volume = ref(0.2);
+  const savedVolume = localStorage.getItem('volume');
+  const volume = ref(savedVolume ? parseFloat(savedVolume) : 0.2);
   // Sounds
   const sounds = {
     footstep: new Howl({ src: ['sounds/footstep.wav'], volume: volume.value }),
@@ -19,6 +20,7 @@ export const useSoundStore = defineStore('sound', () => {
 
   function setVolume(val) {
     volume.value = val;
+    localStorage.setItem('volume', val);
     Object.values(sounds).forEach(s => s.volume(val));
   }
 
