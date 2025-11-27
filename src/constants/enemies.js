@@ -1,5 +1,5 @@
-export const ENCOUNTER_RATE_DAY = 0.02;
-export const ENCOUNTER_RATE_NIGHT = 0.1;
+export const ENCOUNTER_RATE_DAY = 0.05;
+export const ENCOUNTER_RATE_NIGHT = 0.2;
 export const ENEMY_PAUSE = 1000;
 
 export const ENEMIES = {

@@ -21,6 +21,9 @@ import { getColorForHeight } from '../utilities/draw.js';
 import { useSoundStore } from './sound.js';
 import { performAttack } from '../utilities/combatCalcs.js';
 
+const COVER_DEFENSE_MULTIPLIER = 1.5; 
+const COVER_DEFENSE_TURNS = 2;
+
 export const usePlayerStore = defineStore('player', () => {
 
   const soundStore = useSoundStore();
@@ -51,6 +54,7 @@ export const usePlayerStore = defineStore('player', () => {
   const enemyType = ref(undefined);
   const combatMessage = ref('');
   const coverActive = ref(false);
+  const coverTurns = ref(0);
   const enemyDefeated = ref(false);
   const lootCollected = ref(false);
   const gameOver = ref(false);
@@ -279,10 +283,11 @@ export const usePlayerStore = defineStore('player', () => {
   const activateCover = () => {
     if (!playerTurn.value) return;
     if (!coverActive.value) {
-      defense.value += 2;
+      defense.value *= COVER_DEFENSE_MULTIPLIER;
       coverActive.value = true;
+      coverTurns.value = COVER_DEFENSE_TURNS;
     }
-    combatMessage.value = t('combat.cover') + ' (+2 🛡️)';
+    combatMessage.value = '🛡️ ' + t('combat.cover') + ` (x${COVER_DEFENSE_MULTIPLIER}, ${COVER_DEFENSE_TURNS} turns)`;
     soundStore.playSound('hammer');
     playerTurn.value = false;
     setTimeout(enemyAttack, ENEMY_PAUSE);
@@ -320,8 +325,11 @@ export const usePlayerStore = defineStore('player', () => {
 
         // Consumir el cover y restaurar defense
         if (coverActive.value) {
-          defense.value -= 2;
-          coverActive.value = false;
+          coverTurns.value -= 1;
+          if (coverTurns.value <= 0) {
+            defense.value /= COVER_DEFENSE_MULTIPLIER;
+            coverActive.value = false;
+          }
         }
 
         if (health.value <= 0) {
@@ -474,6 +482,12 @@ export const usePlayerStore = defineStore('player', () => {
     enemyStrength.value = undefined;
     enemyDefense.value = undefined;
     enemyType.value = undefined;
+    // Reset cover
+    if (coverActive.value) {
+      defense.value /= COVER_DEFENSE_MULTIPLIER;
+      coverActive.value = false;
+      coverTurns.value = 0;
+    }
   }
 
   return {
