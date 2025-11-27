@@ -69,6 +69,12 @@ import CharacterSelectPopup from '../components/CharacterSelectPopup.vue';
 import { useKonamiCode } from '../composables/useKonamiCode';
 
 const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep, randomizeSeed } = useTerrain();
+// Patch: Redibuja e inicializa jugador al cambiar de chunk
+function handleOffsetChange(x, y) {
+  addOffset(x, y);
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
+  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+}
 const seedLocal = ref(seedInput.value);
 const reactiveCanvas = ref(null);
 const playerStore = usePlayerStore();
@@ -140,7 +146,8 @@ usePlayerMovement({
   seedInput,
   worldOffset,
   tileStep,
-  addOffset,
+  // Usar handleOffsetChange en vez de addOffset directo
+  addOffset: handleOffsetChange,
   soundStore,
   poiStore,
   playerImage,
