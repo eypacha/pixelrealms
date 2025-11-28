@@ -1,7 +1,7 @@
 
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { DARK_KNIGHT_COUNT, VISIBILIY_RADIUS } from '../constants/poi.js';
+import { DARK_KNIGHT_COUNT, VISIBILITY_RADIUS } from '../constants/poi.js';
 import { createSeededRandom } from '../utilities/randomWithSeed.js';
 import { useTerrain } from '../composables/useTerrain.js';
 import { generatePoisForTile } from '../utilities/poiGenerator.js';
@@ -56,7 +56,7 @@ export const usePoiStore = defineStore('poi', () => {
 
   // Revela los POIs dentro de un radio del jugador
   function revealPoi(playerPosition) {
-    revealPois(pois.value, playerPosition, VISIBILIY_RADIUS);
+    revealPois(pois.value, playerPosition, VISIBILITY_RADIUS);
   }
 
   function checkDiscovery(playerPosition, playerStore) {
