@@ -1,22 +1,25 @@
 # PixelRealms — Game Mechanics
 
-**PixelRealms** is a prototype for exploration and turn-based encounters built on a procedurally generated terrain. The world is created using a midpoint displacement heightmap and explored screen-by-screen using a deterministic seed. This document explains the game's mechanics and points to the key files in the codebase. It intentionally omits installation and run instructions.
+**PixelRealms** is a prototype for exploration and turn-based encounters on a procedurally generated terrain. The world is created using a midpoint displacement heightmap and explored screen-by-screen using a deterministic seed. This document explains the game mechanics and points to key files in the codebase. Installation and run instructions are intentionally omitted.
 
 Summary
-- Genre: Exploration with simple turn-based encounters.
-- Generation: 2D procedural terrain using midpoint displacement; the visible canvas is a window into that generated grid.
+- Genre: Exploration with turn-based encounters.
+- Generation: 2D procedural terrain using midpoint displacement; the visible canvas is a window into the generated grid.
 - Goal: Explore, discover points of interest (POIs), collect loot, and survive encounters.
 
 Core Mechanics
-- Terrain: Heights are produced by `midpointDisplacement2D`. The canvas is painted from the generated heightmap using the current `seed` and `worldOffset`. Height ranges map to water / sand / land / mountain colors.
-- Seed & tiles: Changing the `seed` or shifting `worldOffset` yields different world regions deterministically. The UI exposes a `Seed` input and a `Random` button for quick experimentation.
-- POIs: Each tile (world chunk) deterministically spawns POIs (e.g., Wizards, Dark Knights). Approaching a POI marks it as discovered and immediately awards its loot (coins and sometimes a potion).
-- Encounters: After each valid movement, the player runs a probabilistic check (`ENCOUNTER_RATE`, default 0.1) that may trigger a combat encounter.
+- Terrain: Heights are generated with `midpointDisplacement2D`. The canvas is painted from the heightmap using the current `seed` and `worldOffset`. Height ranges map to water / sand / land / mountain colors.
+- Seed & tiles: Changing the `seed` or shifting the `worldOffset` reveals different regions of the world deterministically. The UI allows seed changes and quick randomization.
+- POIs: Each tile deterministically spawns POIs (e.g., wizards, dark knights). Approaching a POI marks it as discovered and immediately awards its loot (coins and sometimes a potion).
+- Encounters: After each valid movement, a probabilistic check (`ENCOUNTER_RATE`, default 0.1) may trigger a combat encounter.
 
 Player & Stats
-- Health (HP): `INITIAL_HEALTH`. Reaching zero sets `gameOver`.
-- Strength / Defense: Modify damage dealt and received.
-- Coins / Inventory: Earned via POIs and combat loot. Potions are consumables that heal during combat.
+- Health (HP): `INITIAL_HEALTH`. Reaching zero ends the game.
+- Strength: Influences damage dealt.
+- Defense: Reduces damage received proportionally. Damage calculation uses a formula considering attack, defense, and a random modifier, with a minimum damage of 1. Hit probability depends on attack and defense.
+- Cover: The "cover" action multiplies defense by a fixed value (`COVER_DEFENSE_MULTIPLIER`) for several turns (`COVER_DEFENSE_TURNS`).
+- Enemies: Some enemies may have special abilities (e.g., freezing the player).
+- Coins / Inventory: Earned via POIs and combat loot. Potions heal during combat.
 
 Movement & Controls
 - Movement: Arrow keys (`ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`) move the player across the canvas.
@@ -24,12 +27,12 @@ Movement & Controls
 - POI interaction: Discovery occurs automatically when the player gets close to a POI — no explicit input required.
 
 Combat (Simple Turn-Based)
-- Start: `checkDiscovery` and movement code can call `startCombat` via `checkEncounter`, opening the `CombatPopup` component.
-- Turn flow: Player and enemy alternate turns. Player actions include: attack, take cover (temporarily increase defense), use a potion, or flee.
-- Attack: Player has a hit probability (e.g., 70%). Damage equals attack minus defense with a minimum of 1.
-- Cover: `activateCover` increases player defense by `COVER_AMOUNT` until the enemy's next attack.
-- Potions: Restore a fixed HP amount (e.g., 5) and consume the player's turn.
-- Loot: Defeating an enemy allows `collectLoot` to grant coins and sometimes a potion.
+- Start: Movement and the `checkDiscovery` function can call `startCombat` via `checkEncounter`, opening the `CombatPopup` component.
+- Turn flow: Player and enemy alternate turns. Player actions include: attack, take cover (temporary defense boost), use a potion, or flee.
+- Attack: Hit probability depends on attack and defense. Damage is calculated proportionally and can be critical. The enemy uses the same logic.
+- Cover: Multiplies defense by a fixed value for several turns, reducing damage received.
+- Potions: Restore a fixed HP amount and consume the player's turn.
+- Loot: Defeating an enemy grants coins and sometimes a potion.
 
 Audio & Localization
 - Sounds: The project uses `howler` for sound effects (hit, coin, miss, etc.); sound logic is centralized in `src/stores/sound.js`.
@@ -42,6 +45,7 @@ Relevant Files
 - `src/stores/poi.js`: POI generation per tile and discovery handling.
 - `src/utilities/midpointDisplacement2D.js`: Heightmap generator implementation.
 - `src/utilities/draw.js`: Canvas rendering helpers (`drawAll` paints terrain, POIs, and player).
+- `src/utilities/combatCalcs.js`: Combat damage and hit probability logic.
 
 ---
 
@@ -49,4 +53,4 @@ Demo
 - Live demo: https://dev.eypacha.com/pixelrealms
 
 ---
-Last updated: game mechanics overview (English, no run instructions).
+Last updated: game mechanics and combat system (November 2025).
