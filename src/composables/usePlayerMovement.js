@@ -23,7 +23,7 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
         }
       }
     } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-      soundStore.playSound('footstep');
+      
       moved = playerStore.moveDown();
       if (!moved) {
         const canvas = terrainCanvas.value;

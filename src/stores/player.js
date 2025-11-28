@@ -189,6 +189,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   function MoveTo(position) {
     steps.value += 1;
+    soundStore.playSound('footstep');
     timeStore.registerMove();
     if (steps.value % RECOVERY_STEPS === 0) {
       if (Number.isFinite(health.value) && Number.isFinite(maxHealth.value)) {
