@@ -83,9 +83,9 @@ export const ENEMIES = {
 	 },
 	 dragon: {
 		type: 'dragon',
-		health: 25,
-		strength: 25,
-		defense: 25,
+		health: 100,
+		strength: 100,
+		defense: 100,
 		image: 'images/enemies/dragon.png',
 		width: 90,
 		height: 80,
