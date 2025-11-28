@@ -29,7 +29,10 @@ export const usePlayerStore = defineStore('player', () => {
   const soundStore = useSoundStore();
   const timeStore = useTimeStore();
   const poiStore = usePoiStore();
-    
+
+  // Imágenes de los canvas para Game Over
+  const terrainImage = ref(null);
+  const reactiveImage = ref(null);
 
   const { t } = useI18n();
 

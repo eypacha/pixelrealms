@@ -118,6 +118,14 @@ function closeNarrative() {
   currentAnecdote.value = { index: null, lang: 'en' };
 }
 
+// Captura los canvas como imágenes cuando el juego termina
+watch(() => playerStore.gameOver, (isGameOver) => {
+  if (isGameOver && terrainCanvas.value && reactiveCanvas.value) {
+    playerStore.terrainImage = terrainCanvas.value.toDataURL('image/png');
+    playerStore.reactiveImage = reactiveCanvas.value.toDataURL('image/png');
+  }
+});
+
 watch(() => playerStore.image, (newImg) => {
   if (newImg) {
     playerImage.value = new Image();
