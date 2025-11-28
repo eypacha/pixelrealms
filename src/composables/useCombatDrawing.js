@@ -16,7 +16,7 @@ export function useCombatDrawing() {
   const enemyTint = ref(false);
   const enemyFreezeTint = ref(false);
 
-  function drawCharacter(canvas, img, tintType, width = 60, height = 80) {
+  function drawCharacter(canvas, img, tintType, width = 60, height = 80, opacity = 1) {
     if (canvas.value && img.value) {
       const ctx = canvas.value.getContext('2d');
       ctx.clearRect(0, 0, width, height);
@@ -28,8 +28,10 @@ export function useCombatDrawing() {
         filter = 'sepia(1) hue-rotate(170deg) saturate(2) brightness(2)'; // azul
       }
       ctx.filter = filter;
+      ctx.globalAlpha = opacity;
       ctx.drawImage(img.value, 0, 0, width, height);
       ctx.filter = 'none';
+      ctx.globalAlpha = 1;
     }
   }
 
@@ -40,15 +42,15 @@ export function useCombatDrawing() {
     drawCharacter(knightCanvas, knightImg, tintType);
   }
 
-  function drawEnemy(enemyCanvas, enemyType = 'orc') {
-    
+  function drawEnemy(enemyCanvas, enemyType = 'orc', defeated = false) {
     let tintType = null;
     if (enemyFreezeTint.value) tintType = 'freeze';
     else if (enemyTint.value) tintType = 'hit';
     const enemy = ENEMIES.find(e => e.type === enemyType);
     const width = enemy && enemy.width ? enemy.width : 60;
     const height = enemy && enemy.height ? enemy.height : 80;
-    drawCharacter(enemyCanvas, enemyImg, tintType, width, height);
+    const opacity = defeated ? 0.5 : 1;
+    drawCharacter(enemyCanvas, enemyImg, tintType, width, height, opacity);
   }
 
   function loadImages(knightCanvas, enemyCanvas, playerStore) {
@@ -66,7 +68,7 @@ export function useCombatDrawing() {
         // Solo dibuja si el tipo es el actual
         if (playerStore.enemyType === type && enemyCanvas.value) {
           enemyImg.value = img;
-          drawEnemy(enemyCanvas, type);
+          drawEnemy(enemyCanvas, type, playerStore.enemyDefeated);
         }
       };
       img.src = src;
@@ -77,10 +79,10 @@ export function useCombatDrawing() {
   }
 
   // Switch the enemy image according to type and redraw
-  function setEnemyType(type, enemyCanvas) {
+  function setEnemyType(type, enemyCanvas, defeated = false) {
     enemyImg.value = enemyImgs[type] || new Image();
-    if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas, type);
-    else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas, type);
+    if (enemyImg.value.complete && enemyCanvas.value) drawEnemy(enemyCanvas, type, defeated);
+    else if (enemyImg.value.onload) enemyImg.value.onload = () => drawEnemy(enemyCanvas, type, defeated);
   }
 
   return {

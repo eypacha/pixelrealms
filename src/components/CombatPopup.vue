@@ -258,16 +258,19 @@ function continueJourney() {
 onMounted(() => {
   loadImages(knightCanvas, enemyCanvas, playerStore);
   if (playerStore.enemyType) {
-    setEnemyType(playerStore.enemyType, enemyCanvas);
+    setEnemyType(playerStore.enemyType, enemyCanvas, playerStore.enemyDefeated);
   }
   watch(() => playerStore.enemyDefeated, (v) => {
+    if (playerStore.enemyType) {
+      setEnemyType(playerStore.enemyType, enemyCanvas, v);
+    }
     if (v) setupCombatLoot();
     console.log('DEBUG: enemyDefeated ->', v);
   });
 });
 
 watch(() => playerStore.enemyType, (type) => {
-  if (type) setEnemyType(type, enemyCanvas);
+  if (type) setEnemyType(type, enemyCanvas, playerStore.enemyDefeated);
 });
 
 watch(() => playerStore.health, (newVal, oldVal) => {
@@ -284,10 +287,10 @@ watch(() => playerStore.health, (newVal, oldVal) => {
 watch(() => playerStore.enemyHealth, (newVal, oldVal) => {
   if (newVal < oldVal) {
     enemyTint.value = true;
-    drawEnemy(enemyCanvas, playerStore.enemyType);
+    drawEnemy(enemyCanvas, playerStore.enemyType, playerStore.enemyDefeated);
     setTimeout(() => {
       enemyTint.value = false;
-      drawEnemy(enemyCanvas, playerStore.enemyType);
+      drawEnemy(enemyCanvas, playerStore.enemyType, playerStore.enemyDefeated);
     }, 100);
   }
 });
@@ -297,10 +300,10 @@ watch(() => playerStore.enemyFrozen, (isFrozen) => {
   if (isFrozen) {
     enemyTint.value = false;
     enemyFreezeTint.value = true;
-    drawEnemy(enemyCanvas, playerStore.enemyType);
+    drawEnemy(enemyCanvas, playerStore.enemyType, playerStore.enemyDefeated);
   } else {
     enemyFreezeTint.value = false;
-    drawEnemy(enemyCanvas, playerStore.enemyType);
+    drawEnemy(enemyCanvas, playerStore.enemyType, playerStore.enemyDefeated);
   }
 });
 
