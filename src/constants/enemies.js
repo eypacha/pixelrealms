@@ -103,6 +103,7 @@ export const ENEMIES = [
 		height: 80,
 		baseProbability: 0.05,
 		minDefeated: 20,
+        fireballChance: 0.3,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 10) + 20,
 			potions: Math.floor(Math.random() * 3) + 5,

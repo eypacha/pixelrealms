@@ -309,38 +309,40 @@ export const usePlayerStore = defineStore('player', () => {
 
   const enemyAttack = () => {
     console.log('👹 Ataque del enemigo');
-        const enemyData = ENEMIES[enemyType.value];
-        if (enemyData && enemyData.freezeChance) {
-          if (!playerFrozen.value && Math.random() < enemyData.freezeChance) {
-            console.log('❄️ El enemigo ha congelado al jugador!');
-            freezePlayer();
-            return;
-          }
+    const enemyData = ENEMIES.find(e => e.type === enemyType.value);
+    // Freeze logic
+    if (enemyData && enemyData.freezeChance) {
+      if (!playerFrozen.value) {
+        const freezeRoll = Math.random();
+        
+        if (freezeRoll < enemyData.freezeChance) {
+          console.log('❄️ El enemigo ha congelado al jugador!');
+          freezePlayer();
+          return;
         }
+      }
+    }
 
-        const result = performAttack(
-          { attack: enemyDefense.value },
+    // Fireball logic for dragon
+    if (enemyData && enemyData.fireballChance) {
+      const fireballRoll = Math.random();
+      
+      if (fireballRoll < enemyData.fireballChance) {
+
+        const fireballResult = performAttack(
+          { attack: enemyStrength.value * 1.4 },
           { defense: defense.value }
         );
-
-        console.log('damage:', result.damage);
-        if (Number.isFinite(health.value) && Number.isFinite(result.damage)) {
-          health.value -= result.damage;
-        } else {
-          health.value = 10;
-        }
-        if (result.missed) {
-          combatMessage.value = t('combat.miss');
+        
+        if (fireballResult.missed) {
+          combatMessage.value = t('combat.fireballMissed');
           soundStore.playSound('whosh');
         } else {
-          soundStore.playSound('hammer');
-          if (result.isCritical) {
-            combatMessage.value = t('combat.critical', { value: result.damage });
-          } else {
-            combatMessage.value = t('combat.hit', { value: result.damage });
-          }
+          health.value -= fireballResult.damage;
+          combatMessage.value = t('combat.fireballHit', { value: fireballResult.damage });
+          soundStore.playSound('fireball');
         }
-
+        // Termina el turno aquí
         // Consumir el cover y restaurar defense
         if (coverActive.value) {
           coverTurns.value -= 1;
@@ -349,7 +351,6 @@ export const usePlayerStore = defineStore('player', () => {
             coverActive.value = false;
           }
         }
-
         if (health.value <= 0) {
           combatMessage.value = t('combat.playerDefeated');
           setTimeout(() => {
@@ -358,18 +359,69 @@ export const usePlayerStore = defineStore('player', () => {
           }, 1000);
           return;
         }
-
         if(playerFrozen.value) {
           maybeResetPlayerFrozen();
           return;
         }
-
         if (playerFleeing.value) {
           console.log('🏃 El jugador ha huido del combate')
           endCombat();
         }
-          
-         playerTurn.value = true;
+        playerTurn.value = true;
+        return;
+      }
+    }
+    // Ataque normal
+    const result = performAttack(
+      { attack: enemyDefense.value },
+      { defense: defense.value }
+    );
+    console.log('damage:', result.damage);
+    if (Number.isFinite(health.value) && Number.isFinite(result.damage)) {
+      health.value -= result.damage;
+    } else {
+      health.value = 10;
+    }
+    if (result.missed) {
+      combatMessage.value = t('combat.miss');
+      soundStore.playSound('whosh');
+    } else {
+      soundStore.playSound('hammer');
+      if (result.isCritical) {
+        combatMessage.value = t('combat.critical', { value: result.damage });
+      } else {
+        combatMessage.value = t('combat.hit', { value: result.damage });
+      }
+    }
+
+    // Consumir el cover y restaurar defense
+    if (coverActive.value) {
+      coverTurns.value -= 1;
+      if (coverTurns.value <= 0) {
+        defense.value /= COVER_DEFENSE_MULTIPLIER;
+        coverActive.value = false;
+      }
+    }
+
+    if (health.value <= 0) {
+      combatMessage.value = t('combat.playerDefeated');
+      setTimeout(() => {
+        combatActive.value = false;
+        gameOver.value = true;
+      }, 1000);
+      return;
+    }
+
+    if(playerFrozen.value) {
+      maybeResetPlayerFrozen();
+      return;
+    }
+
+    if (playerFleeing.value) {
+      console.log('🏃 El jugador ha huido del combate')
+      endCombat();
+    }
+    playerTurn.value = true;
 
   }
 
@@ -379,8 +431,8 @@ export const usePlayerStore = defineStore('player', () => {
     mana.value -= 2;
     // Ataque con fuerza aumentada
     const result = performAttack(
-      { attack: strength.value },
-      { defense: enemyDefense.value - 5}
+      { attack: strength.value * 1.4 },
+      { defense: enemyDefense.value }
     );
     if (result.missed) {
       combatMessage.value = t('combat.fireballMissed');
