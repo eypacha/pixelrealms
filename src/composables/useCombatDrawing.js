@@ -9,7 +9,7 @@ export function useCombatDrawing() {
   const enemyImgs = {};
   // Construir el objeto de tipos y rutas dinámicamente
   const enemyTypes = Object.fromEntries(
-    Object.entries(ENEMIES).map(([key, val]) => [key, val.image])
+    ENEMIES.map(e => [e.type, e.image])
   );
   const knightTint = ref(false);
   const knightFreezeTint = ref(false);
@@ -45,9 +45,9 @@ export function useCombatDrawing() {
     let tintType = null;
     if (enemyFreezeTint.value) tintType = 'freeze';
     else if (enemyTint.value) tintType = 'hit';
-    const enemy = ENEMIES[enemyType];
-    const width = enemy.width || 60;
-    const height = enemy.height || 80;
+    const enemy = ENEMIES.find(e => e.type === enemyType);
+    const width = enemy && enemy.width ? enemy.width : 60;
+    const height = enemy && enemy.height ? enemy.height : 80;
     drawCharacter(enemyCanvas, enemyImg, tintType, width, height);
   }
 

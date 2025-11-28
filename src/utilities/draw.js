@@ -41,7 +41,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
   // Cargar imágenes de enemigos dinámicamente desde ENEMIES
   if (!drawAll.enemyImages) {
     drawAll.enemyImages = {};
-    Object.entries(ENEMIES).forEach(([type, data]) => {
+    ENEMIES.forEach(data => {
       const img = new Image();
       img.src = data.image;
       img.onload = () => {
@@ -49,7 +49,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
           drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
         }
       };
-      drawAll.enemyImages[type] = img;
+      drawAll.enemyImages[data.type] = img;
     });
     // Wizard es especial, no está en ENEMIES
     const wizardImg = new Image();

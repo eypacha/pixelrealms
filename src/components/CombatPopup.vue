@@ -116,12 +116,13 @@ import { useI18n } from 'vue-i18n';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
 import { ENEMIES } from '../constants/enemies';
 
+const enemyData = computed(() => ENEMIES.find(e => e.type === playerStore.enemyType));
 const enemyWidth = computed(() => {
-  const enemy = ENEMIES[playerStore.enemyType];
+  const enemy = enemyData.value;
   return enemy && enemy.width ? enemy.width : 60;
 });
 const enemyHeight = computed(() => {
-  const enemy = ENEMIES[playerStore.enemyType];
+  const enemy = enemyData.value;
   return enemy && enemy.height ? enemy.height : 80;
 });
 
@@ -210,7 +211,8 @@ const combatLoot = ref({
 
 function setupCombatLoot() {
   if (playerStore.enemyDefeated && !playerStore.lootCollected) {
-    const lootFn = ENEMIES[playerStore.enemyType]?.loot;
+    const enemy = ENEMIES.find(e => e.type === playerStore.enemyType);
+    const lootFn = enemy?.loot;
     const loot = lootFn ? lootFn() : { coins: 0, potions: 0, scrolls: 0 };
     combatLoot.value.coins = loot.coins;
     combatLoot.value.potions = loot.potions;

@@ -219,25 +219,29 @@ export const usePlayerStore = defineStore('player', () => {
   // Permite pasar el tipo de enemigo como parámetro
   const startCombat = (forcedType) => {
     let selected;
-    if (forcedType && ENEMIES[forcedType]) {
-      selected = ENEMIES[forcedType];
+    if (forcedType) {
+      selected = ENEMIES.find(e => e.id === forcedType);
     } else {
-      // Selección aleatoria de enemigo según su chance
-      const entries = Object.entries(ENEMIES);
-      const totalChance = entries.reduce((acc, [_, enemy]) => acc + (enemy.chance || 0), 0);
-      let rand = Math.random() * totalChance;
-      selected = entries[0][1];
-      for (const [_, enemy] of entries) {
-        rand -= enemy.chance || 0;
+      // Filtrar enemigos según minDefeated y maxDefeated
+      const available = ENEMIES.filter(e => {
+        if (typeof e.minDefeated === 'number' && defeatedEnemiesCount.value < e.minDefeated) return false;
+        if (typeof e.maxDefeated === 'number' && defeatedEnemiesCount.value > e.maxDefeated) return false;
+        return (e.baseProbability || 0) > 0;
+      });
+      const totalProb = available.reduce((sum, e) => sum + (e.baseProbability || 0), 0);
+      let rand = Math.random() * totalProb;
+      selected = available[0];
+      for (const enemy of available) {
+        rand -= enemy.baseProbability || 0;
         if (rand <= 0) {
           selected = enemy;
           break;
         }
       }
     }
-      enemyType.value = selected.type;
-      enemyHealth.value = selected.health;
-      enemyStrength.value = selected.strength;
+    enemyType.value = selected.type;
+    enemyHealth.value = selected.health;
+    enemyStrength.value = selected.strength;
       enemyDefense.value = selected.defense;
       // Resetear congelación visual y lógica
       enemyFrozen.value = false;

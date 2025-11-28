@@ -2,8 +2,9 @@ export const ENCOUNTER_RATE_DAY = 0.05;
 export const ENCOUNTER_RATE_NIGHT = 0.2;
 export const ENEMY_PAUSE = 1000;
 
-export const ENEMIES = {
-	 goblin: {
+export const ENEMIES = [
+	{
+		id: 'goblin',
 		type: 'goblin',
 		health: 5,
 		strength: 3,
@@ -11,14 +12,17 @@ export const ENEMIES = {
 		image: 'images/enemies/goblin.png',
 		width: 60,
 		height: 80,
-		chance: 0.6,
+		baseProbability: 0.6,
+		minDefeated: 0,
+		maxDefeated: 20,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 10) + 1,
 			potions: 1,
 			scrolls: 0
 		})
-	 },
-	 orc: {
+	},
+	{
+		id: 'orc',
 		type: 'orc',
 		health: 10,
 		strength: 10,
@@ -26,14 +30,16 @@ export const ENEMIES = {
 		image: 'images/enemies/medium-orc.png',
 		width: 60,
 		height: 80,
-		chance: 0.2,
+		baseProbability: 0.2,
+		minDefeated: 0,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 10) + 5,
 			potions: Math.floor(Math.random() * 3),
 			scrolls: 0
 		})
-	 },
-	 darkknight: {
+	},
+	{
+		id: 'darkknight',
 		type: 'darkknight',
 		health: 20,
 		strength: 20,
@@ -41,15 +47,17 @@ export const ENEMIES = {
 		image: 'images/enemies/darkknight.png',
 		width: 60,
 		height: 80,
-		chance: 0,
+		baseProbability: 0,
+		minDefeated: 0,
 		freezeChance: 0.2,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 31) + 30,
 			potions: Math.floor(Math.random() * 3),
 			scrolls: 1
 		})
-	 },
-	 knight: {
+	},
+	{
+		id: 'knight',
 		type: 'knight',
 		health: 20,
 		strength: 20,
@@ -57,15 +65,17 @@ export const ENEMIES = {
 		image: 'images/enemies/knight.png',
 		width: 60,
 		height: 80,
-		chance: 0.1,
+		baseProbability: 0.1,
+		minDefeated: 0,
 		freezeChance: 0.1,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 20) + 10,
 			potions: Math.floor(Math.random() * 2),
 			scrolls: Math.floor(Math.random() * 2)
 		})
-	 },
-	 skeleton: {
+	},
+	{
+		id: 'skeleton',
 		type: 'skeleton',
 		health: 10,
 		strength: 10,
@@ -73,15 +83,17 @@ export const ENEMIES = {
 		image: 'images/enemies/skeleton.png',
 		width: 60,
 		height: 80,
-		chance: 0.1,
+		baseProbability: 0.1,
+		minDefeated: 0,
 		freezeChance: 0.3,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 20),
 			potions: Math.floor(Math.random() * 5),
 			scrolls: Math.floor(Math.random() * 3) + 2
 		})
-	 },
-	 dragon: {
+	},
+	{
+		id: 'dragon',
 		type: 'dragon',
 		health: 100,
 		strength: 100,
@@ -89,11 +101,12 @@ export const ENEMIES = {
 		image: 'images/enemies/dragon.png',
 		width: 90,
 		height: 80,
-		chance: 0,
+		baseProbability: 0.05,
+		minDefeated: 20,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 10) + 20,
 			potions: Math.floor(Math.random() * 3) + 5,
 			scrolls: Math.floor(Math.random() * 3) + 5
 		})
-	 }
-};
+	}
+];
