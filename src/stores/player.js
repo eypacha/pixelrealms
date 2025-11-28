@@ -5,6 +5,8 @@ import { ref } from 'vue';
 import {
     PLAYER_SPEED,
     RECOVERY_STEPS,
+    COVER_DEFENSE_MULTIPLIER,
+    COVER_DEFENSE_TURNS
   } from '../constants/player.js';
 
 import {
@@ -21,8 +23,6 @@ import { getColorForHeight } from '../utilities/draw.js';
 import { useSoundStore } from './sound.js';
 import { performAttack } from '../utilities/combatCalcs.js';
 
-const COVER_DEFENSE_MULTIPLIER = 1.5; 
-const COVER_DEFENSE_TURNS = 2;
 
 export const usePlayerStore = defineStore('player', () => {
 
@@ -40,21 +40,21 @@ export const usePlayerStore = defineStore('player', () => {
 
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
-  const health = ref(null);
-  const maxHealth = ref(null);
-  const strength = ref(null);
-  const defense = ref(null);
-  const coins = ref(null);
+  const health = ref(10);
+  const maxHealth = ref(10); 
+  const strength = ref(10);
+  const defense = ref(10);
+  const coins = ref(10);
   const inventory = ref({ potion: 0 });
 
   const steps = ref(0);
   const mana = ref(0);
 
   const combatActive = ref(false);
-  const enemyHealth = ref(undefined);
-  const enemyStrength = ref(undefined);
-  const enemyDefense = ref(undefined);
-  const enemyType = ref(undefined);
+  const enemyHealth = ref(0); 
+  const enemyStrength = ref(10);
+  const enemyDefense = ref(10);
+  const enemyType = ref('orc');
   const combatMessage = ref('');
   const coverActive = ref(false);
   const coverTurns = ref(0);
@@ -66,7 +66,7 @@ export const usePlayerStore = defineStore('player', () => {
   const playerTurn = ref(true);
   const lastDirection = ref('down');
   const darkKnightDefeatedCount = ref(0);
-  const defeatedEnemiesCount = ref(0); // Nuevo contador total
+  const defeatedEnemiesCount = ref(0);
   const enemyFrozen = ref(false);
   const playerFrozen = ref(false);
   const playerFleeing = ref(false);
@@ -112,13 +112,13 @@ export const usePlayerStore = defineStore('player', () => {
   // ...existing code...
 
   function reset() {
-      health.value = maxHealth.value;
+      health.value = Number.isFinite(maxHealth.value) ? maxHealth.value : 10;
       strength.value = 10;
       defense.value = 10;
       coins.value = 10;
       inventory.value.potion = 2;
       mana.value = 0;
-      enemyHealth.value = undefined;
+      enemyHealth.value = 0;
       enemyStrength.value = undefined;
       enemyDefense.value = undefined;
       enemyType.value = undefined;
@@ -191,7 +191,11 @@ export const usePlayerStore = defineStore('player', () => {
     steps.value += 1;
     timeStore.registerMove();
     if (steps.value % RECOVERY_STEPS === 0) {
-      health.value = Math.min(maxHealth.value, health.value + 1);
+      if (Number.isFinite(health.value) && Number.isFinite(maxHealth.value)) {
+        health.value = Math.min(maxHealth.value, health.value + 1);
+      } else {
+        health.value = 10;
+      }
     }
     // Guardar la posición visitada como POI tipo 'step'
     poiStore.addStepPoi(position.value);
@@ -320,7 +324,11 @@ export const usePlayerStore = defineStore('player', () => {
         );
 
         console.log('damage:', result.damage);
-        health.value -= result.damage;
+        if (Number.isFinite(health.value) && Number.isFinite(result.damage)) {
+          health.value -= result.damage;
+        } else {
+          health.value = 10;
+        }
         if (result.missed) {
           combatMessage.value = t('combat.miss');
           soundStore.playSound('whosh');
@@ -447,7 +455,11 @@ export const usePlayerStore = defineStore('player', () => {
 
   const usePotion = () => {
       inventory.value.potion -= 1;
-      health.value = Math.min(maxHealth.value, health.value + 5);
+      if (Number.isFinite(health.value) && Number.isFinite(maxHealth.value)) {
+        health.value = Math.min(maxHealth.value, health.value + 5);
+      } else {
+        health.value = 10;
+      }
       combatMessage.value = t('combat.healed', { value: 5 });
       soundStore.playSound('gulp');
       playerTurn.value = false;

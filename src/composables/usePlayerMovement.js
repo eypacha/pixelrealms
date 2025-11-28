@@ -9,6 +9,7 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
     if (playerStore.gameOver) return;
     if (!playerStore.characterSelected) return;
     if (narrativeActive.value) return;
+    if (poiStore.treasureDiscovered) return; // Bloquea movimiento si el popup de tesoro está abierto
     let moved = false;
     if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
       soundStore.playSound('footstep');
