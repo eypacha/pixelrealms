@@ -77,11 +77,11 @@
             <button
               @click="btn.onClick"
               :disabled="btn.disabled ? btn.disabled() : false"
-              class="px-4 py-1 flex flex-col items-center"
+              class="px-4 py-1 flex flex-col items-center w-22"
               :class="[btn.disabled && btn.disabled() ? 'opacity-50 cursor-default' : 'cursor-pointer']"
             >
-              <span style="font-size:1.5em;">{{ btn.emoji }}</span>
-              {{ btn.label }}
+              <span class="text-lg">{{ btn.emoji }}</span>
+              <span class="leading-none">{{ btn.label }}</span>
             </button>
           </div>
         </div>
