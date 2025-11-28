@@ -47,8 +47,8 @@ export const ENEMIES = [
 		image: 'images/enemies/darkknight.png',
 		width: 60,
 		height: 80,
-		baseProbability: 0,
-		minDefeated: 0,
+		baseProbability: 0.1,
+		minDefeated: 20,
 		freezeChance: 0.2,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 31) + 30,
