@@ -7,6 +7,7 @@
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': potionAnimating }">🧪{{ potion }}</span>
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': manaAnimating }">🪬{{ mana }}</span>
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': defeatedEnemiesAnimating }">💀{{ defeatedEnemies }}</span>
+    <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': stepsAnimating }">👣{{ steps }}</span>
   </div>
 </template>
 
@@ -23,6 +24,7 @@ const coinsAnimating = ref(false);
 const potionAnimating = ref(false);
 const manaAnimating = ref(false);
 const defeatedEnemiesAnimating = ref(false);
+const stepsAnimating = ref(false);
 
 const health = computed(() => Math.floor(playerStore.health));
 const strength = computed(() => Math.floor(playerStore.strength));
@@ -31,6 +33,7 @@ const coins = computed(() => Math.floor(playerStore.coins));
 const potion = computed(() => Math.floor(playerStore.inventory.potion));
 const mana = computed(() => Math.floor(playerStore.mana));
 const defeatedEnemies = computed(() => playerStore.defeatedEnemiesCount ?? 0);
+const steps = computed(() => playerStore.steps ?? 0);
 
 watch(health, (newValue, oldValue) => {
   if (oldValue !== undefined && newValue !== oldValue) {
@@ -80,11 +83,21 @@ watch(mana, (newValue, oldValue) => {
     }, 300);
   }
 });
+
 watch(defeatedEnemies, (newValue, oldValue) => {
   if (oldValue !== undefined && newValue !== oldValue) {
     defeatedEnemiesAnimating.value = true;
     setTimeout(() => {
       defeatedEnemiesAnimating.value = false;
+    }, 300);
+  }
+});
+
+watch(steps, (newValue, oldValue) => {
+  if (oldValue !== undefined && newValue !== oldValue) {
+    stepsAnimating.value = true;
+    setTimeout(() => {
+      stepsAnimating.value = false;
     }, 300);
   }
 });

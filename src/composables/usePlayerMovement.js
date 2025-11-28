@@ -6,6 +6,8 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
   function handleKeyDown(e) {
     if (e.repeat) return;
     if (playerStore.combatActive) return;
+    if (playerStore.gameOver) return;
+    if (!playerStore.characterSelected) return;
     if (narrativeActive.value) return;
     let moved = false;
     if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
