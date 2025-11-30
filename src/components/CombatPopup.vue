@@ -181,8 +181,8 @@ const combatButtons = [
   { emoji: '🗡️', label: t('combat.attack'), onClick: swordAttack, disabled: () => !combatStore.playerTurn },
   { emoji: '🛡️', label: t('combat.cover'), onClick: cover, disabled: () => !combatStore.playerTurn },
   { emoji: '🧪', label: t('combat.heal'), onClick: usePotion, disabled: () => !combatStore.playerTurn || playerStore.inventory.potion <= 0 },
-  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !combatStore.playerTurn || playerStore.mana < 2 || (enemyData.value && Array.isArray(enemyData.value.immunity) && enemyData.value.immunity.includes('fireball')) },
-  { emoji: '❄️', label: t('combat.freeze'), onClick: freeze, disabled: () => !combatStore.playerTurn || playerStore.mana < 2 || (enemyData.value && Array.isArray(enemyData.value.immunity) && enemyData.value.immunity.includes('freeze')) },
+  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !combatStore.playerTurn || playerStore.mana < 2 },
+  { emoji: '❄️', label: t('combat.freeze'), onClick: freeze, disabled: () => !combatStore.playerTurn || playerStore.mana < 2 },
   { emoji: '🏃', label: t('combat.flee'), onClick: flee, disabled: () => !combatStore.playerTurn }
 ];
 
