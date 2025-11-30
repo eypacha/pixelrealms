@@ -67,7 +67,7 @@ export const ENEMIES = [
 		image: 'images/enemies/knight.png',
 		width: 60,
 		height: 80,
-		baseProbability: 0.1,
+		baseProbability: 0.05,
 		minDefeated: 0,
 		freezeChance: 0.1,
 		loot: () => ({
