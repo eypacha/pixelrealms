@@ -22,8 +22,6 @@ export const usePlayerStore = defineStore('player', () => {
   const terrainImage = ref(null);
   const reactiveImage = ref(null);
 
-  const { t } = useI18n();
-
   const seed = ref(Date.now());
 
   // Player core state
