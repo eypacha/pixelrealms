@@ -105,7 +105,7 @@ export const ENEMIES = [
 		image: 'images/enemies/dragon.png',
 		width: 90,
 		height: 80,
-		baseProbability: 0.05,
+		baseProbability: 0.0005,
 		minDefeated: 20,
         fireballChance: 0.3,
 		immunity: ['fireball'],
