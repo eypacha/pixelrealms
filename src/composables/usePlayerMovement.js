@@ -16,7 +16,7 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
     if (poiStore.treasureDiscovered) return; // Bloquea movimiento si el popup de tesoro está abierto
     let moved = false;
     if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-      soundStore.playSound('footstep');
+      
       moved = playerStore.moveUp();
       if (!moved) {
         const canvas = terrainCanvas.value;
@@ -38,7 +38,6 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
         }
       }
     } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-      soundStore.playSound('footstep');
       moved = playerStore.moveLeft();
       if (!moved) {
         const canvas = terrainCanvas.value;
@@ -49,7 +48,6 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
         }
       }
     } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-      soundStore.playSound('footstep');
       moved = playerStore.moveRight();
       if (!moved) {
         const canvas = terrainCanvas.value;
