@@ -110,9 +110,9 @@ export const ENEMIES = [
         fireballChance: 0.3,
 		immunity: ['fireball'],
 		loot: () => ({
-			coins: Math.floor(Math.random() * 10) + 20,
-			potions: Math.floor(Math.random() * 3) + 5,
-			scrolls: Math.floor(Math.random() * 3) + 5
+			coins: Math.floor(Math.random() * 10) + 50,
+			potions: Math.floor(Math.random() * 5) + 10,
+			scrolls: Math.floor(Math.random() * 5) + 10
 		})
 	}
 ];
