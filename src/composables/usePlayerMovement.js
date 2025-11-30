@@ -16,6 +16,7 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
     if (poiStore.treasureDiscovered) return; // Bloquea movimiento si el popup de tesoro está abierto
     let moved = false;
     const key = String(e.key).toLowerCase();
+    const canvas = terrainCanvas.value;
     const directions = [
       {
         keys: ['arrowup', 'w'],
@@ -29,7 +30,7 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
       {
         keys: ['arrowdown', 's'],
         move: () => playerStore.moveDown(),
-        shouldWrap: () => playerStore.position.y >= canvas.height - PLAYER_SPEED,
+        shouldWrap: () => canvas && playerStore.position.y >= canvas.height - PLAYER_SPEED,
         wrap: (canvas) => {
           addOffset(0, tileStep);
           playerStore.position.y = 0;
@@ -47,7 +48,7 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
       {
         keys: ['arrowright', 'd'],
         move: () => playerStore.moveRight(),
-        shouldWrap: () => playerStore.position.x >= canvas.width - PLAYER_SPEED,
+        shouldWrap: () => canvas && playerStore.position.x >= canvas.width - PLAYER_SPEED,
         wrap: (canvas) => {
           addOffset(tileStep, 0);
           playerStore.position.x = 0;
