@@ -13,6 +13,7 @@ export const ENEMIES = [
 		width: 60,
 		height: 80,
 		baseProbability: 0.6,
+		fleeingChance: 1,
 		minDefeated: 0,
 		maxDefeated: 20,
 		loot: () => ({
@@ -30,6 +31,7 @@ export const ENEMIES = [
 		image: 'images/enemies/medium-orc.png',
 		width: 60,
 		height: 80,
+		fleeingChance: 0.1,
 		baseProbability: 0.2,
 		minDefeated: 0,
 		loot: () => ({

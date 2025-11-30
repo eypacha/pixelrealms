@@ -174,7 +174,8 @@ export const usePlayerStore = defineStore('player', () => {
     const roll = encounterRandom();
     if (roll < encounterRate) {
       const combat = useCombatStore();
-      combat.startCombat();
+      // pass minimal player info (defeatedEnemiesCount) so combat store can filter available enemies
+      combat.startCombat(undefined, { defeatedEnemiesCount: defeatedEnemiesCount.value });
     }
   }
 

@@ -25,6 +25,7 @@ export const useCombatStore = defineStore('combat', () => {
   const coverActive = ref(false);
   const coverTurns = ref(0);
   const enemyDefeated = ref(false);
+  const enemyFled = ref(false);
   const lootCollected = ref(false);
   const playerTurn = ref(true);
   const enemyFrozen = ref(false);
@@ -59,6 +60,7 @@ export const useCombatStore = defineStore('combat', () => {
     enemyStrength.value = selected.strength;
     enemyDefense.value = selected.defense;
     enemyFrozen.value = false;
+    enemyFled.value = false;
     combatActive.value = true;
     playerTurn.value = true;
     combatMessage.value = t('combat.start');
@@ -116,6 +118,24 @@ export const useCombatStore = defineStore('combat', () => {
     if (!playerStore) playerStore = usePlayerStore();
     console.log('👹 Ataque del enemigo');
     const enemyData = ENEMIES.find(e => e.type === enemyType.value);
+
+    // If enemy is very low on health (between 1 and <=10% of its max), it can attempt to flee
+    if (enemyData && typeof enemyData.fleeingChance === 'number' && enemyHealth.value >= 1) {
+      const maxHealthForType = enemyData.health || 0;
+      const threshold = Math.max(1, Math.floor(maxHealthForType * 0.1));
+      if (enemyHealth.value <= threshold) {
+        const fleeRoll = Math.random();
+        if (fleeRoll < enemyData.fleeingChance) {
+          // Enemy successfully flees — don't immediately close the popup
+          combatMessage.value = t('combat.enemyFled');
+          soundStore.playSound('whosh');
+          // mark the enemy as fled so the UI can show a "Continue" button
+          enemyFled.value = true;
+          // keep combatActive true so UI remains visible until player continues
+          return;
+        }
+      }
+    }
 
     // Freeze logic
     if (enemyData && enemyData.freezeChance) {
@@ -328,6 +348,7 @@ export const useCombatStore = defineStore('combat', () => {
 
     combatActive.value = false;
     enemyDefeated.value = false;
+    enemyFled.value = false;
     lootCollected.value = false;
     playerFleeing.value = false;
     playerTurn.value = false;
@@ -355,6 +376,7 @@ export const useCombatStore = defineStore('combat', () => {
     coverActive,
     coverTurns,
     enemyDefeated,
+    enemyFled,
     lootCollected,
     playerTurn,
     enemyFrozen,

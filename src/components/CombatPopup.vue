@@ -43,7 +43,7 @@
               </div>
             </div>
             <div class="flex gap-2">
-              <div class="relative">
+              <div class="relative transition-all duration-250" :class="combatStore.enemyFled ? 'opacity-0' : 'opacity-100'">
                 <canvas
                   ref="enemyCanvas"
                   :width="enemyWidth"
@@ -72,7 +72,7 @@
         <div>
           <p class="p-2 mt-2 h-15">{{ combatStore.combatMessage }}</p>
         </div>
-        <div v-if="!combatStore.enemyDefeated" class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
+        <div v-if="!combatStore.enemyDefeated && !combatStore.enemyFled" class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
           <div v-for="btn in combatButtons" :key="btn.label" class="flex flex-col items-center">
             <button
               @click="btn.onClick"
@@ -85,7 +85,7 @@
             </button>
           </div>
         </div>
-          <div v-else class="flex flex-col gap-2 items-center w-full mt-2">
+          <div v-else-if="combatStore.enemyDefeated" class="flex flex-col gap-2 items-center w-full mt-2">
             <div v-for="btn in lootButtons" :key="btn.key">
               <button
                 v-if="btn.show()"
@@ -96,6 +96,14 @@
                 {{ btn.label() }} <span v-if="btn.emoji" style="font-size:1.1em;">{{ btn.emoji }}</span>
               </button>
             </div>
+            <button
+              class="px-4 py-2 w-full mt-4 cursor-pointer text-black transition font-bold"
+              @click="continueJourney()"
+            >
+              {{ $t('combat.continue') }}
+            </button>
+          </div>
+        <div v-else-if="combatStore.enemyFled" class="flex flex-col gap-2 items-center w-full mt-2">
             <button
               class="px-4 py-2 w-full mt-4 cursor-pointer text-black transition font-bold"
               @click="continueJourney()"
