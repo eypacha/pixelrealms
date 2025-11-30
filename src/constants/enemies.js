@@ -31,7 +31,7 @@ export const ENEMIES = [
 		image: 'images/enemies/medium-orc.png',
 		width: 60,
 		height: 80,
-		fleeingChance: 0.2,
+		fleeingChance: 0.1,
 		baseProbability: 0.2,
 		minDefeated: 0,
 		loot: () => ({
@@ -88,7 +88,7 @@ export const ENEMIES = [
 		baseProbability: 0.1,
 		minDefeated: 0,
 		freezeChance: 0.3,
-		fleeingChance: 0.1,
+		fleeingChance: 0.05,
 		immunity: ['freeze'],
 		loot: () => ({
 			coins: Math.floor(Math.random() * 20),
