@@ -1,5 +1,7 @@
 // src/utilities/poiDiscovery.js
 
+import { useCombatStore } from '../stores/combat';
+
 export function checkPoisDiscovery(pois, playerPosition, playerStore, treasureDiscoveredRef) {
   pois.forEach(poi => {
     if (
@@ -8,9 +10,9 @@ export function checkPoisDiscovery(pois, playerPosition, playerStore, treasureDi
     ) {
       if (poi.type !== 'narrative') poi.discovered = true;
       if (poi.type === 'darkknight') {
-        playerStore.startCombat('darkknight');
+        useCombatStore().startCombat('darkknight', playerStore);
       } else if (poi.type === 'dragon') {
-        playerStore.startCombat('dragon');
+        useCombatStore().startCombat('dragon', playerStore);
       } else if (poi.type === 'wizard') {
         playerStore.wizardActive = true;
       } else if (poi.type === 'treasure') {

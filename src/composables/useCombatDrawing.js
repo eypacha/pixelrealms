@@ -53,7 +53,7 @@ export function useCombatDrawing() {
     drawCharacter(enemyCanvas, enemyImg, tintType, width, height, opacity);
   }
 
-  function loadImages(knightCanvas, enemyCanvas, playerStore) {
+  function loadImages(knightCanvas, enemyCanvas, playerStore, combatStore) {
     // Draw player image (dynamic) on knightCanvas
     knightImg.value = new Image();
     knightImg.value.onload = () => {
@@ -66,9 +66,9 @@ export function useCombatDrawing() {
       const img = new Image();
       img.onload = () => {
         // Solo dibuja si el tipo es el actual
-        if (playerStore.enemyType === type && enemyCanvas.value) {
+        if (combatStore?.enemyType === type && enemyCanvas.value) {
           enemyImg.value = img;
-          drawEnemy(enemyCanvas, type, playerStore.enemyDefeated);
+          drawEnemy(enemyCanvas, type, combatStore?.enemyDefeated);
         }
       };
       img.src = src;

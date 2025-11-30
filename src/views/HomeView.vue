@@ -22,7 +22,7 @@
         class="max-w-full absolute top-0 left-0 z-10 pointer-events-none"
         :class="isNight ? 'brightness-60' : 'brightness-100'"
       ></canvas>
-      <CombatPopup v-if="playerStore.combatActive" />
+      <CombatPopup v-if="combatStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
       <WizardPopup v-if="playerStore.wizardActive" />
       <NarrativePopup
@@ -67,6 +67,7 @@ import { storeToRefs } from 'pinia';
 import StatusBar from '../components/StatusBar.vue';
 import CharacterSelectPopup from '../components/CharacterSelectPopup.vue';
 import { useKonamiCode } from '../composables/useKonamiCode';
+import { useCombatStore } from '../stores/combat';
 
 const { terrainCanvas, seedInput, worldOffset, addOffset, tileStep, randomizeSeed } = useTerrain();
 // Patch: Redibuja e inicializa jugador al cambiar de chunk
@@ -78,6 +79,7 @@ function handleOffsetChange(x, y) {
 const seedLocal = ref(seedInput.value);
 const reactiveCanvas = ref(null);
 const playerStore = usePlayerStore();
+const combatStore = useCombatStore();
 const poiStore = usePoiStore();
 const { treasureDiscovered } = storeToRefs(poiStore);
 const playerImage = ref(null);

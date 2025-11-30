@@ -1,11 +1,15 @@
 import { onMounted } from 'vue';
+import { useCombatStore } from '../stores/combat';
 import { PLAYER_SPEED } from '../constants/player';
 import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 
 export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, seedInput, worldOffset, tileStep, addOffset, soundStore, poiStore, playerImage, timeStore, drawAll, maybeTriggerEncounter, currentAnecdote, narrativeActive }) {
+
+  const combatStore = useCombatStore();
+
   function handleKeyDown(e) {
     if (e.repeat) return;
-    if (playerStore.combatActive) return;
+    if (combatStore.combatActive) return;
     if (playerStore.gameOver) return;
     if (!playerStore.characterSelected) return;
     if (narrativeActive.value) return;

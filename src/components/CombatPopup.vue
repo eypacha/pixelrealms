@@ -8,15 +8,15 @@
         <div :class="timeStore.isNight ? 'bg-blue-950 text-white' : 'bg-blue-100'">
           <h2 class="pt-4 flex align-center justify-center gap-3">
             <div class="w-32 text-right">
-              <span v-if="playerStore.playerTurn">👉</span>
+              <span v-if="combatStore.playerTurn">👉</span>
               {{ $t('characterSelect.characters.' + playerStore.character) }}
             </div>
             <div>
               {{ $t('combat.vs') }}
             </div>
             <div class="w-32 text-left">
-              {{ $t('enemy.' + playerStore.enemyType) }}
-                <span v-if="!playerStore.playerTurn">👈</span>
+              {{ $t('enemy.' + combatStore.enemyType) }}
+                <span v-if="!combatStore.playerTurn">👈</span>
             </div>
           </h2>
           <div
@@ -54,25 +54,25 @@
               <div class="mr-2">
                   <div class=" flex justify-between gap-1">
                     <span>🗡️</span>
-                    <span>{{ Math.floor(playerStore.enemyStrength) }}</span>
+                    <span>{{ Math.floor(combatStore.enemyStrength) }}</span>
                   </div>
                   
                   <div class=" flex justify-between gap-1">
                     <span>🛡️</span>
-                    <span>{{ Math.floor(playerStore.enemyDefense) }}</span>
+                    <span>{{ Math.floor(combatStore.enemyDefense) }}</span>
                   </div>
                   <div class=" flex justify-between gap-1">
                     <span>❤️</span>
-                    <span>{{ Math.floor(playerStore.enemyHealth) }}</span>
+                    <span>{{ Math.floor(combatStore.enemyHealth) }}</span>
                   </div>
               </div>
             </div>
           </div>
         </div>
         <div>
-          <p class="p-2 mt-2 h-15">{{ playerStore.combatMessage }}</p>
+          <p class="p-2 mt-2 h-15">{{ combatStore.combatMessage }}</p>
         </div>
-        <div v-if="!playerStore.enemyDefeated" class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
+        <div v-if="!combatStore.enemyDefeated" class="mt-4 flex space-x-2 justify-center flex-wrap max-w-[320px] m-auto h-35">
           <div v-for="btn in combatButtons" :key="btn.label" class="flex flex-col items-center">
             <button
               @click="btn.onClick"
@@ -111,12 +111,17 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { usePlayerStore } from '../stores/player';
+import { useCombatStore } from '../stores/combat';
 import { useTimeStore } from '../stores/time';
 import { useI18n } from 'vue-i18n';
 import { useCombatDrawing } from '../composables/useCombatDrawing';
 import { ENEMIES } from '../constants/enemies';
 
-const enemyData = computed(() => ENEMIES.find(e => e.type === playerStore.enemyType));
+const playerStore = usePlayerStore();
+const combatStore = useCombatStore();
+const timeStore = useTimeStore();
+
+const enemyData = computed(() => ENEMIES.find(e => e.type === combatStore.enemyType));
 const enemyWidth = computed(() => {
   const enemy = enemyData.value;
   return enemy && enemy.width ? enemy.width : 60;
@@ -129,49 +134,48 @@ const enemyHeight = computed(() => {
 const { t } = useI18n();
 
 function freeze() {
-  playerStore.freezeEnemy();
+  combatStore.freezeEnemy(playerStore);
 }
 
-const playerStore = usePlayerStore();
-  const timeStore = useTimeStore();
+// playerStore already declared above
 const { knightTint, knightFreezeTint, enemyTint, enemyFreezeTint, drawKnight, drawEnemy, loadImages, setEnemyType } = useCombatDrawing();
 
 const knightCanvas = ref(null);
 const enemyCanvas = ref(null);
 
 function flee() {
-  if (!playerStore.playerTurn) return
-  playerStore.fleeCombat();
+  if (!combatStore.playerTurn) return
+  combatStore.fleeCombat(playerStore);
 }
 
 function swordAttack() {
-  if (!playerStore.playerTurn) return
-  playerStore.playerAttack();
+  if (!combatStore.playerTurn) return
+  combatStore.playerAttack(playerStore);
 }
 
 function cover() {
-  if (!playerStore.playerTurn) return
-  playerStore.activateCover();
+  if (!combatStore.playerTurn) return
+  combatStore.activateCover(playerStore);
 }
 
 function usePotion() {
-  if (!playerStore.playerTurn) return
-  playerStore.usePotion();
+  if (!combatStore.playerTurn) return
+  combatStore.usePotion(playerStore);
 }
 
 function fireball() {
-  if (!playerStore.playerTurn) return
-  playerStore.fireballAttack();
+  if (!combatStore.playerTurn) return
+  combatStore.fireballAttack(playerStore);
 }
 
 // Botones de combate para el template
 const combatButtons = [
-  { emoji: '🗡️', label: t('combat.attack'), onClick: swordAttack, disabled: () => !playerStore.playerTurn },
-  { emoji: '🛡️', label: t('combat.cover'), onClick: cover, disabled: () => !playerStore.playerTurn },
-  { emoji: '🧪', label: t('combat.heal'), onClick: usePotion, disabled: () => !playerStore.playerTurn || playerStore.inventory.potion <= 0 },
-  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !playerStore.playerTurn || playerStore.mana < 2 },
-  { emoji: '❄️', label: t('combat.freeze'), onClick: freeze, disabled: () => !playerStore.playerTurn || playerStore.mana < 2 },
-  { emoji: '🏃', label: t('combat.flee'), onClick: flee, disabled: () => !playerStore.playerTurn }
+  { emoji: '🗡️', label: t('combat.attack'), onClick: swordAttack, disabled: () => !combatStore.playerTurn },
+  { emoji: '🛡️', label: t('combat.cover'), onClick: cover, disabled: () => !combatStore.playerTurn },
+  { emoji: '🧪', label: t('combat.heal'), onClick: usePotion, disabled: () => !combatStore.playerTurn || playerStore.inventory.potion <= 0 },
+  { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !combatStore.playerTurn || playerStore.mana < 2 },
+  { emoji: '❄️', label: t('combat.freeze'), onClick: freeze, disabled: () => !combatStore.playerTurn || playerStore.mana < 2 },
+  { emoji: '🏃', label: t('combat.flee'), onClick: flee, disabled: () => !combatStore.playerTurn }
 ];
 
 const lootButtons = [
@@ -210,8 +214,8 @@ const combatLoot = ref({
 });
 
 function setupCombatLoot() {
-  if (playerStore.enemyDefeated && !playerStore.lootCollected) {
-    const enemy = ENEMIES.find(e => e.type === playerStore.enemyType);
+  if (combatStore.enemyDefeated && !combatStore.lootCollected) {
+    const enemy = ENEMIES.find(e => e.type === combatStore.enemyType);
     const lootFn = enemy?.loot;
     const loot = lootFn ? lootFn() : { coins: 0, potions: 0, scrolls: 0 };
     combatLoot.value.coins = loot.coins;
@@ -227,8 +231,8 @@ function claimCombatCoins() {
   if (!combatLoot.value.coinsClaimed) {
     playerStore.coins += combatLoot.value.coins;
     combatLoot.value.coinsClaimed = true;
-    playerStore.lootCollected = true;
-    playerStore.combatMessage = t('combat.looted', { coins: combatLoot.value.coins });
+    combatStore.lootCollected = true;
+    combatStore.combatMessage = t('combat.looted', { coins: combatLoot.value.coins });
   }
 }
 
@@ -237,8 +241,8 @@ function claimCombatPotions() {
     if (!playerStore.inventory.potion) playerStore.inventory.potion = 0;
     playerStore.inventory.potion += combatLoot.value.potions;
     combatLoot.value.potionsClaimed = true;
-    playerStore.lootCollected = true;
-    playerStore.combatMessage = t('combat.lootedPotion');
+    combatStore.lootCollected = true;
+    combatStore.combatMessage = t('combat.lootedPotion');
   }
 }
 
@@ -246,31 +250,31 @@ function claimCombatScroll() {
   if (!combatLoot.value.scrollClaimed && combatLoot.value.scrolls > 0) {
     playerStore.mana += combatLoot.value.scrolls;
     combatLoot.value.scrollClaimed = true;
-    playerStore.lootCollected = true;
-    playerStore.combatMessage = t('combat.lootedScroll', { scrolls: combatLoot.value.scrolls });
+    combatStore.lootCollected = true;
+    combatStore.combatMessage = t('combat.lootedScroll', { scrolls: combatLoot.value.scrolls });
   }
 }
 
 function continueJourney() {
-  playerStore.endCombat();
+  combatStore.endCombat(playerStore);
 }
 
 onMounted(() => {
-  loadImages(knightCanvas, enemyCanvas, playerStore);
-  if (playerStore.enemyType) {
-    setEnemyType(playerStore.enemyType, enemyCanvas, playerStore.enemyDefeated);
+  loadImages(knightCanvas, enemyCanvas, playerStore, combatStore);
+  if (combatStore.enemyType) {
+    setEnemyType(combatStore.enemyType, enemyCanvas, combatStore.enemyDefeated);
   }
-  watch(() => playerStore.enemyDefeated, (v) => {
-    if (playerStore.enemyType) {
-      setEnemyType(playerStore.enemyType, enemyCanvas, v);
+  watch(() => combatStore.enemyDefeated, (v) => {
+    if (combatStore.enemyType) {
+      setEnemyType(combatStore.enemyType, enemyCanvas, v);
     }
     if (v) setupCombatLoot();
     console.log('DEBUG: enemyDefeated ->', v);
   });
 });
 
-watch(() => playerStore.enemyType, (type) => {
-  if (type) setEnemyType(type, enemyCanvas, playerStore.enemyDefeated);
+watch(() => combatStore.enemyType, (type) => {
+  if (type) setEnemyType(type, enemyCanvas, combatStore.enemyDefeated);
 });
 
 watch(() => playerStore.health, (newVal, oldVal) => {
@@ -284,31 +288,31 @@ watch(() => playerStore.health, (newVal, oldVal) => {
   }
 });
 
-watch(() => playerStore.enemyHealth, (newVal, oldVal) => {
+watch(() => combatStore.enemyHealth, (newVal, oldVal) => {
   if (newVal < oldVal) {
     enemyTint.value = true;
-    drawEnemy(enemyCanvas, playerStore.enemyType, playerStore.enemyDefeated);
+    drawEnemy(enemyCanvas, combatStore.enemyType, combatStore.enemyDefeated);
     setTimeout(() => {
       enemyTint.value = false;
-      drawEnemy(enemyCanvas, playerStore.enemyType, playerStore.enemyDefeated);
+      drawEnemy(enemyCanvas, combatStore.enemyType, combatStore.enemyDefeated);
     }, 100);
   }
 });
 
-watch(() => playerStore.enemyFrozen, (isFrozen) => {
+watch(() => combatStore.enemyFrozen, (isFrozen) => {
   console.log('enemyFrozen changed:', isFrozen);
   if (isFrozen) {
     enemyTint.value = false;
     enemyFreezeTint.value = true;
-    drawEnemy(enemyCanvas, playerStore.enemyType, playerStore.enemyDefeated);
+    drawEnemy(enemyCanvas, combatStore.enemyType, combatStore.enemyDefeated);
   } else {
     enemyFreezeTint.value = false;
-    drawEnemy(enemyCanvas, playerStore.enemyType, playerStore.enemyDefeated);
+    drawEnemy(enemyCanvas, combatStore.enemyType, combatStore.enemyDefeated);
   }
 });
 
 // Tinte celeste al jugador cuando está congelado
-watch(() => playerStore.playerFrozen, (isFrozen) => {
+watch(() => combatStore.playerFrozen, (isFrozen) => {
   console.log('playerFrozen changed:', isFrozen);
   if (isFrozen) {
     knightTint.value = false;
