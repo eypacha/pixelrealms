@@ -20,7 +20,6 @@
         width="800"
         height="600"
         class="max-w-full absolute top-0 left-0 z-10 pointer-events-none"
-        :class="isNight ? 'brightness-60' : 'brightness-100'"
       ></canvas>
       <CombatPopup v-if="combatStore.combatActive" />
       <GameOverPopup v-if="playerStore.gameOver" />
