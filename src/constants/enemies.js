@@ -18,7 +18,7 @@ export const ENEMIES = [
 		maxDefeated: 20,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 10) + 1,
-			potions: 1,
+			potions: Math.random() < 0.3 ? 1 : 0,
 			scrolls: 0
 		})
 	},

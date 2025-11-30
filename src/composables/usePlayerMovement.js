@@ -15,45 +15,54 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
     if (narrativeActive.value) return;
     if (poiStore.treasureDiscovered) return; // Bloquea movimiento si el popup de tesoro está abierto
     let moved = false;
-    if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-      
-      moved = playerStore.moveUp();
-      if (!moved) {
-        const canvas = terrainCanvas.value;
-        if (playerStore.position.y <= PLAYER_SPEED) {
+    const key = String(e.key).toLowerCase();
+    const directions = [
+      {
+        keys: ['arrowup', 'w'],
+        move: () => playerStore.moveUp(),
+        shouldWrap: () => playerStore.position.y <= PLAYER_SPEED,
+        wrap: (canvas) => {
           addOffset(0, -tileStep);
           playerStore.position.y = canvas.height - 1;
-          moved = true;
         }
-      }
-    } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-      
-      moved = playerStore.moveDown();
-      if (!moved) {
-        const canvas = terrainCanvas.value;
-        if (playerStore.position.y >= canvas.height - PLAYER_SPEED) {
+      },
+      {
+        keys: ['arrowdown', 's'],
+        move: () => playerStore.moveDown(),
+        shouldWrap: () => playerStore.position.y >= canvas.height - PLAYER_SPEED,
+        wrap: (canvas) => {
           addOffset(0, tileStep);
           playerStore.position.y = 0;
-          moved = true;
         }
-      }
-    } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-      moved = playerStore.moveLeft();
-      if (!moved) {
-        const canvas = terrainCanvas.value;
-        if (playerStore.position.x <= PLAYER_SPEED) {
+      },
+      {
+        keys: ['arrowleft', 'a'],
+        move: () => playerStore.moveLeft(),
+        shouldWrap: () => playerStore.position.x <= PLAYER_SPEED,
+        wrap: (canvas) => {
           addOffset(-tileStep, 0);
           playerStore.position.x = canvas.width - 1;
-          moved = true;
         }
-      }
-    } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-      moved = playerStore.moveRight();
-      if (!moved) {
-        const canvas = terrainCanvas.value;
-        if (playerStore.position.x >= canvas.width - PLAYER_SPEED) {
+      },
+      {
+        keys: ['arrowright', 'd'],
+        move: () => playerStore.moveRight(),
+        shouldWrap: () => playerStore.position.x >= canvas.width - PLAYER_SPEED,
+        wrap: (canvas) => {
           addOffset(tileStep, 0);
           playerStore.position.x = 0;
+        }
+      }
+    ];
+
+    // find the direction matching the pressed key
+    const dir = directions.find(d => d.keys.includes(key));
+    if (dir) {
+      moved = dir.move();
+      if (!moved) {
+        const canvas = terrainCanvas.value;
+        if (dir.shouldWrap()) {
+          dir.wrap(canvas);
           moved = true;
         }
       }
