@@ -248,6 +248,16 @@ export const useCombatStore = defineStore('combat', () => {
 
   const fireballAttack = (playerStore) => {
     playerStore.mana -= 2;
+    const enemyData = ENEMIES.find(e => e.type === enemyType.value);
+
+    // If the enemy is immune to fireball, the spell does nothing (mana still consumed)
+    if (enemyData && Array.isArray(enemyData.immunity) && enemyData.immunity.includes('fireball')) {
+      combatMessage.value = t('combat.enemyImmuneFireball');
+      soundStore.playSound('whosh');
+      playerTurn.value = false;
+      setTimeout(() => enemyAttack(playerStore), ENEMY_PAUSE);
+      return;
+    }
     const result = performAttack({ attack: playerStore.strength * 1.4 }, { defense: enemyDefense.value });
     if (result.missed) {
       combatMessage.value = t('combat.fireballMissed');
@@ -275,6 +285,17 @@ export const useCombatStore = defineStore('combat', () => {
 
   const freezeEnemy = (playerStore) => {
     if (playerStore) playerStore.mana -= 2;
+    const enemyData = ENEMIES.find(e => e.type === enemyType.value);
+
+    // If the enemy is immune to freeze, the spell has no effect (mana still consumed)
+    if (enemyData && Array.isArray(enemyData.immunity) && enemyData.immunity.includes('freeze')) {
+      combatMessage.value = t('combat.enemyImmuneFreeze');
+      soundStore.playSound('whosh');
+      // keep playerTurn true so player can act again
+      playerTurn.value = true;
+      return;
+    }
+
     enemyHealth.value -= 1;
     enemyFrozen.value = true;
     combatMessage.value = t('combat.frozen');
