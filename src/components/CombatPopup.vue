@@ -43,7 +43,7 @@
               </div>
             </div>
             <div class="flex gap-2">
-              <div class="relative transition-all duration-250" :class="combatStore.enemyFled ? 'opacity-0' : 'opacity-100'">
+              <div class="relative transition-all duration-250" :class="combatStore.enemyFled ? 'opacity-0' : (combatStore.enemyDefeated ? 'opacity-50' : 'opacity-100')">
                 <canvas
                   ref="enemyCanvas"
                   :width="enemyWidth"
