@@ -13,7 +13,7 @@ export const ENEMIES = [
 		width: 60,
 		height: 80,
 		baseProbability: 0.6,
-		fleeingChance: 0.9,
+		fleeingChance: 0.5,
 		minDefeated: 0,
 		maxDefeated: 20,
 		loot: () => ({
