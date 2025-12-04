@@ -105,5 +105,13 @@
     "orc": "Orco",
     "goblin": "Goblin",
     "skeleton": "Esqueleto"
+  },
+  "gameOver": {
+    "title": "Fin del Juego",
+    "defeated": "¡Has sido derrotado!",
+    "runCount": "Intento #{count}",
+    "retry": "Volver a Intentarlo",
+    "newGame": "Nueva Partida",
+    "retryBonus": "Bonus: +1 Fuerza, +1 Defensa por intento"
   }
 }

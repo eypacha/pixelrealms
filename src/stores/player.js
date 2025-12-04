@@ -43,6 +43,7 @@ export const usePlayerStore = defineStore('player', () => {
   const mana = ref(0);
 
   const gameOver = ref(false);
+  const runCount = ref(0); // Contador de intentos roguelike
 
   const wizardActive = ref(false);
   const lastDirection = ref('down');
@@ -73,6 +74,7 @@ export const usePlayerStore = defineStore('player', () => {
       if (terrain[ty]?.[tx] > -0.05) {
         position.value = { x, y };
         oldPosition.value = { ...position.value };
+        initialPosition.value = { x, y }; // Guardar posición inicial para roguelike
         // Revelar POIs cercanos al jugador al iniciar
         poiStore.revealPoi(position.value);
         return;
@@ -101,6 +103,48 @@ export const usePlayerStore = defineStore('player', () => {
     inventory.value.potion = 2;
     mana.value = 0;
     currentOffset.value = { x: 0, y: 0 };
+  }
+
+  // Variables para guardar la posición inicial del spawn
+  const initialPosition = ref({ x: 0, y: 0 });
+
+  // Función para reiniciar el run (roguelike)
+  function retryRun() {
+    runCount.value += 1;
+    
+    // Resetear stats con bonus por cada run
+    const baseStrength = character.value?.stats?.strength || 10;
+    const baseDefense = character.value?.stats?.defense || 10;
+    const baseHealth = character.value?.stats?.health || 10;
+    const baseCoins = character.value?.stats?.coins || 10;
+    const basePotions = character.value?.stats?.potion || 2;
+    const baseMana = character.value?.stats?.mana || 0;
+    
+    // Aplicar bonus roguelike: +1 str y +1 def por cada run previo
+    strength.value = baseStrength + runCount.value;
+    defense.value = baseDefense + runCount.value;
+    health.value = baseHealth;
+    maxHealth.value = baseHealth;
+    coins.value = baseCoins;
+    inventory.value.potion = basePotions;
+    mana.value = baseMana;
+    
+    // Volver a la posición inicial
+    position.value = { ...initialPosition.value };
+    oldPosition.value = { ...initialPosition.value };
+    currentOffset.value = { x: 0, y: 0 };
+    
+    // Resetear contadores
+    steps.value = 0;
+    darkKnightDefeatedCount.value = 0;
+    defeatedEnemiesCount.value = 0;
+    
+    // Desactivar game over
+    gameOver.value = false;
+    wizardActive.value = false;
+    
+    // NOTA: Los POIs se resetean desde HomeView cuando se redibuja el terreno
+    // porque necesitamos el terreno del tile (0,0) que se regenera allí
   }
 
   function canMoveTo(x, y) {
@@ -206,6 +250,8 @@ export const usePlayerStore = defineStore('player', () => {
     coins,
     inventory,
     gameOver,
+    runCount,
+    initialPosition,
     wizardActive,
     lastDirection,
     darkKnightDefeatedCount,
@@ -225,5 +271,6 @@ export const usePlayerStore = defineStore('player', () => {
     getTerrainColor,
     checkEncounter,
     reset,
+    retryRun,
   };
 });
