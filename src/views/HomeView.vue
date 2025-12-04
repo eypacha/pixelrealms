@@ -7,6 +7,7 @@
       :isResetting="isResetting"
       @update:seed="handleSeedInputChangeFromBar"
       @random-seed="handleRandomSeedFromBar"
+      @start-game="handleStartGame"
       @continue-game="handleContinueGame"
     />
       <canvas
@@ -102,6 +103,23 @@ function saveCurrentGame() {
   }
 }
 
+// Iniciar nuevo juego
+async function handleStartGame() {
+  // Limpiar estado guardado al iniciar nuevo juego
+  clearGameState();
+  
+  // Cargar imagen del personaje seleccionado
+  playerImage.value = new Image();
+  playerImage.value.src = playerStore.image || 'images/blank.png';
+  await new Promise(resolve => {
+    playerImage.value.onload = resolve;
+  });
+  
+  // Inicializar el juego con el terreno y el jugador
+  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
+  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+}
+
 // Continuar juego guardado
 function handleContinueGame() {
   const loaded = loadGame(playerStore, poiStore, timeStore, { seedInput, worldOffset });
@@ -170,15 +188,7 @@ watch(() => playerStore.image, (newImg) => {
   }
 });
 
-onMounted(async () => {
-  playerImage.value = new Image();
-  playerImage.value.src = playerStore.image || 'images/blank.png';
-  await new Promise(resolve => {
-    playerImage.value.onload = resolve;
-  });
-  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
-  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
-
+onMounted(() => {
   // Guardar estado antes de cerrar la página
   window.addEventListener('beforeunload', saveCurrentGame);
 });

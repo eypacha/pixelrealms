@@ -72,7 +72,7 @@ const props = defineProps({
   seed: String,
   isResetting: Boolean
 });
-const emit = defineEmits(['update:seed', 'random-seed', 'continue-game']);
+const emit = defineEmits(['update:seed', 'random-seed', 'continue-game', 'start-game']);
 function onUpdateSeed(newSeed) {
   emit('update:seed', newSeed);
 }
@@ -96,6 +96,8 @@ function startGame() {
     playerStore.mana = selected.value.stats.mana;
     playerStore.image = selected.value.img;
     playerStore.characterSelected = true;
+    // Emitir evento para que HomeView inicialice el juego
+    emit('start-game');
   }
 }
 
