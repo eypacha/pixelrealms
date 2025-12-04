@@ -110,7 +110,7 @@
     "title": "Fin del Juego",
     "defeated": "¡Has sido derrotado!",
     "runCount": "Intento #{count}",
-    "retry": "Volver a Intentarlo",
+    "retry": "Nuevo Intento",
     "newGame": "Nueva Partida",
     "retryBonus": "Bonus: +1 Fuerza, +1 Defensa por intento"
   }
