@@ -158,13 +158,16 @@ watch(() => playerStore.gameOver, async (isGameOver, wasGameOver) => {
   
   // Si gameOver pasa de true a false (retry), regenerar el mapa del tile inicial
   if (wasGameOver && !isGameOver && terrainCanvas.value && reactiveCanvas.value && playerImage.value) {
+    console.log('🔄 Retry Run - Resetting game to initial state');
+    
     // Resetear el offset del mundo al tile inicial
     worldOffset.value = { x: 0, y: 0 };
     
     // Regenerar el terreno del tile (0,0) con la misma seed
     const terrain = generateMidpointDisplacement2D(257, 0.7, 0, 0, seedInput.value);
     
-    // Resetear POIs con el terreno correcto del tile inicial
+    // Resetear POIs con el terreno correcto del tile inicial (borra TODO y genera solo los iniciales)
+    console.log('🗑️ Resetting POIs - clearing all and generating initial ones');
     poiStore.resetPois(0, 0, terrain, 800, 600, seedInput.value);
     
     // Configurar el terreno en el playerStore sin reinicializar posición
@@ -172,6 +175,9 @@ watch(() => playerStore.gameOver, async (isGameOver, wasGameOver) => {
     
     // Revelar POIs cercanos al jugador
     poiStore.revealPoi(playerStore.position);
+    
+    console.log('📍 Player position:', playerStore.position);
+    console.log('🎯 POIs count:', poiStore.pois.length);
     
     // Redibujar el juego
     drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: false, redrawTerrain: true, onlyTerrain: true });

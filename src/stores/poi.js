@@ -37,6 +37,7 @@ export const usePoiStore = defineStore('poi', () => {
     poisByTile.value = {};
     pois.value = [];
     defeatedEnemies.value = [];
+    treasureDiscovered.value = false;
     ensureForTile(offsetX, offsetY, terrain, width, height, seed, count);
   }
 
