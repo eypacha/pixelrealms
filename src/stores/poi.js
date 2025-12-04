@@ -82,5 +82,5 @@ export const usePoiStore = defineStore('poi', () => {
     addDefeatedEnemyUtil(defeatedEnemies.value, position, type);
   }
 
-  return { pois, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi, revealPoi, addStepPoi };
+  return { pois, poisByTile, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi, revealPoi, addStepPoi };
 });

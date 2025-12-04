@@ -7,6 +7,7 @@
       :isResetting="isResetting"
       @update:seed="handleSeedInputChangeFromBar"
       @random-seed="handleRandomSeedFromBar"
+      @continue-game="handleContinueGame"
     />
       <canvas
         ref="terrainCanvas"
@@ -50,8 +51,9 @@ const timeStore = useTimeStore();
 const { isNight } = storeToRefs(timeStore);
 import { useSoundStore } from '../stores/sound';
 const soundStore = useSoundStore();
-import { onMounted, watch, ref, computed } from 'vue';
+import { onMounted, onBeforeUnmount, watch, ref, computed } from 'vue';
 import { useTerrain } from '../composables/useTerrain';
+import { useLocalStorage } from '../composables/useLocalStorage';
 import { usePlayerMovement } from '../composables/usePlayerMovement';
 import { usePlayerStore } from '../stores/player';
 import { usePoiStore } from '../stores/poi';
@@ -90,11 +92,39 @@ const isResetting = ref(false);
 const showCharacterSelect = computed(() => !playerStore.characterSelected);
 const { konamiActivated } = useKonamiCode(playerStore);
 
+// LocalStorage para persistir el estado del juego
+const { saveGame, loadGame, clearGameState } = useLocalStorage();
+
+// Guarda el estado del juego
+function saveCurrentGame() {
+  if (playerStore.characterSelected && !playerStore.gameOver) {
+    saveGame(playerStore, poiStore, timeStore, { seedInput, worldOffset });
+  }
+}
+
+// Continuar juego guardado
+function handleContinueGame() {
+  const loaded = loadGame(playerStore, poiStore, timeStore, { seedInput, worldOffset });
+  if (loaded) {
+    seedLocal.value = seedInput.value;
+    // Cargar imagen del personaje
+    playerImage.value = new Image();
+    playerImage.value.src = playerStore.image || 'images/blank.png';
+    playerImage.value.onload = () => {
+      // Dibujar terreno sin reinicializar posición
+      drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: false, redrawTerrain: true, onlyTerrain: true });
+      drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+    };
+  }
+}
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function resetGame(seed) {
+  // Limpiar estado guardado al iniciar nuevo juego
+  clearGameState();
   playerStore.reset();
   let terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seed);
   poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seed);
@@ -124,6 +154,8 @@ watch(() => playerStore.gameOver, (isGameOver) => {
   if (isGameOver && terrainCanvas.value && reactiveCanvas.value) {
     playerStore.terrainImage = terrainCanvas.value.toDataURL('image/png');
     playerStore.reactiveImage = reactiveCanvas.value.toDataURL('image/png');
+    // Limpiar estado guardado cuando el juego termina
+    clearGameState();
   }
 });
 
@@ -146,6 +178,14 @@ onMounted(async () => {
   });
   drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
   drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+
+  // Guardar estado antes de cerrar la página
+  window.addEventListener('beforeunload', saveCurrentGame);
+});
+
+onBeforeUnmount(() => {
+  saveCurrentGame();
+  window.removeEventListener('beforeunload', saveCurrentGame);
 });
 
 usePlayerMovement({
@@ -171,6 +211,11 @@ watch(seedInput, () => {
   // Al cambiar la semilla, inicializa el jugador y los POIs con el terreno
   drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
   drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+});
+
+// Guardar estado cada vez que el jugador se mueve
+watch(() => playerStore.steps, () => {
+  saveCurrentGame();
 });
 </script>
 

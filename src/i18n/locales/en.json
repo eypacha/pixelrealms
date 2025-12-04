@@ -80,6 +80,7 @@
     "title": "Pixel Realms",
     "choose": "Choose Your Character",
     "start": "Start",
+    "continue": "Continue",
     "characters": {
       "knight": "Knight",
       "barbarian": "Barbarian",

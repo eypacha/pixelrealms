@@ -24,6 +24,10 @@ export const usePlayerStore = defineStore('player', () => {
 
   const seed = ref(Date.now());
 
+  // Character selection state
+  const characterSelected = ref(false);
+  const image = ref(null);
+
   // Player core state
   const position = ref({ x: 0, y: 0 });
   const oldPosition = ref({ x: 0, y: 0 });
@@ -77,6 +81,15 @@ export const usePlayerStore = defineStore('player', () => {
     position.value = { x: 0, y: 0 };
     oldPosition.value = { ...position.value };
     poiStore.revealPoi(position.value);
+  }
+
+  // Configura el terreno sin reinicializar la posición del jugador (para estados cargados)
+  function setTerrain(terrain, width, height) {
+    console.log('🗺️ setTerrain - Posición actual (NO debe cambiar):', position.value.x, position.value.y);
+    terrainRef = terrain;
+    widthRef = width;
+    heightRef = height;
+    encounterRandom = createSeededRandom(seed.value + 'encounter');
   }
 
   function reset() {
@@ -199,7 +212,10 @@ export const usePlayerStore = defineStore('player', () => {
     currentOffset,
     terrainImage,
     reactiveImage,
+    characterSelected,
+    image,
     initialize,
+    setTerrain,
     moveUp,
     moveDown,
     moveLeft,

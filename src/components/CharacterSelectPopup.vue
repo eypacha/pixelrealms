@@ -34,10 +34,16 @@
             </div>
         </div>
       </div>
-      <div :class="['flex flex-col', !selected ? 'invisible pointer-events-none' : '']">
+      <div class="flex flex-col gap-3 mt-8">
+        <button
+            v-if="hasSavedGame"
+            @click="continueGame"
+            class="px-6 py-2 bg-green-600 text-white font-bold hover:bg-green-700 transition"
+          >{{ $t('characterSelect.continue') }}</button>
         <button
             @click="startGame"
-            class="mt-8 px-6 py-2 bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
+            class="px-6 py-2 bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
+            :class="{ 'opacity-50 cursor-not-allowed': !selected }"
             :disabled="!selected"
           >{{ $t('characterSelect.start') }}</button>
       </div>
@@ -51,18 +57,22 @@ import { usePlayerStore } from '../stores/player';
 import SettingsBar from './SettingsBar.vue';
 import TopBar from './TopBar.vue';
 import { CHARACTERS } from '../constants/player';
+import { hasGameState } from '../composables/useLocalStorage';
 
 const playerStore = usePlayerStore();
 // Selecciona el personaje del medio al iniciar
 const middleIndex = Math.floor(CHARACTERS.length / 2);
 const selected = ref(CHARACTERS[middleIndex] || null);
 
+// Verificar si hay juego guardado
+const hasSavedGame = ref(hasGameState());
+
 // Props y eventos para TopBar
 const props = defineProps({
   seed: String,
   isResetting: Boolean
 });
-const emit = defineEmits(['update:seed', 'random-seed']);
+const emit = defineEmits(['update:seed', 'random-seed', 'continue-game']);
 function onUpdateSeed(newSeed) {
   emit('update:seed', newSeed);
 }
@@ -87,6 +97,10 @@ function startGame() {
     playerStore.image = selected.value.img;
     playerStore.characterSelected = true;
   }
+}
+
+function continueGame() {
+  emit('continue-game');
 }
 </script>
 
