@@ -90,6 +90,7 @@ const narrativeActive = ref(false);
 const currentAnecdote = ref({ index: null, lang: 'en' });
 const { maybeTriggerEncounter } = useNarrativeEncounter();
 const isResetting = ref(false);
+const isLoadingGame = ref(false); // Bandera para evitar watchers durante carga de partida
 const showCharacterSelect = computed(() => !playerStore.characterSelected);
 const { konamiActivated } = useKonamiCode(playerStore);
 
@@ -121,19 +122,22 @@ async function handleStartGame() {
 }
 
 // Continuar juego guardado
-function handleContinueGame() {
+async function handleContinueGame() {
+  isLoadingGame.value = true;
   const loaded = loadGame(playerStore, poiStore, timeStore, { seedInput, worldOffset });
   if (loaded) {
     seedLocal.value = seedInput.value;
     // Cargar imagen del personaje
     playerImage.value = new Image();
     playerImage.value.src = playerStore.image || 'images/blank.png';
-    playerImage.value.onload = () => {
-      // Dibujar terreno sin reinicializar posición
-      drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: false, redrawTerrain: true, onlyTerrain: true });
-      drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
-    };
+    await new Promise(resolve => {
+      playerImage.value.onload = resolve;
+    });
+    // Dibujar terreno sin reinicializar posición
+    drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: false, redrawTerrain: true, onlyTerrain: true });
+    drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
   }
+  isLoadingGame.value = false;
 }
 
 function sleep(ms) {
@@ -178,7 +182,7 @@ watch(() => playerStore.gameOver, (isGameOver) => {
 });
 
 watch(() => playerStore.image, (newImg) => {
-  if (newImg) {
+  if (newImg && !isLoadingGame.value) {
     playerImage.value = new Image();
     playerImage.value.src = newImg;
     playerImage.value.onload = () => {
@@ -219,8 +223,11 @@ usePlayerMovement({
 
 watch(seedInput, () => {
   // Al cambiar la semilla, inicializa el jugador y los POIs con el terreno
-  drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
-  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+  // Pero no si estamos cargando una partida guardada
+  if (!isLoadingGame.value) {
+    drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: true, onlyTerrain: true });
+    drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+  }
 });
 
 // Guardar estado cada vez que el jugador se mueve
