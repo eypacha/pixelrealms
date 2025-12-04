@@ -102,5 +102,13 @@
       "orc": "Orc",
       "goblin": "Goblin",
       "skeleton": "Skeleton"
+  },
+  "gameOver": {
+    "title": "Game Over",
+    "defeated": "You have been defeated!",
+    "runCount": "Run #{count}",
+    "retry": "Try Again",
+    "newGame": "New Game",
+    "retryBonus": "Bonus: +1 Strength, +1 Defense per run"
   }
 }

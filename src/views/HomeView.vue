@@ -148,12 +148,34 @@ function closeNarrative() {
 }
 
 // Captura los canvas como imágenes cuando el juego termina
-watch(() => playerStore.gameOver, (isGameOver) => {
+watch(() => playerStore.gameOver, async (isGameOver, wasGameOver) => {
   if (isGameOver && terrainCanvas.value && reactiveCanvas.value) {
     playerStore.terrainImage = terrainCanvas.value.toDataURL('image/png');
     playerStore.reactiveImage = reactiveCanvas.value.toDataURL('image/png');
     // Limpiar estado guardado cuando el juego termina
     clearGameState();
+  }
+  
+  // Si gameOver pasa de true a false (retry), regenerar el mapa del tile inicial
+  if (wasGameOver && !isGameOver && terrainCanvas.value && reactiveCanvas.value && playerImage.value) {
+    // Resetear el offset del mundo al tile inicial
+    worldOffset.value = { x: 0, y: 0 };
+    
+    // Regenerar el terreno del tile (0,0) con la misma seed
+    const terrain = generateMidpointDisplacement2D(257, 0.7, 0, 0, seedInput.value);
+    
+    // Resetear POIs con el terreno correcto del tile inicial
+    poiStore.resetPois(0, 0, terrain, 800, 600, seedInput.value);
+    
+    // Configurar el terreno en el playerStore sin reinicializar posición
+    playerStore.setTerrain(terrain, 800, 600);
+    
+    // Revelar POIs cercanos al jugador
+    poiStore.revealPoi(playerStore.position);
+    
+    // Redibujar el juego
+    drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: false, redrawTerrain: true, onlyTerrain: true });
+    drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
   }
 });
 
