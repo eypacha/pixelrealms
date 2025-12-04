@@ -3,10 +3,6 @@
     <div class="relative w-[800px] h-[600px]">
       <CharacterSelectPopup
       v-if="showCharacterSelect"
-      :seed="seedLocal"
-      :isResetting="isResetting"
-      @update:seed="handleSeedInputChangeFromBar"
-      @random-seed="handleRandomSeedFromBar"
       @start-game="handleStartGame"
       @continue-game="handleContinueGame"
     />
@@ -46,7 +42,6 @@
 
 
 <script setup>
-import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 import { useTimeStore } from '../stores/time';
 const timeStore = useTimeStore();
 const { isNight } = storeToRefs(timeStore);
@@ -89,7 +84,6 @@ const playerImage = ref(null);
 const narrativeActive = ref(false);
 const currentAnecdote = ref({ index: null, lang: 'en' });
 const { maybeTriggerEncounter } = useNarrativeEncounter();
-const isResetting = ref(false);
 const isLoadingGame = ref(false); // Bandera para evitar watchers durante carga de partida
 const showCharacterSelect = computed(() => !playerStore.characterSelected);
 const { konamiActivated } = useKonamiCode(playerStore);
@@ -108,6 +102,10 @@ function saveCurrentGame() {
 async function handleStartGame() {
   // Limpiar estado guardado al iniciar nuevo juego
   clearGameState();
+  
+  // Generar nueva seed aleatoria
+  randomizeSeed();
+  seedLocal.value = seedInput.value;
   
   // Cargar imagen del personaje seleccionado
   playerImage.value = new Image();
@@ -142,28 +140,6 @@ async function handleContinueGame() {
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function resetGame(seed) {
-  // Limpiar estado guardado al iniciar nuevo juego
-  clearGameState();
-  playerStore.reset();
-  let terrain = generateMidpointDisplacement2D(257, 0.7, worldOffset.value.x, worldOffset.value.y, seed);
-  poiStore.resetPois(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seed);
-  drawAll(terrainCanvas, seedInput, null, null, null, worldOffset.value, { onlyTerrain: true });
-  drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
-}
-
-function handleRandomSeedFromBar() {
-  randomizeSeed();
-  seedLocal.value = seedInput.value;
-  resetGame(seedInput.value);
-}
-
-function handleSeedInputChangeFromBar(newSeed) {
-  seedLocal.value = newSeed;
-  seedInput.value = newSeed;
-  resetGame(newSeed);
 }
 
 function closeNarrative() {
