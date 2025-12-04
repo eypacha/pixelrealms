@@ -33,7 +33,7 @@ export const ENEMIES = [
 		height: 80,
 		fleeingChance: 0.1,
 		baseProbability: 0.2,
-		minDefeated: 0,
+		minDefeated: 3,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 10) + 5,
 			potions: Math.floor(Math.random() * 3),
@@ -49,7 +49,7 @@ export const ENEMIES = [
 		image: 'images/enemies/darkknight.png',
 		width: 60,
 		height: 80,
-		baseProbability: 0.1,
+		baseProbability: 0.01,
 		minDefeated: 20,
 		freezeChance: 0.2,
 		loot: () => ({
@@ -67,8 +67,8 @@ export const ENEMIES = [
 		image: 'images/enemies/knight.png',
 		width: 60,
 		height: 80,
-		baseProbability: 0.05,
-		minDefeated: 0,
+		baseProbability: 0.02,
+		minDefeated: 10,
 		freezeChance: 0.1,
 		loot: () => ({
 			coins: Math.floor(Math.random() * 20) + 10,
@@ -105,7 +105,7 @@ export const ENEMIES = [
 		image: 'images/enemies/dragon.png',
 		width: 90,
 		height: 80,
-		baseProbability: 0.0005,
+		baseProbability: 0,
 		minDefeated: 20,
         fireballChance: 0.3,
 		immunity: ['fireball'],
