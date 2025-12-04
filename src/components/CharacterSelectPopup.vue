@@ -1,13 +1,6 @@
 <template>
   <div class="absolute bg-[#00000080] outline-2 flex justify-center items-center w-full h-full    z-50">
     <div class="bg-white flex flex-col items-center justify-center w-full h-full p-8">
-      <TopBar
-        class="absolute bottom-5 left-5"
-        :seed="seed"
-        :isResetting="isResetting"
-        @update:seed="onUpdateSeed"
-        @random-seed="onRandomSeed"
-      />
       <SettingsBar class="absolute bottom-5 right-5" />
         <h1 class="text-3xl font-bold mb-20">{{ $t('characterSelect.title') }}</h1>
         <h2 class="text-lg font-bold mb-6">{{ $t('characterSelect.choose') }}</h2>
@@ -34,7 +27,7 @@
             </div>
         </div>
       </div>
-      <div class="flex flex-col gap-3 mt-8">
+      <div class="flex gap-3 mt-8">
         <button
             v-if="hasSavedGame"
             @click="continueGame"
@@ -55,7 +48,6 @@
 import { ref } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import SettingsBar from './SettingsBar.vue';
-import TopBar from './TopBar.vue';
 import { CHARACTERS } from '../constants/player';
 import { hasGameState } from '../composables/useLocalStorage';
 
@@ -67,18 +59,7 @@ const selected = ref(CHARACTERS[middleIndex] || null);
 // Verificar si hay juego guardado
 const hasSavedGame = ref(hasGameState());
 
-// Props y eventos para TopBar
-const props = defineProps({
-  seed: String,
-  isResetting: Boolean
-});
-const emit = defineEmits(['update:seed', 'random-seed', 'continue-game', 'start-game']);
-function onUpdateSeed(newSeed) {
-  emit('update:seed', newSeed);
-}
-function onRandomSeed() {
-  emit('random-seed');
-}
+const emit = defineEmits(['continue-game', 'start-game']);
 
 function selectCharacter(char) {
   selected.value = char;
