@@ -26,6 +26,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   // Character selection state
   const characterSelected = ref(false);
+  const character = ref(null);
   const image = ref(null);
 
   // Player core state
@@ -213,6 +214,7 @@ export const usePlayerStore = defineStore('player', () => {
     terrainImage,
     reactiveImage,
     characterSelected,
+    character,
     image,
     initialize,
     setTerrain,

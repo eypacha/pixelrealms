@@ -79,6 +79,7 @@ export function useLocalStorage() {
         defeatedEnemiesCount: playerStore.defeatedEnemiesCount,
         currentOffset: { ...playerStore.currentOffset },
         characterSelected: playerStore.characterSelected,
+        character: playerStore.character,
         image: playerStore.image,
       },
       poi: {
@@ -128,6 +129,7 @@ export function useLocalStorage() {
         playerStore.currentOffset.x = state.player.currentOffset.x;
         playerStore.currentOffset.y = state.player.currentOffset.y;
         playerStore.characterSelected = state.player.characterSelected;
+        playerStore.character = state.player.character;
         playerStore.image = state.player.image;
       }
 
