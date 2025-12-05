@@ -84,7 +84,8 @@
     "characters": {
       "knight": "Knight",
       "barbarian": "Barbarian",
-      "elf": "Elf"
+      "elf": "Elf",
+      "wizard": "Wizard"
     },
     "stats": {
       "health": "Health",

@@ -87,7 +87,8 @@
     "characters": {
       "knight": "Caballero",
       "barbarian": "Bárbaro",
-      "elf": "Elfo"
+      "elf": "Elfo",
+      "wizard": "Hechicera"
     },
     "stats": {
       "health": "Salud",
