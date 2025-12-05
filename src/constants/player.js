@@ -50,10 +50,10 @@ export const CHARACTERS = [
     img: 'images/players/wizard.png',
     stats: {
       health: 10,
-      strength: 8,
-      defense: 8,
+      strength: 7,
+      defense: 7,
       coins: 10,
-      potion: 4,
+      potion: 6,
       mana: 6
     }
   }

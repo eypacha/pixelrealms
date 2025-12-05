@@ -17,7 +17,7 @@
         >
           <img :src="char.img" :alt="char.name" class="w-[60px] h-[80px] mb-2" />
             <div class="font-bold mb-1">{{ $t('characterSelect.characters.' + char.key) }}</div>
-            <div class="text-sm mb-2 flex max-w-[140px] justify-center flex-wrap gap-2">
+            <div class="text-sm mb-2 flex max-w-[120px] justify-center flex-wrap gap-2">
               <span :title="$t('characterSelect.stats.health')">❤️{{ char.stats.health }}</span>
               <span :title="$t('characterSelect.stats.strength')">🗡️{{ char.stats.strength }}</span>
               <span :title="$t('characterSelect.stats.defense')">🛡️{{ char.stats.defense }}</span><br>
