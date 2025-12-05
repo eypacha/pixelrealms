@@ -43,5 +43,18 @@ export const CHARACTERS = [
       potion: 0,
       mana: 6,
     }
+  },
+  {
+    key: 'wizard',
+    name: 'Wizard',
+    img: 'images/players/wizard.png',
+    stats: {
+      health: 10,
+      strength: 8,
+      defense: 8,
+      coins: 10,
+      potion: 4,
+      mana: 6
+    }
   }
 ];

@@ -1,9 +1,9 @@
 <template>
   <div class="absolute inset-0 bg-[#00000050] flex justify-center items-center z-50 ">
     <div class="bg-white p-5 text-center w-full h-full flex flex-col items-center justify-center">
-      <h2 class="text-lg font-bold mb-4">{{ $t('gameOver.title') }}</h2>
+      <h2 class="text-lg font-bold">{{ $t('gameOver.title') }}</h2>
       <p>{{ $t('gameOver.defeated') }}</p>
-      <p v-if="playerStore.runCount > 0" class="text-sm text-gray-600 mt-2">
+      <p v-if="playerStore.runCount > 0" class="text-sm text-gray-600">
         {{ $t('gameOver.runCount', { count: playerStore.runCount }) }}
       </p>
       <div class="my-6">
@@ -17,7 +17,7 @@
           {{ $t('gameOver.newGame') }}
         </button>
       </div>
-      <p v-if="playerStore.runCount > 0" class="text-xs text-gray-500 mt-4">
+      <p v-if="playerStore.runCount > 0" class="text-xs text-gray-500 mt-1">
         {{ $t('gameOver.retryBonus') }}
       </p>
     </div>
