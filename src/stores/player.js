@@ -44,6 +44,7 @@ export const usePlayerStore = defineStore('player', () => {
 
   const gameOver = ref(false);
   const runCount = ref(0); // Contador de intentos roguelike
+  const isRetrying = ref(false); // Bandera para evitar guardar durante el retry
 
   const wizardActive = ref(false);
   const lastDirection = ref('down');
@@ -52,6 +53,10 @@ export const usePlayerStore = defineStore('player', () => {
 
   // Offset actual del tile
   const currentOffset = ref({ x: 0, y: 0 });
+
+  // Variables para guardar la posición inicial del spawn (solo se guarda una vez, para roguelike retry)
+  const initialPosition = ref({ x: 0, y: 0 });
+  const initialPositionSet = ref(false);
 
   // terrain helpers
   let terrainRef = null;
@@ -74,7 +79,12 @@ export const usePlayerStore = defineStore('player', () => {
       if (terrain[ty]?.[tx] > -0.05) {
         position.value = { x, y };
         oldPosition.value = { ...position.value };
-        initialPosition.value = { x, y }; // Guardar posición inicial para roguelike
+        // Guardar posición inicial solo la primera vez (para roguelike retry)
+        if (!initialPositionSet.value) {
+          initialPosition.value = { x, y };
+          initialPositionSet.value = true;
+          console.log('📍 initialPosition guardada:', initialPosition.value);
+        }
         // Revelar POIs cercanos al jugador al iniciar
         poiStore.revealPoi(position.value);
         return;
@@ -105,11 +115,18 @@ export const usePlayerStore = defineStore('player', () => {
     currentOffset.value = { x: 0, y: 0 };
   }
 
-  // Variables para guardar la posición inicial del spawn
-  const initialPosition = ref({ x: 0, y: 0 });
-
   // Función para reiniciar el run (roguelike)
   function retryRun() {
+    // Marcar que estamos en proceso de retry para evitar guardar estado intermedio
+    isRetrying.value = true;
+    
+    // Resetear el estado del combate por si acaso quedó en estado inconsistente
+    const combatStore = useCombatStore();
+    combatStore.resetCombat();
+    
+    // Resetear el ciclo de tiempo (día/noche)
+    timeStore.resetTime();
+    
     runCount.value += 1;
     
     // Resetear stats con bonus por cada run
@@ -130,6 +147,7 @@ export const usePlayerStore = defineStore('player', () => {
     mana.value = baseMana;
     
     // Volver a la posición inicial
+    console.log('🔄 retryRun - initialPosition:', initialPosition.value);
     position.value = { ...initialPosition.value };
     oldPosition.value = { ...initialPosition.value };
     currentOffset.value = { x: 0, y: 0 };
@@ -139,12 +157,25 @@ export const usePlayerStore = defineStore('player', () => {
     darkKnightDefeatedCount.value = 0;
     defeatedEnemiesCount.value = 0;
     
-    // Desactivar game over
-    gameOver.value = false;
+    // Resetear dirección del jugador
+    lastDirection.value = 'down';
+    
+    // Limpiar imágenes capturadas del game over anterior
+    terrainImage.value = null;
+    reactiveImage.value = null;
+    
+    // Desactivar wizardActive primero
     wizardActive.value = false;
     
-    // NOTA: Los POIs se resetean desde HomeView cuando se redibuja el terreno
-    // porque necesitamos el terreno del tile (0,0) que se regenera allí
+    // IMPORTANTE: gameOver se desactiva AL FINAL para que los watchers
+    // no guarden el estado intermedio antes de que los POIs se reseteen
+    // Los POIs se resetean desde HomeView cuando detecta el cambio de gameOver
+    gameOver.value = false;
+  }
+  
+  // Función para marcar que el retry ha terminado (llamar desde HomeView después de resetear POIs)
+  function finishRetry() {
+    isRetrying.value = false;
   }
 
   function canMoveTo(x, y) {
@@ -262,6 +293,7 @@ export const usePlayerStore = defineStore('player', () => {
     characterSelected,
     character,
     image,
+    isRetrying,
     initialize,
     setTerrain,
     moveUp,
@@ -272,5 +304,6 @@ export const usePlayerStore = defineStore('player', () => {
     checkEncounter,
     reset,
     retryRun,
+    finishRetry,
   };
 });

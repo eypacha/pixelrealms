@@ -387,6 +387,25 @@ export const useCombatStore = defineStore('combat', () => {
     }
   };
 
+  // Función para resetear completamente el estado del combate (usado en retry)
+  const resetCombat = () => {
+    combatActive.value = false;
+    enemyHealth.value = 0;
+    enemyStrength.value = 10;
+    enemyDefense.value = 10;
+    enemyType.value = 'orc';
+    combatMessage.value = '';
+    coverActive.value = false;
+    coverTurns.value = 0;
+    enemyDefeated.value = false;
+    enemyFled.value = false;
+    lootCollected.value = false;
+    playerTurn.value = true;
+    enemyFrozen.value = false;
+    playerFrozen.value = false;
+    playerFleeing.value = false;
+  };
+
   return {
     combatActive,
     enemyHealth,
@@ -414,6 +433,7 @@ export const useCombatStore = defineStore('combat', () => {
     maybeResetPlayerFrozen,
     usePotion,
     fleeCombat,
-    endCombat
+    endCombat,
+    resetCombat
   };
 });

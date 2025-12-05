@@ -47,13 +47,14 @@ const timeStore = useTimeStore();
 const { isNight } = storeToRefs(timeStore);
 import { useSoundStore } from '../stores/sound';
 const soundStore = useSoundStore();
-import { onMounted, onBeforeUnmount, watch, ref, computed } from 'vue';
+import { onMounted, onBeforeUnmount, watch, ref, computed, nextTick } from 'vue';
 import { useTerrain } from '../composables/useTerrain';
 import { useLocalStorage } from '../composables/useLocalStorage';
 import { usePlayerMovement } from '../composables/usePlayerMovement';
 import { usePlayerStore } from '../stores/player';
 import { usePoiStore } from '../stores/poi';
 import { drawAll } from '../utilities/draw';
+import { generateMidpointDisplacement2D } from '../utilities/midpointDisplacement2D';
 import CombatPopup from '../components/CombatPopup.vue';
 import GameOverPopup from '../components/GameOverPopup.vue';
 import WizardPopup from '../components/WizardPopup.vue';
@@ -93,7 +94,8 @@ const { saveGame, loadGame, clearGameState } = useLocalStorage();
 
 // Guarda el estado del juego
 function saveCurrentGame() {
-  if (playerStore.characterSelected && !playerStore.gameOver) {
+  // No guardar si estamos en game over, en proceso de retry, o cargando
+  if (playerStore.characterSelected && !playerStore.gameOver && !playerStore.isRetrying) {
     saveGame(playerStore, poiStore, timeStore, { seedInput, worldOffset });
   }
 }
@@ -158,10 +160,18 @@ watch(() => playerStore.gameOver, async (isGameOver, wasGameOver) => {
   
   // Si gameOver pasa de true a false (retry), regenerar el mapa del tile inicial
   if (wasGameOver && !isGameOver && terrainCanvas.value && reactiveCanvas.value && playerImage.value) {
-    console.log('🔄 Retry Run - Resetting game to initial state');
+    // Esperar a que Vue procese todos los cambios de estado (posición, etc.)
+    // Necesitamos múltiples nextTick para asegurarnos de que el popup de GameOver
+    // se haya desmontado completamente y todos los estados estén sincronizados
+    await nextTick();
+    await nextTick();
     
-    // Resetear el offset del mundo al tile inicial
-    worldOffset.value = { x: 0, y: 0 };
+    console.log('🔄 Retry Run - Resetting game to initial state');
+    console.log('📍 Player position after nextTick:', JSON.stringify(playerStore.position));
+    
+    // Resetear el offset del mundo al tile inicial (mutación directa para mantener reactividad)
+    worldOffset.value.x = 0;
+    worldOffset.value.y = 0;
     
     // Regenerar el terreno del tile (0,0) con la misma seed
     const terrain = generateMidpointDisplacement2D(257, 0.7, 0, 0, seedInput.value);
@@ -176,12 +186,21 @@ watch(() => playerStore.gameOver, async (isGameOver, wasGameOver) => {
     // Revelar POIs cercanos al jugador
     poiStore.revealPoi(playerStore.position);
     
-    console.log('📍 Player position:', playerStore.position);
     console.log('🎯 POIs count:', poiStore.pois.length);
     
-    // Redibujar el juego
+    // Redibujar el juego completo
+    console.log('🎯 About to drawAll with position:', playerStore.position.x, playerStore.position.y);
     drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { initializePlayer: false, redrawTerrain: true, onlyTerrain: true });
+    console.log('🎯 About to drawAll reactive with position:', playerStore.position.x, playerStore.position.y);
     drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+    
+    // Forzar un redibujado adicional en el próximo frame para asegurar sincronización visual
+    requestAnimationFrame(() => {
+      drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
+    });
+    
+    // Marcar que el retry ha terminado para permitir guardar de nuevo
+    playerStore.finishRetry();
   }
 });
 

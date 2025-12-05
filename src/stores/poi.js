@@ -34,25 +34,52 @@ export const usePoiStore = defineStore('poi', () => {
 
   // Limpia todos los POIs de todos los tiles y genera los del tile actual
   function resetPois(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
+    console.log('🧹 resetPois called - Before:', { 
+      poisByTileKeys: Object.keys(poisByTile.value), 
+      poisCount: pois.value.length,
+      defeatedCount: defeatedEnemies.value.length 
+    });
+    
+    // Limpiar completamente creando nuevos objetos/arrays
     poisByTile.value = {};
     pois.value = [];
     defeatedEnemies.value = [];
     treasureDiscovered.value = false;
-    ensureForTile(offsetX, offsetY, terrain, width, height, seed, count);
+    
+    console.log('🧹 resetPois - After clear:', { 
+      poisByTileKeys: Object.keys(poisByTile.value), 
+      poisCount: pois.value.length 
+    });
+    
+    // Generar POIs frescos para el tile inicial
+    const key = `${offsetX},${offsetY}`;
+    const rand = createSeededRandom(String(seed) + ':poi:' + key);
+    const arr = generatePoisForTile({ terrainUtils, rand, width, height, terrain, seed, count });
+    poisByTile.value[key] = arr;
+    pois.value = arr;
+    
+    console.log('🧹 resetPois - After generate:', { 
+      poisByTileKeys: Object.keys(poisByTile.value), 
+      poisCount: pois.value.length,
+      poisTypes: pois.value.map(p => p.type)
+    });
   }
 
   // Generate POIs for a specific tile defined by offsetX, offsetY (in grid indices)
   // Now generates 'darkKnight', 'wizard' and 'treasure' POIs
   function ensureForTile(offsetX, offsetY, terrain, width, height, seed, count = DARK_KNIGHT_COUNT) {
     const key = `${offsetX},${offsetY}`;
+    console.log('📍 ensureForTile called:', { key, exists: !!poisByTile.value[key], currentPoisCount: pois.value.length });
     if (poisByTile.value[key]) {
       pois.value = poisByTile.value[key];
+      console.log('📍 ensureForTile - using existing:', { poisCount: pois.value.length, types: pois.value.map(p => p.type) });
       return;
     }
     const rand = createSeededRandom(String(seed) + ':poi:' + key);
     const arr = generatePoisForTile({ terrainUtils, rand, width, height, terrain, seed, count });
     poisByTile.value[key] = arr;
     pois.value = arr;
+    console.log('📍 ensureForTile - generated new:', { poisCount: pois.value.length, types: pois.value.map(p => p.type) });
   }
 
   // Revela los POIs dentro de un radio del jugador

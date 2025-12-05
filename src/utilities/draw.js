@@ -242,6 +242,8 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     }
     if (playerStore && playerStore.position) {
       const facingLeft = playerStore.lastDirection === 'left';
+      // DEBUG: Log position being drawn
+      console.log('🎨 drawPlayer at position:', playerStore.position.x, playerStore.position.y);
       drawPlayer(ctx, playerStore.position, playerImage, facingLeft);
       if (playerStore.currentOffset) {
         playerStore.currentOffset.x = worldOffset.x || 0;
