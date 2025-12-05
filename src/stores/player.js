@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { usePoiStore } from './poi.js';
-import { ref } from 'vue';
-import { PLAYER_SPEED, RECOVERY_STEPS } from '../constants/player.js';
+import { ref, computed } from 'vue';
+import { PLAYER_SPEED, RECOVERY_STEPS, WEAPON_ICONS } from '../constants/player.js';
 
 import { ENCOUNTER_RATE_DAY, ENCOUNTER_RATE_NIGHT } from '../constants/enemies.js';
 
@@ -28,6 +28,8 @@ export const usePlayerStore = defineStore('player', () => {
   const characterSelected = ref(false);
   const character = ref(null);
   const image = ref(null);
+  const weaponType = ref('sword');
+  const weaponIcon = computed(() => WEAPON_ICONS[weaponType.value] || '🗡️');
 
   // Player core state
   const position = ref({ x: 0, y: 0 });
@@ -293,6 +295,8 @@ export const usePlayerStore = defineStore('player', () => {
     characterSelected,
     character,
     image,
+    weaponType,
+    weaponIcon,
     isRetrying,
     initialize,
     setTerrain,

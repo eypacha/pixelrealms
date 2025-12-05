@@ -1,7 +1,7 @@
 <template>
   <div>
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': healthAnimating }">❤️{{ health }}</span>
-    <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': strengthAnimating }">🗡️{{ strength }}</span>
+    <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': strengthAnimating }">{{ playerStore.weaponIcon }}{{ strength }}</span>
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': defenseAnimating }">🛡️{{ defense }}</span>
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': coinsAnimating }">🪙{{ coins }}</span>
     <span class="inline-block transition-all duration-300 mr-3" :class="{ 'scale-120': potionAnimating }">🧪{{ potion }}</span>

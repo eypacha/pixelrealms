@@ -4,11 +4,18 @@ export const PLAYER_HIT_CHANCE = 0.7;
 export const COVER_DEFENSE_MULTIPLIER = 1.5; 
 export const COVER_DEFENSE_TURNS = 2;
 
+export const WEAPON_ICONS = {
+  sword: '🗡️',
+  bow: '🏹',
+  axe: '🪓'
+};
+
 export const CHARACTERS = [
   {
     key: 'knight',
     name: 'Knight',
     img: 'images/players/yellowknight.png',
+    weaponType: 'sword',
     stats: {
       health: 10,
       strength: 10,
@@ -22,6 +29,7 @@ export const CHARACTERS = [
     key: 'barbarian',
     name: 'Barbarian',
     img: 'images/players/barbarian.png',
+    weaponType: 'axe',
     stats: {
       health: 10,
       strength: 12,
@@ -35,6 +43,7 @@ export const CHARACTERS = [
     key: 'elf',
     name: 'Elf',
     img: 'images/players/elfa.png',
+    weaponType: 'bow',
     stats: {
       health: 10,
       strength: 9,
@@ -48,6 +57,7 @@ export const CHARACTERS = [
     key: 'wizard',
     name: 'Wizard',
     img: 'images/players/wizard.png',
+    weaponType: 'sword',
     stats: {
       health: 10,
       strength: 7,

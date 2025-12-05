@@ -19,7 +19,7 @@
             <div class="font-bold mb-1">{{ $t('characterSelect.characters.' + char.key) }}</div>
             <div class="text-sm mb-2 flex max-w-[120px] justify-center flex-wrap gap-2">
               <span :title="$t('characterSelect.stats.health')">❤️{{ char.stats.health }}</span>
-              <span :title="$t('characterSelect.stats.strength')">🗡️{{ char.stats.strength }}</span>
+              <span :title="$t('characterSelect.stats.strength')">{{ WEAPON_ICONS[char.weaponType] }}{{ char.stats.strength }}</span>
               <span :title="$t('characterSelect.stats.defense')">🛡️{{ char.stats.defense }}</span><br>
               <span :title="$t('characterSelect.stats.coins')">🪙{{ char.stats.coins }}</span>
               <span :title="$t('characterSelect.stats.potions')">🧪{{ char.stats.potion }}</span>
@@ -48,7 +48,7 @@
 import { ref } from 'vue';
 import { usePlayerStore } from '../stores/player';
 import SettingsBar from './SettingsBar.vue';
-import { CHARACTERS } from '../constants/player';
+import { CHARACTERS, WEAPON_ICONS } from '../constants/player';
 import { hasGameState } from '../composables/useLocalStorage';
 
 const playerStore = usePlayerStore();
@@ -76,6 +76,7 @@ function startGame() {
     playerStore.inventory.potion = selected.value.stats.potion;
     playerStore.mana = selected.value.stats.mana;
     playerStore.image = selected.value.img;
+    playerStore.weaponType = selected.value.weaponType;
     playerStore.characterSelected = true;
     // Emitir evento para que HomeView inicialice el juego
     emit('start-game');

@@ -26,7 +26,7 @@
             <div class="flex gap-2">
                 <div class="mr-2">
                   <div class=" flex justify-between gap-1">
-                    <span>🗡️</span>
+                    <span>{{ playerStore.weaponIcon }}</span>
                     <span>{{ Math.floor(playerStore.strength) }}</span>
                   </div>
                   <div class=" flex justify-between gap-1">
@@ -178,7 +178,7 @@ function fireball() {
 
 // Botones de combate para el template
 const combatButtons = [
-  { emoji: '🗡️', label: t('combat.attack'), onClick: swordAttack, disabled: () => !combatStore.playerTurn },
+  { emoji: playerStore.weaponIcon, label: t('combat.attack'), onClick: swordAttack, disabled: () => !combatStore.playerTurn },
   { emoji: '🛡️', label: t('combat.cover'), onClick: cover, disabled: () => !combatStore.playerTurn },
   { emoji: '🧪', label: t('combat.heal'), onClick: usePotion, disabled: () => !combatStore.playerTurn || playerStore.inventory.potion <= 0 },
   { emoji: '🔥', label: t('combat.fireball'), onClick: fireball, disabled: () => !combatStore.playerTurn || playerStore.mana < 2 },
