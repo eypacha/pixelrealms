@@ -22,7 +22,9 @@ PixelRealms es un juego de exploración y aventura con generación procedural, c
 - **Narrativa:** Eventos ramificados, decisiones con impacto.
 - **Gestión:** Inventario, mejoras, tiempo (día/noche).
 - **Audio/Visual:** Estética pixel art, música y efectos envolventes.
-
+- **Campamento (Campfire):** Al iniciar cada run, se genera un campfire en el punto de spawn inicial del jugador. El campfire es persistente entre runs y siempre marca la posición inicial. Si el jugador pasa cerca del campfire, recupera toda su vida al máximo instantáneamente.
+- **Logros/Achievements:** El juego puede registrar hitos como enemigos derrotados, pasos dados, noches sobrevividas, etc., y mostrar notificaciones al desbloquearlos.
+  
 ### 4. Público objetivo
 Jugadores de aventuras, RPG y exploración, interesados en mecánicas clásicas y narrativa interactiva.
 

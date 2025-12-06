@@ -10,16 +10,9 @@
 ## 🌍 Core Mechanics
 - Terrain: Heights are generated with `midpointDisplacement2D`. The canvas is painted from the heightmap using the current `seed` and `worldOffset`. Height ranges map to water / sand / land / mountain colors.
 - Seed & tiles: Changing the `seed` or shifting the `worldOffset` reveals different regions of the world deterministically. The UI allows seed changes and quick randomization.
-- POIs: Each tile deterministically spawns POIs (e.g., wizards, dark knights). Approaching a POI marks it as discovered and immediately awards its loot (coins and sometimes a potion).
+- POIs: Each tile deterministically spawns POIs (e.g., wizards, dark knights, campfires). Approaching a POI marks it as discovered and immediately awards its loot (coins and sometimes a potion).
+- Campfire: At the start of each run, a campfire is generated at the player's initial spawn point. The campfire persists between runs and always marks the initial position. If the player passes near the campfire, their health is instantly restored to maximum.
 - Encounters: After each valid movement, a probabilistic check (`ENCOUNTER_RATE`, default 0.1) may trigger a combat encounter.
-
-## 🧑 Player & Stats
-- Health (HP): `INITIAL_HEALTH`. Reaching zero ends the game.
-- Strength: Influences damage dealt.
-- Defense: Reduces damage received proportionally. Damage calculation uses a formula considering attack, defense, and a random modifier, with a minimum damage of 1. Hit probability depends on attack and defense.
-- Cover: The "cover" action multiplies defense by a fixed value (`COVER_DEFENSE_MULTIPLIER`) for several turns (`COVER_DEFENSE_TURNS`).
-- Enemies: Some enemies may have special abilities (e.g., freezing the player).
-- Coins / Inventory: Earned via POIs and combat loot. Potions heal during combat.
 
 ## 🎮 Movement & Controls
 - Movement: Arrow keys (`ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`) move the player across the canvas.
