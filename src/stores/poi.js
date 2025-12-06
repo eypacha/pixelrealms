@@ -109,8 +109,21 @@ export const usePoiStore = defineStore('poi', () => {
     revealPois(pois.value, playerPosition, VISIBILITY_RADIUS);
   }
 
-  function checkDiscovery(playerPosition, playerStore) {
+  function checkDiscovery(playerPosition, playerStore, currentOffset = { x: 0, y: 0 }) {
     checkPoisDiscovery(pois.value, playerPosition, playerStore, treasureDiscovered);
+    
+    // Verificar si el jugador está cerca del campfire para curarse
+    if (campfire.value) {
+      const cf = campfire.value;
+      const sameOffset = cf.offsetX === (currentOffset.x || 0) && cf.offsetY === (currentOffset.y || 0);
+      const nearCampfire = Math.abs(cf.x - playerPosition.x) < 15 && Math.abs(cf.y - playerPosition.y) < 15;
+      
+      if (sameOffset && nearCampfire && playerStore.health < playerStore.maxHealth) {
+        // Curar al jugador al máximo
+        playerStore.health = playerStore.maxHealth;
+        console.log('🏕️ Campfire: Salud restaurada al máximo!', playerStore.health);
+      }
+    }
   }
 
   function addNarrativePoi(position, narrativeData) {

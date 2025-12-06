@@ -77,7 +77,7 @@ export function usePlayerMovement({ playerStore, terrainCanvas, reactiveCanvas, 
         poiStore.ensureForTile(worldOffset.value.x, worldOffset.value.y, terrain, 800, 600, seedInput.value);
       }
       requestAnimationFrame(() => {
-        poiStore.checkDiscovery(playerStore.position, playerStore);
+        poiStore.checkDiscovery(playerStore.position, playerStore, worldOffset.value);
         drawAll(reactiveCanvas, seedInput, playerStore, poiStore, playerImage.value, worldOffset.value, { onlyReactive: true });
         const result = maybeTriggerEncounter();
         if (result && typeof result.index === 'number') {
