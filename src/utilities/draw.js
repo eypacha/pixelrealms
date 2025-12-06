@@ -61,6 +61,17 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     };
     drawAll.enemyImages['wizard'] = wizardImg;
   }
+  // Cargar imagen del campfire
+  if (!drawAll.campfireImage) {
+    drawAll.campfireImage = new Image();
+    drawAll.campfireImage.src = 'images/props/campfire.png';
+    drawAll.campfireImage.onload = () => {
+      if (terrainCanvas && terrainCanvas.value) {
+        drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerImage, worldOffset, options);
+      }
+    };
+  }
+  const campfireImg = drawAll.campfireImage;
   const enemyImages = drawAll.enemyImages;
   const orcImg = enemyImages.orc;
   const goblinImg = enemyImages.goblin;
@@ -88,7 +99,7 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
     playerStore.widthRef = canvas.width;
     playerStore.heightRef = canvas.height;
     if (initializePlayer) {
-      playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom);
+      playerStore.initialize(heights2D, canvas.width, canvas.height, seededRandom, worldOffset);
     } else if (typeof playerStore.setTerrain === 'function') {
       // Configurar terreno sin reinicializar posición (para estados cargados)
       playerStore.setTerrain(heights2D, canvas.width, canvas.height);
@@ -238,6 +249,20 @@ export function drawAll(terrainCanvas, seedInput, playerStore, poiStore, playerI
             }
             ctx.restore();
           });
+      }
+    }
+    // Dibujar campfire ANTES del jugador (por debajo)
+    if (poiStore && poiStore.campfire && campfireImg && campfireImg.complete) {
+      const cf = poiStore.campfire;
+      const currentOffsetX = Number(worldOffset.x) || 0;
+      const currentOffsetY = Number(worldOffset.y) || 0;
+      // Solo dibujar si estamos en el mismo tile
+      if (cf.offsetX === currentOffsetX && cf.offsetY === currentOffsetY) {
+        ctx.save();
+        const campfireW = 24;
+        const campfireH = 24;
+        ctx.drawImage(campfireImg, cf.x - campfireW / 2, cf.y - campfireH / 2, campfireW, campfireH);
+        ctx.restore();
       }
     }
     if (playerStore && playerStore.position) {

@@ -21,6 +21,9 @@ export const usePoiStore = defineStore('poi', () => {
   // Reactive property for treasure popup
   const treasureDiscovered = ref(false);
 
+  // Campfire: posición inicial del spawn, persiste entre runs
+  const campfire = ref(null); // { x, y, offsetX, offsetY }
+
   // Guarda cada posición visitada por el jugador como un POI de tipo 'step'
   function addStepPoi(position) {
     // Evita duplicados: solo agrega si no existe ya un step en esa posición
@@ -30,6 +33,25 @@ export const usePoiStore = defineStore('poi', () => {
         position: { x: position.x, y: position.y }
       });
     }
+  }
+
+  // Establece el campfire en la posición inicial del spawn (solo si no existe)
+  function setCampfire(position, offsetX = 0, offsetY = 0) {
+    if (!campfire.value) {
+      campfire.value = {
+        x: position.x,
+        y: position.y,
+        offsetX,
+        offsetY
+      };
+      console.log('🏕️ Campfire establecido en:', campfire.value);
+    }
+  }
+
+  // Resetea el campfire (para nuevo juego completo)
+  function resetCampfire() {
+    campfire.value = null;
+    console.log('🏕️ Campfire reseteado');
   }
 
   // Limpia todos los POIs de todos los tiles y genera los del tile actual
@@ -110,5 +132,5 @@ export const usePoiStore = defineStore('poi', () => {
     addDefeatedEnemyUtil(defeatedEnemies.value, position, type);
   }
 
-  return { pois, poisByTile, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi, revealPoi, addStepPoi };
+  return { pois, poisByTile, ensureForTile, resetPois, checkDiscovery, defeatedEnemies, addDefeatedEnemy, treasureDiscovered, addNarrativePoi, revealPoi, addStepPoi, campfire, setCampfire, resetCampfire };
 });

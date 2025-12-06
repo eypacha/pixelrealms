@@ -86,6 +86,7 @@ export function useLocalStorage() {
         pois: JSON.parse(JSON.stringify(poiStore.pois)),
         poisByTile: JSON.parse(JSON.stringify(poiStore.poisByTile)),
         defeatedEnemies: JSON.parse(JSON.stringify(poiStore.defeatedEnemies)),
+        campfire: poiStore.campfire ? JSON.parse(JSON.stringify(poiStore.campfire)) : null,
       },
       time: {
         isNight: timeStore.isNight,
@@ -146,6 +147,11 @@ export function useLocalStorage() {
         
         poiStore.defeatedEnemies.length = 0;
         state.poi.defeatedEnemies.forEach(e => poiStore.defeatedEnemies.push(e));
+
+        // Restaurar campfire
+        if (state.poi.campfire) {
+          poiStore.campfire = state.poi.campfire;
+        }
       }
 
       // Restaurar time store

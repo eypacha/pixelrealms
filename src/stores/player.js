@@ -66,7 +66,7 @@ export const usePlayerStore = defineStore('player', () => {
   let heightRef = 0;
   let encounterRandom = null;
 
-  function initialize(terrain, width, height, randomFn) {
+  function initialize(terrain, width, height, randomFn, worldOffset = { x: 0, y: 0 }) {
     terrainRef = terrain;
     widthRef = width;
     heightRef = height;
@@ -87,6 +87,8 @@ export const usePlayerStore = defineStore('player', () => {
           initialPositionSet.value = true;
           console.log('📍 initialPosition guardada:', initialPosition.value);
         }
+        // Establecer campfire en la posición de spawn (persiste entre runs)
+        poiStore.setCampfire(position.value, worldOffset.x || 0, worldOffset.y || 0);
         // Revelar POIs cercanos al jugador al iniciar
         poiStore.revealPoi(position.value);
         return;
@@ -95,6 +97,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
     position.value = { x: 0, y: 0 };
     oldPosition.value = { ...position.value };
+    poiStore.setCampfire(position.value, worldOffset.x || 0, worldOffset.y || 0);
     poiStore.revealPoi(position.value);
   }
 
